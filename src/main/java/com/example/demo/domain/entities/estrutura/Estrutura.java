@@ -1,5 +1,6 @@
-package com.example.demo.domain.entities;
+package com.example.demo.domain.entities.estrutura;
 
+import com.example.demo.domain.entities.Municipio;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class Estrutura {
     private String complemento;
 
     @Column
-    private Integer numero;
+    private Integer numeroRua;
 
     @Column(nullable = false)
     private String bairro;

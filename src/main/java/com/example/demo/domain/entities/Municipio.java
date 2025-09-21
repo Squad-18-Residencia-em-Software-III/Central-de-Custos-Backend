@@ -1,5 +1,6 @@
 package com.example.demo.domain.entities;
 
+import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
