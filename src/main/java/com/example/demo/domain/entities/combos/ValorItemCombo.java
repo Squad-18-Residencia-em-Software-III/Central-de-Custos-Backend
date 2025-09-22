@@ -1,0 +1,47 @@
+package com.example.demo.domain.entities.combos;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity(name = "valorItemCombo")
+@Table(name = "valores_itens_combo")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class ValorItemCombo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private BigDecimal valor;
+
+    @ManyToOne
+    @JoinColumn(name = "combo_id", nullable = false)
+    private Combo combo;
+
+    @ManyToOne
+    @JoinColumn(name = "item_combo_id", nullable = false)
+    private ItemCombo itemCombo;
+
+    @CreatedDate
+    @Column(nullable = false)
+    private LocalDateTime criadoEm;
+
+    @LastModifiedDate
+    private LocalDateTime atualizadoEm;
+
+}
