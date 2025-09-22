@@ -1,6 +1,5 @@
-package com.example.demo.domain.entities;
+package com.example.demo.domain.entities.combos;
 
-import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,27 +9,33 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity(name = "municipio")
-@Table(name = "municipios")
+@Entity(name = "valorItemCombo")
+@Table(name = "valores_itens_combo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Municipio {
+public class ValorItemCombo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    private String nome;
+    private BigDecimal valor;
 
     @ManyToOne
-    @JoinColumn(name = "uf_id", nullable = false)
-    private Uf uf;
+    @JoinColumn(name = "combo_id", nullable = false)
+    private Combo combo;
+
+    @ManyToOne
+    @JoinColumn(name = "item_combo_id", nullable = false)
+    private ItemCombo itemCombo;
 
     @CreatedDate
     @Column(nullable = false)

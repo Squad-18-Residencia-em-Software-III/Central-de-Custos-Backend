@@ -1,6 +1,6 @@
-package com.example.demo.domain.entities;
+package com.example.demo.domain.entities.estrutura;
 
-import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.entities.competencia.Competencia;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,26 +11,31 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity(name = "municipio")
-@Table(name = "municipios")
+@Entity(name = "competenciaAlunoEstrutura")
+@Table(name = "competencia_aluno_estrutura")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Municipio {
+public class CompetenciaAlunoEstrutura {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    private String nome;
+    private Integer numeroAlunos;
 
     @ManyToOne
-    @JoinColumn(name = "uf_id", nullable = false)
-    private Uf uf;
+    @JoinColumn(name = "estrutura_id", nullable = false)
+    private Estrutura estrutura;
+
+    @ManyToOne
+    @JoinColumn(name = "competencia_id", nullable = false)
+    private Competencia competencia;
 
     @CreatedDate
     @Column(nullable = false)
@@ -38,5 +43,4 @@ public class Municipio {
 
     @LastModifiedDate
     private LocalDateTime atualizadoEm;
-
 }
