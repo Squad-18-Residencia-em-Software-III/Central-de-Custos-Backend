@@ -1,0 +1,34 @@
+services:
+
+  dcentraldecustosdb:
+    image: postgres:16
+    container_name: dcentraldecustosdb
+    environment:
+      POSTGRES_DB: dcentraldecustosdb
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5432:5432"
+    networks:
+      - central-custos-seduc-network
+    volumes:
+      - dcentraldecustosdb_data:/var/lib/postgresql/data
+
+  centraldecustospgadmin4:
+    image: dpage/pgadmin4
+    container_name: centraldecustospgadmin4
+    ports:
+      - "15432:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - dcentraldecustosdb
+    networks:
+      - central-custos-seduc-network
+
+networks:
+  central-custos-seduc-network:
+    driver: bridge
+volumes:
+  dcentraldecustosdb_data:
