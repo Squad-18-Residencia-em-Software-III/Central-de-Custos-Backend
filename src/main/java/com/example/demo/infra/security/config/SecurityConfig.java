@@ -1,4 +1,4 @@
-package com.example.demo.infra.security;
+package com.example.demo.infra.security.config;
 
 import com.example.demo.infra.security.jwt.CustomJwtAuthenticationConverter;
 import com.nimbusds.jose.jwk.JWK;
@@ -8,7 +8,6 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
