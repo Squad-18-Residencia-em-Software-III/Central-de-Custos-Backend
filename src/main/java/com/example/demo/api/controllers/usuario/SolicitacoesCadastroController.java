@@ -19,7 +19,7 @@ public class SolicitacoesCadastroController {
         this.solicitacoesCadastroService = solicitacoesCadastroService;
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping("/novo")
     public ResponseEntity<Void> cadastrar(@Valid @RequestBody CadastroUsuarioDto dto){
         solicitacoesCadastroService.solicitarCadastro(dto);
         return ResponseEntity.ok().build();

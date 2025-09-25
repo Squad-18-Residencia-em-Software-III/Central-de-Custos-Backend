@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/h2-console/**").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
@@ -59,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // onde seu React roda
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // permite cookies/authorization headers
