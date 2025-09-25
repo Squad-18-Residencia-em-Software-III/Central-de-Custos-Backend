@@ -1,4 +1,4 @@
-package com.example.demo.infra.security.config;
+package com.example.demo.infra.config.security;
 
 import com.example.demo.infra.security.jwt.CustomJwtAuthenticationConverter;
 import com.nimbusds.jose.jwk.JWK;
@@ -45,9 +45,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/h2-console/**").permitAll();
+                    authorize.requestMatchers(
+                            "/h2-console/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html"
+                    ).permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/all").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
