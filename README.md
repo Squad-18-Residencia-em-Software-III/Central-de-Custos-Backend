@@ -6,7 +6,7 @@ Repositório do backend da aplicação Centra de Custos da Rede Estadual de Ensi
 
 - `main`: código estável e pronto para produção (🚫 ninguém comita diretamente aqui)
 - `develop`: onde as funcionalidades são integradas após revisão
-- `feat(nome-da-feature)`: onde cada pessoa trabalha em uma funcionalidade específica
+- `feat/nome-da-feature`: onde cada pessoa trabalha em uma funcionalidade específica
 
 ---
 
@@ -18,10 +18,10 @@ git checkout develop
 git pull origin develop
 
 # Crie sua branch de tarefa a partir de develop
-git checkout -b feat(nome-da-feature)
+git checkout -b feat/nome-da-feature
 
 # Exemplo:
-# git checkout -b feat(cadastro-usuario)
+# git checkout -b feat/cadastro-usuario
 ```
 
 ---
@@ -34,7 +34,7 @@ git add .
 git commit -m "feat(nome-da-feature): Implementa [descrição da tarefa]"
 
 # Envie sua branch para o GitHub
-git push origin feat(nome-da-tarefa)
+git push origin feat/nome-da-feature
 ```
 
 Se sua branch não for uma Feature necessáriamente, existem essas opções de commits / nomenclaturas:
@@ -60,7 +60,7 @@ Se sua branch não for uma Feature necessáriamente, existem essas opções de c
 2. Clique em **"Compare & pull request"** ou vá na aba **Pull Requests**.
 3. Selecione:
     - **Base**: `develop`
-    - **Compare**: `feat(nome-da-tarefa`)
+    - **Compare**: `feat/nome-da-feature`
 4. Descreva o que foi feito e envie para revisão.
 5. Aguarde aprovação e merge.
 
@@ -76,7 +76,7 @@ git checkout develop
 git pull origin develop
 
 # Volte para sua feature branch
-git checkout feat(nome-da-tarefa)
+git checkout feat/nome-da-feature
 
 # Mescle as mudanças da develop na sua branch
 git merge develop
@@ -102,7 +102,7 @@ git push origin main
 ## 📌 Regras importantes
 
 - 🔒 **Nunca comitar direto em `main` ou `develop`**
-- ✅ **Sempre trabalhe em branches `feat(nome-da-tarefa)`**
+- ✅ **Sempre trabalhe em branches `feat/nome-da-feature`**
 - 🔄 **Atualize sua branch com `develop` com frequência**
 - 🧪 **Teste antes de pedir merge**
 - 🧠 **Nomeie bem seus commits e branches**

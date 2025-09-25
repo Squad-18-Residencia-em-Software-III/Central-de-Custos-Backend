@@ -29,6 +29,9 @@ public class Uf {
     @Column(nullable = false)
     private String nome;
 
+    @Column(length = 2, nullable = false)
+    private String sigla;
+
     @OneToMany(mappedBy = "uf")
     private List<Municipio> municipios = new ArrayList<>();
 

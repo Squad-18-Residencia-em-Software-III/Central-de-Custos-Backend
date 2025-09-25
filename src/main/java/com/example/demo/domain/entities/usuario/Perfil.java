@@ -23,6 +23,6 @@ public class Perfil implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return "PERFIL_" + this.nome;
+        return "ROLE_" + this.nome;
     }
 }
