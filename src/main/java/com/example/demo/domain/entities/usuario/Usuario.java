@@ -84,6 +84,11 @@ public class Usuario implements UserDetails {
     @LastModifiedDate
     private LocalDateTime atualizadoEm;
 
+    @PrePersist // ao persistir vai setar como true
+    public void prePersist() {
+        this.primeiroAcesso = true;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(perfil);
