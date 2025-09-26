@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/cadastro")
 public class SolicitacoesCadastroController {
@@ -39,5 +41,14 @@ public class SolicitacoesCadastroController {
     public ResponseEntity<Page<CadastroUsuarioDto>> listarTodasSolicitacoes(@RequestParam(defaultValue = "1") int pagina){
         Page<CadastroUsuarioDto> solicitacoes = solicitacoesCadastroService.listarSolicitacoesCadastro(pagina);
         return ResponseEntity.ok(solicitacoes);
+    }
+
+    @Operation(
+            summary = "Visualizar Solicitação",
+            description = "Retorna informações da solicitação",
+            tags = "Solicitações Cadastro")
+    @GetMapping("/solicitacao/{id}")
+    public ResponseEntity<CadastroUsuarioDto> visualizarSolicitacao(@PathVariable UUID id){
+        return ResponseEntity.ok(solicitacoesCadastroService.visualizarSolicitacaoCadastro(id));
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.domain.dto.solicitacoes;
 
 import com.example.demo.domain.entities.usuario.Genero;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record CadastroUsuarioDto(
@@ -17,6 +18,7 @@ public record CadastroUsuarioDto(
         String complemento,
         String bairro,
         Long municipioId,
-        Integer cep
+        Integer cep,
+        LocalDateTime criadoEm
 ) {
 }

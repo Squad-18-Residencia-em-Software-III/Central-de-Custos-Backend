@@ -19,8 +19,6 @@ public record SolicitaCadastroUsuarioDto(
         @NotBlank
         @CPF
         String cpf,
-        @NotBlank
-        String senha,
         Genero genero,
         @NotNull
         UUID estruturaId,

@@ -39,9 +39,6 @@ public class SolicitacaoCadastroUsuario {
     @Column(nullable = false, unique = true)
     private String cpf;
 
-    @Column(nullable = false)
-    private String senha;
-
     @Enumerated(EnumType.STRING)
     private Genero genero;
 
