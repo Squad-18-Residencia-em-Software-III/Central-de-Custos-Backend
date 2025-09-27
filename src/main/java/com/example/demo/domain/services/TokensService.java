@@ -27,15 +27,31 @@ public class TokensService {
         this.usuarioValidator = usuarioValidator;
     }
 
+    @Transactional
     public String criarTokenPrimeiroAcesso(Usuario usuario){
         Tokens tokenPrimeiroAcesso = new Tokens();
-        tokenPrimeiroAcesso.setToken(RandomStringUtils.secureStrong().nextAlphanumeric(5, 10));
+        tokenPrimeiroAcesso.setToken(gerarToken());
         tokenPrimeiroAcesso.setTipo(TipoToken.PRIMEIRO_ACESSO);
         tokenPrimeiroAcesso.setUsuario(usuario);
         tokenPrimeiroAcesso.setExpiraEm(LocalDateTime.now().plusDays(2));
 
         tokensRepository.save(tokenPrimeiroAcesso);
         return tokenPrimeiroAcesso.getToken();
+    }
+
+    @Transactional
+    public String criarTokenRecuperarSenha(Usuario usuario){
+        tokenValidator.validaTokenExistenteUsuario(usuario);
+        usuarioValidator.validaUsuarioPrimeiroAcesso(usuario);
+
+        Tokens tokenRecuperarSenha = new Tokens();
+        tokenRecuperarSenha.setToken(gerarToken());
+        tokenRecuperarSenha.setTipo(TipoToken.RECUPERAR_SENHA);
+        tokenRecuperarSenha.setUsuario(usuario);
+        tokenRecuperarSenha.setExpiraEm(LocalDateTime.now().plusMinutes(15));
+
+        tokensRepository.save(tokenRecuperarSenha);
+        return tokenRecuperarSenha.getToken();
     }
 
     public Tokens validarToken(String codigoToken, String cpf, TipoToken tipoToken){
@@ -50,6 +66,10 @@ public class TokensService {
     @Transactional
     public void deletarToken(Tokens token){
         tokensRepository.delete(token);
+    }
+
+    public static String gerarToken() {
+        return RandomStringUtils.secureStrong().nextAlphanumeric(32, 40);
     }
 
 }

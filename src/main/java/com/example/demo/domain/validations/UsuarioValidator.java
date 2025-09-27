@@ -5,6 +5,7 @@ import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.repositorios.PerfilRepository;
 import com.example.demo.domain.repositorios.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,5 +33,11 @@ public class UsuarioValidator {
     public Usuario validaUsuarioCpf(String cpf){
         return usuarioRepository.findByCpf(cpf)
                 .orElseThrow(() -> new EntityNotFoundException("Cpf inválido ou não cadastrado"));
+    }
+
+    public void validaUsuarioPrimeiroAcesso(Usuario usuario){
+        if (usuario.isPrimeiroAcesso()){
+            throw new AccessDeniedException("O usuário precisa realizar o seu primeiro acesso.");
+        }
     }
 }

@@ -56,6 +56,8 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->

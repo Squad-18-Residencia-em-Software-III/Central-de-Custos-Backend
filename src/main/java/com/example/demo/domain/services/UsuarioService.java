@@ -67,7 +67,7 @@ public class UsuarioService {
         novoUsuario.setSenha(bCryptPasswordEncoder.encode(RandomStringUtils.secureStrong().nextAlphanumeric(5, 20)));
 
         usuarioRepository.save(novoUsuario);
-        tokensService.criarTokenPrimeiroAcesso(novoUsuario);
+        tokensService.criarTokenPrimeiroAcesso(novoUsuario); // cria token
     }
 
     @Transactional
@@ -84,9 +84,31 @@ public class UsuarioService {
         usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
         usuario.setPrimeiroAcesso(false);
         usuarioRepository.save(usuario);
-        log.info("Senha do usuario {} alterada com sucesso", usuario.getId());
+        log.info("PRIMEIRO_ACESSO: Senha do usuario {} alterada com sucesso", usuario.getId());
         tokensService.deletarToken(token);
 
         return authService.login(new LoginDto(cpf, senhaDto.senha()));
+    }
+
+    public void solicitaRecuperarSenha(String cpf){
+        Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
+        tokensService.criarTokenRecuperarSenha(usuario); // cria token
+    }
+
+    @Transactional
+    public void defineSenhaRecuperarUsuario(String codigoToken, String cpf, NovaSenhaDto senhaDto){
+        Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
+        Tokens token = tokensService.validarToken(codigoToken, cpf, TipoToken.RECUPERAR_SENHA);
+
+        SenhaValidator.validarSenhaConfirma(senhaDto);
+        List<String> errosSenha = SenhaValidator.verificarSenha(senhaDto.senha());
+        if (!errosSenha.isEmpty()) {
+            throw new SenhaInvalidaException(errosSenha);
+        }
+
+        usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
+        usuarioRepository.save(usuario);
+        log.info("RECUPERAÇÃO: Senha do usuario {} alterada com sucesso", usuario.getId());
+        tokensService.deletarToken(token);
     }
 }
