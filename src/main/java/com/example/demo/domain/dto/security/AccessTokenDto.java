@@ -1,6 +1,6 @@
 package com.example.demo.domain.dto.security;
 
-public record TokenDto(
+public record AccessTokenDto(
         String accessToken
 ) {
 }

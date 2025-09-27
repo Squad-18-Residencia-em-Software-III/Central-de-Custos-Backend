@@ -1,4 +1,4 @@
-package com.example.demo.infra.security.config;
+package com.example.demo.infra.config.security;
 
 import com.example.demo.infra.security.jwt.CustomJwtAuthenticationConverter;
 import com.nimbusds.jose.jwk.JWK;
@@ -45,8 +45,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/h2-console/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
+                    authorize.requestMatchers(
+                            "/h2-console/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html"
+                    ).permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/token/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
@@ -59,7 +70,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // onde seu React roda
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // permite cookies/authorization headers
