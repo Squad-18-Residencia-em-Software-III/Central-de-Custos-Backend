@@ -32,6 +32,7 @@ public class Tokens {
     private String token;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoToken tipo;
 
     @Column(nullable = false)

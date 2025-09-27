@@ -66,4 +66,13 @@ public class SolicitacaoCadastroUsuario {
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime criadoEm;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusSolicitacao status;
+
+    @PrePersist
+    public void prePersist() {
+        this.status = StatusSolicitacao.PENDENTE;
+    }
 }

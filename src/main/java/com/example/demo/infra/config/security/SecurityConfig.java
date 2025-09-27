@@ -53,7 +53,7 @@ public class SecurityConfig {
                     ).permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/all").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->

@@ -1,6 +1,7 @@
 package com.example.demo.domain.entities.solicitacoes;
 
-public enum RespostaSolicitacao {
+public enum StatusSolicitacao {
     APROVADA,
-    RECUSADA
+    RECUSADA,
+    PENDENTE
 }

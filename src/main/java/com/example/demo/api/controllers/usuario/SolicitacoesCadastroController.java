@@ -2,6 +2,7 @@ package com.example.demo.api.controllers.usuario;
 
 import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
+import com.example.demo.domain.entities.solicitacoes.StatusSolicitacao;
 import com.example.demo.domain.services.SolicitacoesCadastroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -30,6 +31,17 @@ public class SolicitacoesCadastroController {
     @PostMapping("/novo")
     public ResponseEntity<Void> cadastrar(@Valid @RequestBody SolicitaCadastroUsuarioDto dto){
         solicitacoesCadastroService.solicitarCadastro(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Aceitar ou Recusar Solicitação",
+            description = "Endpoint utilizado para aceitar ou recusar a solicitação de cadastro, criando um token de primeiro acesso e enviando para o email",
+            tags = "Solicitações Cadastro")
+    @PostMapping("/solicitacao/{id}")
+    public ResponseEntity<Void> aceitarOuRecusarSolicitacao(@PathVariable UUID id,
+                                                            @RequestParam(name = "resposta") StatusSolicitacao statusSolicitacao){
+        solicitacoesCadastroService.aprovarOuReprovarSolicitacaoCadastro(id, statusSolicitacao);
         return ResponseEntity.ok().build();
     }
 
