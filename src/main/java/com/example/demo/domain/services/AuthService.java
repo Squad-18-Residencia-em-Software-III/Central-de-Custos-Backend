@@ -1,7 +1,7 @@
 package com.example.demo.domain.services;
 
 import com.example.demo.domain.dto.security.LoginDto;
-import com.example.demo.domain.dto.security.TokenDto;
+import com.example.demo.domain.dto.security.AccessTokenDto;
 import com.example.demo.infra.security.jwt.TokenJwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +19,7 @@ public class AuthService {
         this.tokenJwtService = tokenJwtService;
     }
 
-    public TokenDto login(LoginDto dto){
+    public AccessTokenDto login(LoginDto dto){
         var authenticationRequest = new UsernamePasswordAuthenticationToken(
                 dto.cpf(),
                 dto.senha()
@@ -27,7 +27,7 @@ public class AuthService {
 
         // Esse authentication carrega o usuario autenticado
         Authentication authentication = authenticationManager.authenticate(authenticationRequest);
-        return new TokenDto(tokenJwtService.generateTokenClaimSet(authentication));
+        return new AccessTokenDto(tokenJwtService.generateTokenClaimSet(authentication));
     }
 
 

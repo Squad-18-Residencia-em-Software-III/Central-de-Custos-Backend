@@ -1,5 +1,6 @@
 package com.example.demo.domain.dto.solicitacoes;
 
+import com.example.demo.domain.entities.solicitacoes.StatusSolicitacao;
 import com.example.demo.domain.entities.usuario.Genero;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public record CadastroUsuarioDto(
         String bairro,
         Long municipioId,
         Integer cep,
-        LocalDateTime criadoEm
+        LocalDateTime criadoEm,
+        StatusSolicitacao status
 ) {
 }

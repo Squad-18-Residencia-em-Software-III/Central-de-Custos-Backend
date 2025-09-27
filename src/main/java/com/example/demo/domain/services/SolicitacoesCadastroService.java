@@ -67,6 +67,7 @@ public class SolicitacoesCadastroService {
     @Transactional
     public void aprovarOuReprovarSolicitacaoCadastro(UUID solicitacaoId, StatusSolicitacao statusSolicitacao){
         SolicitacaoCadastroUsuario solicitacao = solicitacaoValidator.validaSolicitacaoCadastroExiste(solicitacaoId);
+        solicitacaoValidator.validaSolicitacaoCadastroPendente(solicitacao);
 
         switch (statusSolicitacao) {
             case APROVADA -> {

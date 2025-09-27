@@ -51,9 +51,11 @@ public class SecurityConfig {
                             "/swagger-ui/**",
                             "/swagger-ui.html"
                     ).permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/token/**").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
