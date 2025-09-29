@@ -3,17 +3,17 @@ spring:
     name: Central de Custos
 server:
   port: 8080
-jwt:
-  public:
-    key: classpath:app.pub
-  private:
-    key: classpath:app.key
 default:
   admin:
     password: 12345
 logging:
   level:
     org.springframework.security: DEBUG
+jwt:
+  public:
+    key: classpath:app.pub
+  private:
+    key: classpath:app.key
 
 # perfil dev - PostgreSQL
 ---
@@ -43,7 +43,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://prodb:5432/pcentraldecustosdb
+    url: jdbc:postgresql://dcentraldecustosdb:5432/dcentraldecustosdb
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}

@@ -1,5 +1,22 @@
 services:
 
+  central-de-custos-app:
+    build: .
+    container_name: central-de-custos-app
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dcentraldecustosdb
+    networks:
+      - central-custos-seduc-network
+    volumes:
+      - ./secrets/app.key:/run/secrets/app.key:ro
+      - ./secrets/app.pub:/run/secrets/app.pub:ro
+
   dcentraldecustosdb:
     image: postgres:16
     container_name: dcentraldecustosdb
