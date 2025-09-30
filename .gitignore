@@ -33,6 +33,6 @@ build/
 .vscode/
 
 app.key
-src/main/resources/app.pub
+app.pub
 
 .env
