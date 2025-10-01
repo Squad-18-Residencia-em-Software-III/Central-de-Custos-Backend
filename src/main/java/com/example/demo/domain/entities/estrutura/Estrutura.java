@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "estrutura")
-@Table(name = "estruturas")
+@Table(name = "estrutura")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,8 +27,11 @@ import java.util.UUID;
 public class Estrutura {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;

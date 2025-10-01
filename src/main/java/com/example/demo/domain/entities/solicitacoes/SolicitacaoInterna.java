@@ -5,6 +5,8 @@ import com.example.demo.domain.entities.combos.ItemCombo;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.estrutura.FolhaPagamento;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.StatusSolicitacao;
+import com.example.demo.domain.enums.TipoSolicitacao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "solicitacaoInterna")
-@Table(name = "solicitacoes_internas")
+@Table(name = "solicitacao_interna")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,8 +29,11 @@ import java.util.UUID;
 public class SolicitacaoInterna {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String descricao;

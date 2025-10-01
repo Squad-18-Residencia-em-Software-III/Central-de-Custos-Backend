@@ -5,7 +5,7 @@ import com.example.demo.domain.dto.security.LoginDto;
 import com.example.demo.domain.dto.usuario.NovaSenhaDto;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
-import com.example.demo.domain.entities.solicitacoes.TipoToken;
+import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.entities.solicitacoes.Tokens;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
@@ -48,8 +48,8 @@ public class UsuarioService {
 
     @Transactional
     public void criarUsuarioSolicitacaoCadastro(SolicitacaoCadastroUsuario solicitacao){
-        estruturaValidator.validarMunicipioExiste(solicitacao.getMunicipio().getId());
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(solicitacao.getEstrutura().getId());
+        estruturaValidator.validarMunicipioExiste(solicitacao.getMunicipio().getUuid());
+        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(solicitacao.getEstrutura().getUuid());
 
         Usuario novoUsuario = usuarioMapper.toEntity(solicitacao);
         String rh = "RH";
@@ -84,7 +84,7 @@ public class UsuarioService {
         usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
         usuario.setPrimeiroAcesso(false);
         usuarioRepository.save(usuario);
-        log.info("PRIMEIRO_ACESSO: Senha do usuario {} alterada com sucesso", usuario.getId());
+        log.info("PRIMEIRO_ACESSO: Senha do usuario {} alterada com sucesso", usuario.getUuid());
         tokensService.deletarToken(token);
 
         return authService.login(new LoginDto(cpf, senhaDto.senha()));
@@ -108,7 +108,7 @@ public class UsuarioService {
 
         usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
         usuarioRepository.save(usuario);
-        log.info("RECUPERAÇÃO: Senha do usuario {} alterada com sucesso", usuario.getId());
+        log.info("RECUPERAÇÃO: Senha do usuario {} alterada com sucesso", usuario.getUuid());
         tokensService.deletarToken(token);
     }
 }

@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.UUID;
+
 @Entity(name = "perfil")
-@Table(name = "perfis")
+@Table(name = "perfil")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,6 +20,9 @@ public class Perfil implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     private String nome;
 

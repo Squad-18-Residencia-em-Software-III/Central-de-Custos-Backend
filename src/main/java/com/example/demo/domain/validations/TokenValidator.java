@@ -1,6 +1,6 @@
 package com.example.demo.domain.validations;
 
-import com.example.demo.domain.entities.solicitacoes.TipoToken;
+import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.entities.solicitacoes.Tokens;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.repositorios.TokensRepository;

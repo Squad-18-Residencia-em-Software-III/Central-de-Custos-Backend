@@ -1,6 +1,7 @@
 package com.example.demo.domain.entities.solicitacoes;
 
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.TipoToken;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "token")
-@Table(name = "tokens")
+@Table(name = "token")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,8 +22,11 @@ import java.util.UUID;
 public class Tokens {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

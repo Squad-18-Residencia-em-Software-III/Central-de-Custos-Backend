@@ -21,12 +21,12 @@ public class EstruturaValidator {
     }
 
     public Estrutura validarEstruturaExiste(UUID estruturaId){
-        return estruturaRepository.findById(estruturaId)
+        return estruturaRepository.findByUuid(estruturaId)
                 .orElseThrow(() -> new EntityNotFoundException("Setor inválido ou inexistente"));
     }
 
-    public Municipio validarMunicipioExiste(Long municipioId){
-        return municipioRepository.findById(municipioId)
+    public Municipio validarMunicipioExiste(UUID municipioId){
+        return municipioRepository.findByUuid(municipioId)
                 .orElseThrow(() -> new EntityNotFoundException("Municipio inválido ou inexistente"));
     }
 }

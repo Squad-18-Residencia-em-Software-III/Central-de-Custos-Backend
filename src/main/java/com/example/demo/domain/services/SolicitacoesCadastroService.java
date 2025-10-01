@@ -4,7 +4,7 @@ import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
-import com.example.demo.domain.entities.solicitacoes.StatusSolicitacao;
+import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.mapper.SolicitacoesMapper;
 import com.example.demo.domain.repositorios.*;
@@ -77,7 +77,7 @@ public class SolicitacoesCadastroService {
             }
             case RECUSADA -> {
                 solicitacao.setStatus(StatusSolicitacao.RECUSADA);
-                log.info("Solicitação com ID: {} recusada e removida.", solicitacao.getId());
+                log.info("Solicitação com ID: {} recusada e removida.", solicitacao.getUuid());
                 // Serviço de email
             }
         }

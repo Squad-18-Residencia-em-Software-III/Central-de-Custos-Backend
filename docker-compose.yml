@@ -33,6 +33,18 @@ services:
     volumes:
       - centraldecustosdb_data:/var/lib/postgresql/data
 
+  dcentraldecustosdb:
+    image: postgres:16
+    container_name: dcentraldecustosdb
+    environment:
+      POSTGRES_DB: dcentraldecustosdb
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5432:5432"
+    networks:
+      - central-custos-seduc-network
+
   pgadmin4:
     image: dpage/pgadmin4
     container_name: centraldecustospgadmin4

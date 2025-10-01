@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "logSistema")
-@Table(name = "logs_sistema")
+@Table(name = "log_sistema")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,6 +26,9 @@ public class LogSistema {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     private String entidade;
 

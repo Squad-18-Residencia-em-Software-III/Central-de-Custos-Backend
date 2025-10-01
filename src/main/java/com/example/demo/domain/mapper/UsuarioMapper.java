@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface UsuarioMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "perfil", ignore = true)
     @Mapping(target = "senha", ignore = true)
     Usuario toEntity(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "combo")
-@Table(name = "combos")
+@Table(name = "combo")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,8 +26,11 @@ import java.util.UUID;
 public class Combo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;
@@ -38,7 +41,7 @@ public class Combo {
 
     @ManyToMany
     @JoinTable(
-            name = "tabela_combo_itens_combo",
+            name = "combo_item_combo",
             joinColumns = @JoinColumn(name = "combo_id"),
             inverseJoinColumns = @JoinColumn(name = "item_combo_id")
     )

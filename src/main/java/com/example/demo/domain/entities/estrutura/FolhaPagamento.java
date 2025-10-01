@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "folhaPagamento")
-@Table(name = "folhas_pagamento")
+@Table(name = "folha_pagamento")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,8 +24,11 @@ import java.util.UUID;
 public class FolhaPagamento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @ManyToOne
     @JoinColumn(name = "estrutura_id", nullable = false)

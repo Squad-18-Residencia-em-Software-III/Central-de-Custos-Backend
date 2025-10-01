@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "itemCombo")
-@Table(name = "itens_combo")
+@Table(name = "item_combo")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,8 +23,11 @@ import java.util.UUID;
 public class ItemCombo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;

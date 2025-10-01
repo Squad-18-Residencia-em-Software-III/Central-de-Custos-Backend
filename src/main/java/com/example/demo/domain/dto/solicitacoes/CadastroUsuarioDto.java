@@ -1,7 +1,7 @@
 package com.example.demo.domain.dto.solicitacoes;
 
-import com.example.demo.domain.entities.solicitacoes.StatusSolicitacao;
-import com.example.demo.domain.entities.usuario.Genero;
+import com.example.demo.domain.enums.StatusSolicitacao;
+import com.example.demo.domain.enums.Genero;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +18,7 @@ public record CadastroUsuarioDto(
         Integer numeroRua,
         String complemento,
         String bairro,
-        Long municipioId,
+        UUID municipioId,
         Integer cep,
         LocalDateTime criadoEm,
         StatusSolicitacao status

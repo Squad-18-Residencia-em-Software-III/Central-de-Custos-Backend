@@ -1,4 +1,4 @@
-package com.example.demo.domain.entities.usuario;
+package com.example.demo.domain.enums;
 
 public enum Genero {
     MASCULINO,

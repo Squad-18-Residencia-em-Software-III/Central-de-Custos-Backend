@@ -10,9 +10,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "classificacao")
-@Table(name = "classificacoes")
+@Table(name = "classificacao")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,6 +24,9 @@ public class Classificacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;

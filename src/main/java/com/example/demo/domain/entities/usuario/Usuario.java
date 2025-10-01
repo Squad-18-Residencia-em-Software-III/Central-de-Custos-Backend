@@ -2,6 +2,7 @@ package com.example.demo.domain.entities.usuario;
 
 import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.enums.Genero;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "usuario")
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,8 +29,11 @@ import java.util.UUID;
 public class Usuario implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;

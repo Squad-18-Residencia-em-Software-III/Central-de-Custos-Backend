@@ -1,7 +1,7 @@
 package com.example.demo.api.controllers.usuario;
 
 import com.example.demo.domain.dto.usuario.CpfDto;
-import com.example.demo.domain.entities.solicitacoes.TipoToken;
+import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.services.TokensService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;

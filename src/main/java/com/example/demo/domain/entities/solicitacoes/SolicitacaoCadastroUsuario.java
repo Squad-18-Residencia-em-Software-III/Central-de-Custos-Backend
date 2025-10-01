@@ -2,7 +2,8 @@ package com.example.demo.domain.entities.solicitacoes;
 
 import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
-import com.example.demo.domain.entities.usuario.Genero;
+import com.example.demo.domain.enums.Genero;
+import com.example.demo.domain.enums.StatusSolicitacao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "solicitacaoCadastroUsuario")
-@Table(name = "solicitacoes_cadastro_usuario")
+@Table(name = "solicitacao_cadastro_usuario")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,8 +25,11 @@ import java.util.UUID;
 public class SolicitacaoCadastroUsuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String nome;

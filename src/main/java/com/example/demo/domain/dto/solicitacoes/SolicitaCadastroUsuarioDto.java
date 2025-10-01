@@ -1,6 +1,6 @@
 package com.example.demo.domain.dto.solicitacoes;
 
-import com.example.demo.domain.entities.usuario.Genero;
+import com.example.demo.domain.enums.Genero;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +29,7 @@ public record SolicitaCadastroUsuarioDto(
         @NotBlank
         String bairro,
         @NotNull
-        Long municipioId,
+        UUID municipioId,
         @NotNull
         Integer cep
 ) {

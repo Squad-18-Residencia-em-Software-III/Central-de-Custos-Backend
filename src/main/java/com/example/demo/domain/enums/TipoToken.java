@@ -1,4 +1,4 @@
-package com.example.demo.domain.entities.solicitacoes;
+package com.example.demo.domain.enums;
 
 public enum TipoToken {
     PRIMEIRO_ACESSO,

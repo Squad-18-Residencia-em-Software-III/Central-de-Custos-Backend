@@ -2,7 +2,6 @@ package com.example.demo.infra.security.config;
 
 import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
-import com.example.demo.domain.entities.usuario.Genero;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.repositorios.EstruturaRepository;
@@ -62,9 +61,10 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setLogradouro("Rua Teste");
             usuario.setBairro("Teste");
             usuario.setCep(99999999);
-            usuario.setPrimeiroAcesso(false);
             usuario.setMunicipio(municipio);
 
+            usuarioRepository.save(usuario);
+            usuario.setPrimeiroAcesso(false);
             usuarioRepository.save(usuario);
             System.out.println("Usuário admin criado com sucesso.");
         } else {

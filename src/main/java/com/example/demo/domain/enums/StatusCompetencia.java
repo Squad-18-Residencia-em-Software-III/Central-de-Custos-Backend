@@ -1,4 +1,4 @@
-package com.example.demo.domain.entities.competencia;
+package com.example.demo.domain.enums;
 
 public enum StatusCompetencia {
     ABERTA,

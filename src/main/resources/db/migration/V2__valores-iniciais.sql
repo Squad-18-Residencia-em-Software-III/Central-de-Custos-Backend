@@ -1,17 +1,17 @@
 -- ========================
--- PERFIS
+-- perfil
 -- ========================
-INSERT INTO perfis (nome)
+INSERT INTO perfil (nome)
 SELECT 'ADMIN'
-WHERE NOT EXISTS (SELECT 1 FROM perfis WHERE nome = 'ADMIN');
+WHERE NOT EXISTS (SELECT 1 FROM perfil WHERE nome = 'ADMIN');
 
-INSERT INTO perfis (nome)
+INSERT INTO perfil (nome)
 SELECT 'RESPONSAVEL_SETOR'
-WHERE NOT EXISTS (SELECT 1 FROM perfis WHERE nome = 'RESPONSAVEL_SETOR');
+WHERE NOT EXISTS (SELECT 1 FROM perfil WHERE nome = 'RESPONSAVEL_SETOR');
 
-INSERT INTO perfis (nome)
+INSERT INTO perfil (nome)
 SELECT 'RH'
-WHERE NOT EXISTS (SELECT 1 FROM perfis WHERE nome = 'RH');
+WHERE NOT EXISTS (SELECT 1 FROM perfil WHERE nome = 'RH');
 
 -- ========================
 -- UF
@@ -23,25 +23,25 @@ WHERE NOT EXISTS (SELECT 1 FROM uf WHERE sigla = 'SE');
 -- ========================
 -- MUNICÍPIOS
 -- ========================
-INSERT INTO municipios (nome, uf_id, criado_em)
+INSERT INTO municipio (nome, uf_id, criado_em)
 SELECT 'Aracaju', u.id, NOW()
 FROM uf u
 WHERE u.sigla = 'SE'
 AND NOT EXISTS (
-    SELECT 1 FROM municipios m WHERE m.nome = 'Aracaju' AND m.uf_id = u.id
+    SELECT 1 FROM municipio m WHERE m.nome = 'Aracaju' AND m.uf_id = u.id
 );
 
 -- ========================
 -- CLASSIFICAÇÕES
 -- ========================
-INSERT INTO classificacoes (nome, criado_em)
+INSERT INTO classificacao (nome, criado_em)
 SELECT 'Secretaria', NOW()
-WHERE NOT EXISTS (SELECT 1 FROM classificacoes WHERE nome = 'Secretaria');
+WHERE NOT EXISTS (SELECT 1 FROM classificacao WHERE nome = 'Secretaria');
 
 -- ========================
 -- ESTRUTURA (Setor Raiz)
 -- ========================
-INSERT INTO estruturas (nome, classificacao_id, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
+INSERT INTO estrutura (nome, classificacao_id, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
 SELECT
     'SEED',
     c.id,
@@ -52,9 +52,9 @@ SELECT
     49040780,
     m.id,
     NOW()
-FROM classificacoes c
-JOIN municipios m ON m.nome = 'Aracaju'
+FROM classificacao c
+JOIN municipio m ON m.nome = 'Aracaju'
 WHERE c.nome = 'Secretaria'
 AND NOT EXISTS (
-    SELECT 1 FROM estruturas e WHERE e.nome = 'SEED'
+    SELECT 1 FROM estrutura e WHERE e.nome = 'SEED'
 );
