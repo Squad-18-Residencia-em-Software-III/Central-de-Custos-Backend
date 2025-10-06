@@ -1,3 +1,8 @@
+-- V1__init.sql
+-- ========================================
+-- SCHEMA INICIAL CONSOLIDADO
+-- ========================================
+
 create extension if not exists "pgcrypto";
 
 -- ============================
@@ -39,8 +44,6 @@ create table perfil (
 create table competencia (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
-    referencia date,
-    status varchar(50),
     data_abertura date not null,
     data_fechamento date not null
 );
@@ -54,12 +57,12 @@ create table estrutura (
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
     classificacao_id bigint not null references classificacao(id),
-    telefone varchar(50) not null,
+    telefone varchar(20) not null,
     logradouro varchar(255) not null,
     complemento varchar(255),
     numero_rua integer,
     bairro varchar(255) not null,
-    cep integer not null,
+    cep varchar(8) not null,
     municipio_id bigint not null references municipio(id),
     estrutura_pai_id bigint references estrutura(id),
     criado_em timestamp not null,
@@ -75,10 +78,11 @@ create table usuario (
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
     email varchar(255) not null,
-    telefone varchar(50) not null,
-    cpf varchar(20) not null unique,
+    telefone varchar(20) not null,
+    cpf varchar(11) not null unique,
     senha varchar(255) not null,
     genero varchar(50),
+    data_nascimento date not null,
     perfil_id bigint not null references perfil(id),
     estrutura_id bigint not null references estrutura(id),
     logradouro varchar(255) not null,
@@ -86,7 +90,7 @@ create table usuario (
     complemento varchar(255),
     bairro varchar(255) not null,
     municipio_id bigint not null references municipio(id),
-    cep integer not null,
+    cep varchar(8) not null,
     primeiro_acesso boolean not null,
     criado_em timestamp not null,
     atualizado_em timestamp
@@ -150,17 +154,18 @@ create table solicitacao_cadastro_usuario (
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
     email varchar(255) not null,
-    telefone varchar(50) not null,
-    cpf varchar(20) not null unique,
-    senha varchar(255) not null,
+    telefone varchar(20) not null,
+    cpf varchar(11) not null unique,
     genero varchar(50),
+    data_nascimento date not null,
     estrutura_id bigint not null references estrutura(id),
     logradouro varchar(255) not null,
     numero_rua integer,
     complemento varchar(255),
     bairro varchar(255) not null,
     municipio_id bigint not null references municipio(id),
-    cep integer not null,
+    cep varchar(8) not null,
+    status varchar(50) not null,
     criado_em timestamp not null
 );
 
@@ -175,6 +180,7 @@ create table solicitacao_interna (
     folha_pagamento_id bigint references folha_pagamento(id),
     combo_id bigint references combo(id),
     item_combo_id bigint references item_combo(id),
+    status varchar(50) not null,
     criado_em timestamp not null
 );
 
@@ -208,3 +214,55 @@ create table log_sistema (
     usuario_id bigint not null references usuario(id),
     atualizado_em timestamp not null
 );
+
+-- ============================
+-- DADOS INICIAIS
+-- ============================
+
+-- PERFIS
+INSERT INTO perfil (nome) VALUES ('ADMIN'), ('RESPONSAVEL_SETOR'), ('RH');
+
+-- UF
+INSERT INTO uf (nome, sigla, criado_em)
+SELECT 'Sergipe', 'SE', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM uf WHERE sigla = 'SE');
+
+-- MUNICÍPIO
+INSERT INTO municipio (nome, uf_id, criado_em)
+SELECT 'Aracaju', u.id, NOW()
+FROM uf u
+WHERE u.sigla = 'SE'
+AND NOT EXISTS (
+    SELECT 1 FROM municipio m WHERE m.nome = 'Aracaju' AND m.uf_id = u.id
+);
+
+-- CLASSIFICAÇÃO
+INSERT INTO classificacao (nome, criado_em)
+SELECT 'Secretaria', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM classificacao WHERE nome = 'Secretaria');
+
+-- ESTRUTURA RAIZ
+INSERT INTO estrutura (nome, classificacao_id, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
+SELECT
+    'SEED',
+    c.id,
+    '(79)3194-3367',
+    'Rua Gutemberg Chagas',
+    169,
+    'Inácio Barbosa',
+    '49040780',
+    m.id,
+    NOW()
+FROM classificacao c
+JOIN municipio m ON m.nome = 'Aracaju'
+WHERE c.nome = 'Secretaria'
+AND NOT EXISTS (
+    SELECT 1 FROM estrutura e WHERE e.nome = 'SEED'
+);
+
+-- COMPETÊNCIAS MENSAIS
+INSERT INTO competencia (data_abertura, data_fechamento)
+SELECT
+    date_trunc('month', d)::date as data_abertura,
+    (date_trunc('month', d) + interval '1 month - 1 day')::date as data_fechamento
+FROM generate_series('2025-01-01'::date, '2025-12-01'::date, interval '1 month') d;

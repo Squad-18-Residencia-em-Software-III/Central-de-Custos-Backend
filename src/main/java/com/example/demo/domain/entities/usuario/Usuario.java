@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +53,9 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Genero genero;
+
+    @Column(nullable = false)
+    private LocalDate dataNascimento;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "perfil_id", nullable = false)
