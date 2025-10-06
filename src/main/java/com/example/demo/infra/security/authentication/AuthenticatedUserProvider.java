@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticatedUserProvider {
-    public Usuario getAuthenticatedUser() {
+    public static Usuario getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) return null;

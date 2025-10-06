@@ -25,11 +25,6 @@ public class Competencia {
     @Column(nullable = false, unique = true, updatable = false)
     private UUID uuid = UUID.randomUUID();
 
-    private LocalDate referencia;
-
-    @Enumerated(EnumType.STRING)
-    private StatusCompetencia status;
-
     @Column(nullable = false)
     private LocalDate dataAbertura;
 
