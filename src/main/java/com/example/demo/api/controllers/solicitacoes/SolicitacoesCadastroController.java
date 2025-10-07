@@ -1,4 +1,4 @@
-package com.example.demo.api.controllers.usuario;
+package com.example.demo.api.controllers.solicitacoes;
 
 import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
