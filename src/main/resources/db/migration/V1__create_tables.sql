@@ -44,8 +44,9 @@ create table perfil (
 create table competencia (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
-    data_abertura date not null,
-    data_fechamento date not null
+    competencia varchar(7) not null,
+    data_abertura timestamp not null,
+    status varchar(20) not null
 );
 
 -- ============================
@@ -261,8 +262,17 @@ AND NOT EXISTS (
 );
 
 -- COMPETÊNCIAS MENSAIS
-INSERT INTO competencia (data_abertura, data_fechamento)
-SELECT
-    date_trunc('month', d)::date as data_abertura,
-    (date_trunc('month', d) + interval '1 month - 1 day')::date as data_fechamento
-FROM generate_series('2025-01-01'::date, '2025-12-01'::date, interval '1 month') d;
+insert into competencia (competencia, data_abertura, status)
+values
+    ('01/2025', now(), 'ABERTA'),
+    ('02/2025', now(), 'ABERTA'),
+    ('03/2025', now(), 'ABERTA'),
+    ('04/2025', now(), 'ABERTA'),
+    ('05/2025', now(), 'ABERTA'),
+    ('06/2025', now(), 'ABERTA'),
+    ('07/2025', now(), 'ABERTA'),
+    ('08/2025', now(), 'ABERTA'),
+    ('09/2025', now(), 'ABERTA'),
+    ('10/2025', now(), 'ABERTA'),
+    ('11/2025', now(), 'ABERTA'),
+    ('12/2025', now(), 'ABERTA');

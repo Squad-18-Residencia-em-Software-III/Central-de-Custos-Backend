@@ -7,6 +7,6 @@ public record ComboDto(
         UUID id,
         String nome,
         String estruturaNome,
-        LocalDate competencia
+        String competencia
 ) {
 }

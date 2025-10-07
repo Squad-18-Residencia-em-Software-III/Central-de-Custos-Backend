@@ -14,13 +14,7 @@ public interface ComboMapper {
 
     @Mapping(target = "id", source = "uuid")
     @Mapping(target = "estruturaNome", source = "estrutura.nome")
-    @Mapping(target = "competencia", source = "competencia")
+    @Mapping(target = "competencia", source = "competencia.competencia")
     ComboDto toDto(Combo combo);
-
-    default String map(Competencia competencia) {
-        if (competencia == null || competencia.getDataAbertura() == null) return null;
-        return competencia.getDataAbertura()
-                .format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("pt", "BR")));
-    }
 
 }
