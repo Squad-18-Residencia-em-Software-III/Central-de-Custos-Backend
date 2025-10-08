@@ -1,4 +1,4 @@
-package com.example.demo.domain.services;
+package com.example.demo.domain.services.usuario;
 
 import com.example.demo.domain.dto.security.AccessTokenDto;
 import com.example.demo.domain.dto.security.LoginDto;
@@ -12,10 +12,13 @@ import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.exceptions.SenhaInvalidaException;
 import com.example.demo.domain.mapper.UsuarioMapper;
 import com.example.demo.domain.repositorios.UsuarioRepository;
+import com.example.demo.domain.services.AuthService;
 import com.example.demo.domain.services.token.TokensService;
+import com.example.demo.domain.services.usuario.strategy.CriarUsuarioSolicitacaoStrategy;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SenhaValidator;
 import com.example.demo.domain.validations.UsuarioValidator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,8 +39,9 @@ public class UsuarioService {
     private final EstruturaValidator estruturaValidator;
     private final TokensService tokensService;
     private final AuthService authService;
+    private final List<CriarUsuarioSolicitacaoStrategy> criarUsuarioSolicitacaoStrategies;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, BCryptPasswordEncoder bCryptPasswordEncoder, UsuarioValidator usuarioValidator, EstruturaValidator estruturaValidator, TokensService tokensService, AuthService authService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, BCryptPasswordEncoder bCryptPasswordEncoder, UsuarioValidator usuarioValidator, EstruturaValidator estruturaValidator, TokensService tokensService, AuthService authService, List<CriarUsuarioSolicitacaoStrategy> criarUsuarioSolicitacaoStrategies) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -45,6 +49,7 @@ public class UsuarioService {
         this.estruturaValidator = estruturaValidator;
         this.tokensService = tokensService;
         this.authService = authService;
+        this.criarUsuarioSolicitacaoStrategies = criarUsuarioSolicitacaoStrategies;
     }
 
     @Transactional
@@ -52,23 +57,12 @@ public class UsuarioService {
         estruturaValidator.validarMunicipioExiste(solicitacao.getMunicipio().getUuid());
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(solicitacao.getEstrutura().getUuid());
 
-        Usuario novoUsuario = usuarioMapper.toEntity(solicitacao);
-        String rh = "RH";
-        String resonsavelSetor = "RESPONSAVEL_SETOR";
+        CriarUsuarioSolicitacaoStrategy strategy = criarUsuarioSolicitacaoStrategies.stream()
+                .filter(s -> s.possuiEstrutura(estrutura))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma implementação de usuario para a estrutura utilizada"));
 
-        if (estrutura.getNome().equals(rh)){
-            Perfil perfilRh = usuarioValidator.validaPerfilExisteNome(rh);
-            novoUsuario.setPerfil(perfilRh);
-
-        } else {
-            Perfil perfilResponsavelSetor = usuarioValidator.validaPerfilExisteNome(resonsavelSetor);
-            novoUsuario.setPerfil(perfilResponsavelSetor);
-        }
-
-        novoUsuario.setSenha(bCryptPasswordEncoder.encode(RandomStringUtils.secureStrong().nextAlphanumeric(5, 20)));
-
-        usuarioRepository.save(novoUsuario);
-        tokensService.criarToken(novoUsuario, TipoToken.PRIMEIRO_ACESSO); // cria token
+        strategy.criarUsuario(solicitacao);
     }
 
     @Transactional

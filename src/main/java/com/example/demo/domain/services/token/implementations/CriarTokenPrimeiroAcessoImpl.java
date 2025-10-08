@@ -5,6 +5,7 @@ import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.repositorios.TokensRepository;
 import com.example.demo.domain.services.token.strategy.CriarTokenStrategy;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class CriarTokenPrimeiroAcessoImpl implements CriarTokenStrategy {
     }
 
     @Override
+    @Transactional
     public String geraToken(Usuario usuario) {
         Tokens tokenPrimeiroAcesso = new Tokens();
         tokenPrimeiroAcesso.setToken(gerarToken());
