@@ -3,7 +3,7 @@ package com.example.demo.api.controllers.solicitacoes;
 import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.enums.StatusSolicitacao;
-import com.example.demo.domain.services.SolicitacoesCadastroService;
+import com.example.demo.domain.services.solicitacoes.cadastrousuario.SolicitacoesCadastroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;

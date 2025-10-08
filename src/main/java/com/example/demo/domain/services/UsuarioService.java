@@ -12,6 +12,7 @@ import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.exceptions.SenhaInvalidaException;
 import com.example.demo.domain.mapper.UsuarioMapper;
 import com.example.demo.domain.repositorios.UsuarioRepository;
+import com.example.demo.domain.services.token.TokensService;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SenhaValidator;
 import com.example.demo.domain.validations.UsuarioValidator;
@@ -67,7 +68,7 @@ public class UsuarioService {
         novoUsuario.setSenha(bCryptPasswordEncoder.encode(RandomStringUtils.secureStrong().nextAlphanumeric(5, 20)));
 
         usuarioRepository.save(novoUsuario);
-        tokensService.criarTokenPrimeiroAcesso(novoUsuario); // cria token
+        tokensService.criarToken(novoUsuario, TipoToken.PRIMEIRO_ACESSO); // cria token
     }
 
     @Transactional
@@ -92,7 +93,7 @@ public class UsuarioService {
 
     public void solicitaRecuperarSenha(String cpf){
         Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
-        tokensService.criarTokenRecuperarSenha(usuario); // cria token
+        tokensService.criarToken(usuario, TipoToken.RECUPERAR_SENHA); // cria token
     }
 
     @Transactional

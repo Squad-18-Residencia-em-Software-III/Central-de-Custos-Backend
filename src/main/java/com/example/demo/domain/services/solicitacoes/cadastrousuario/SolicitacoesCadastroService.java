@@ -1,4 +1,4 @@
-package com.example.demo.domain.services;
+package com.example.demo.domain.services.solicitacoes.cadastrousuario;
 
 import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
@@ -8,6 +8,7 @@ import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.mapper.SolicitacoesMapper;
 import com.example.demo.domain.repositorios.*;
+import com.example.demo.domain.services.UsuarioService;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SolicitacaoValidator;
 import jakarta.transaction.Transactional;
@@ -51,14 +52,12 @@ public class SolicitacoesCadastroService {
         solicitacaoCadastroRepository.save(solicitacao);
     }
 
-    // aprimorar busca
     public Page<CadastroUsuarioDto> listarSolicitacoesCadastro(int numeroPagina){
         Pageable pageable = PageRequest.of(numeroPagina - 1, 10);
         Page<SolicitacaoCadastroUsuario> solicitacoesCadastro = solicitacaoCadastroRepository.findAll(pageable);
         return solicitacoesCadastro.map(solicitacoesMapper::cadastroUsuarioToDto);
     }
 
-    // colocar validação
     public CadastroUsuarioDto visualizarSolicitacaoCadastro(UUID id){
         SolicitacaoCadastroUsuario solicitacao = solicitacaoValidator.validaSolicitacaoCadastroExiste(id);
         return solicitacoesMapper.cadastroUsuarioToDto(solicitacao);
