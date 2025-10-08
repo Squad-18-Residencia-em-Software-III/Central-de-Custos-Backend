@@ -9,6 +9,7 @@ import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.mapper.SolicitacoesMapper;
 import com.example.demo.domain.repositorios.*;
 import com.example.demo.domain.services.solicitacoes.cadastrousuario.strategy.AceitarSolicitacaoCadastroStrategy;
+import com.example.demo.domain.services.solicitacoes.factory.SolicitacaoFactory;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SolicitacaoValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,14 +31,14 @@ public class SolicitacoesCadastroService {
     private final EstruturaValidator estruturaValidator;
     private final SolicitacaoValidator solicitacaoValidator;
     private final SolicitacoesMapper solicitacoesMapper;
-    private final List<AceitarSolicitacaoCadastroStrategy> aceitarSolicitacaoCadastroStrategies;
+    private final SolicitacaoFactory solicitacaoFactory;
 
-    public SolicitacoesCadastroService(SolicitacaoCadastroUsuarioRepository solicitacaoRepository, EstruturaValidator estruturaValidator, SolicitacaoValidator solicitacaoValidator, SolicitacoesMapper solicitacoesMapper, List<AceitarSolicitacaoCadastroStrategy> aceitarSolicitacaoCadastroStrategies) {
+    public SolicitacoesCadastroService(SolicitacaoCadastroUsuarioRepository solicitacaoRepository, EstruturaValidator estruturaValidator, SolicitacaoValidator solicitacaoValidator, SolicitacoesMapper solicitacoesMapper, SolicitacaoFactory solicitacaoFactory) {
         this.solicitacaoCadastroRepository = solicitacaoRepository;
         this.estruturaValidator = estruturaValidator;
         this.solicitacaoValidator = solicitacaoValidator;
         this.solicitacoesMapper = solicitacoesMapper;
-        this.aceitarSolicitacaoCadastroStrategies = aceitarSolicitacaoCadastroStrategies;
+        this.solicitacaoFactory = solicitacaoFactory;
     }
 
     @Transactional
@@ -68,13 +69,7 @@ public class SolicitacoesCadastroService {
     public void aprovarOuReprovarSolicitacaoCadastro(UUID solicitacaoId, StatusSolicitacao statusSolicitacao){
         SolicitacaoCadastroUsuario solicitacao = solicitacaoValidator.validaSolicitacaoCadastroExiste(solicitacaoId);
         solicitacaoValidator.validaSolicitacaoCadastroPendente(solicitacao);
-
-        AceitarSolicitacaoCadastroStrategy strategy = aceitarSolicitacaoCadastroStrategies.stream()
-                .filter(s -> s.statusSolicitacao(statusSolicitacao))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Nenhuma implementação de aceite para a status utilizado"));
-
-        strategy.realiza(solicitacao);
+        solicitacaoFactory.solicitacaoCadastroStatus(statusSolicitacao).realiza(solicitacao);
     }
 
 

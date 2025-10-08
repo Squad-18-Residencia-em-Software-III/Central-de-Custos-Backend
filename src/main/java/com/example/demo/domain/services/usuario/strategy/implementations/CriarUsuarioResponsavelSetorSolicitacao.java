@@ -1,4 +1,4 @@
-package com.example.demo.domain.services.usuario.implementations;
+package com.example.demo.domain.services.usuario.strategy.implementations;
 
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
@@ -32,8 +32,8 @@ public class CriarUsuarioResponsavelSetorSolicitacao implements CriarUsuarioSoli
     }
 
     @Override
-    public boolean possuiEstrutura(Estrutura estrutura) {
-        return !"RH".equalsIgnoreCase(estrutura.getNome());
+    public String getEstrutura() {
+        return "DEFAULT";
     }
 
     @Override

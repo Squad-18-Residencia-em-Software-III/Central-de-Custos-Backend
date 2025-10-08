@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record SolicitaCadastroUsuarioDto(
@@ -20,6 +21,8 @@ public record SolicitaCadastroUsuarioDto(
         @CPF
         String cpf,
         Genero genero,
+        @NotNull
+        LocalDate dataNascimento,
         @NotNull
         UUID estruturaId,
         @NotBlank

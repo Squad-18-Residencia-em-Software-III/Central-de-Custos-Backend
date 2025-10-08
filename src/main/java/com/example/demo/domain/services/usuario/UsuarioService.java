@@ -32,78 +32,30 @@ import java.util.List;
 @Slf4j
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
-    private final UsuarioMapper usuarioMapper;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UsuarioValidator usuarioValidator;
-    private final EstruturaValidator estruturaValidator;
     private final TokensService tokensService;
-    private final AuthService authService;
-    private final List<CriarUsuarioSolicitacaoStrategy> criarUsuarioSolicitacaoStrategies;
+    private final UsuarioSenhaService usuarioSenhaService;
+    private final UsuarioCriarService usuarioCriarService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, BCryptPasswordEncoder bCryptPasswordEncoder, UsuarioValidator usuarioValidator, EstruturaValidator estruturaValidator, TokensService tokensService, AuthService authService, List<CriarUsuarioSolicitacaoStrategy> criarUsuarioSolicitacaoStrategies) {
-        this.usuarioRepository = usuarioRepository;
-        this.usuarioMapper = usuarioMapper;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public UsuarioService(UsuarioValidator usuarioValidator, TokensService tokensService, UsuarioSenhaService usuarioSenhaService, UsuarioCriarService usuarioCriarService) {
         this.usuarioValidator = usuarioValidator;
-        this.estruturaValidator = estruturaValidator;
         this.tokensService = tokensService;
-        this.authService = authService;
-        this.criarUsuarioSolicitacaoStrategies = criarUsuarioSolicitacaoStrategies;
+        this.usuarioSenhaService = usuarioSenhaService;
+        this.usuarioCriarService = usuarioCriarService;
     }
 
     @Transactional
     public void criarUsuarioSolicitacaoCadastro(SolicitacaoCadastroUsuario solicitacao){
-        estruturaValidator.validarMunicipioExiste(solicitacao.getMunicipio().getUuid());
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(solicitacao.getEstrutura().getUuid());
-
-        CriarUsuarioSolicitacaoStrategy strategy = criarUsuarioSolicitacaoStrategies.stream()
-                .filter(s -> s.possuiEstrutura(estrutura))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Nenhuma implementação de usuario para a estrutura utilizada"));
-
-        strategy.criarUsuario(solicitacao);
+        usuarioCriarService.criarUsuarioSolicitacaoCadastro(solicitacao);
     }
 
     @Transactional
-    public AccessTokenDto defineNovaSenhaUsuario(String codigoToken, String cpf, NovaSenhaDto senhaDto){ //param
-        Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
-        Tokens token = tokensService.validarToken(codigoToken, cpf, TipoToken.PRIMEIRO_ACESSO);
-
-        SenhaValidator.validarSenhaConfirma(senhaDto);
-        List<String> errosSenha = SenhaValidator.verificarSenha(senhaDto.senha());
-        if (!errosSenha.isEmpty()) {
-            throw new SenhaInvalidaException(errosSenha);
-        }
-
-        usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
-        usuario.setPrimeiroAcesso(false);
-        usuarioRepository.save(usuario);
-        log.info("PRIMEIRO_ACESSO: Senha do usuario {} alterada com sucesso", usuario.getUuid());
-        tokensService.deletarToken(token);
-
-        return authService.login(new LoginDto(cpf, senhaDto.senha()));
+    public AccessTokenDto defineNovaSenhaUsuario(String codigoToken, String cpf, NovaSenhaDto senhaDto){
+        return usuarioSenhaService.definirSenha(codigoToken, cpf, senhaDto);
     }
 
     public void solicitaRecuperarSenha(String cpf){
         Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
         tokensService.criarToken(usuario, TipoToken.RECUPERAR_SENHA); // cria token
-    }
-
-    @Transactional
-    public void defineSenhaRecuperarUsuario(String codigoToken, String cpf, NovaSenhaDto senhaDto){
-        Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
-        Tokens token = tokensService.validarToken(codigoToken, cpf, TipoToken.RECUPERAR_SENHA);
-
-        SenhaValidator.validarSenhaConfirma(senhaDto);
-        List<String> errosSenha = SenhaValidator.verificarSenha(senhaDto.senha());
-        if (!errosSenha.isEmpty()) {
-            throw new SenhaInvalidaException(errosSenha);
-        }
-
-        usuario.setSenha(bCryptPasswordEncoder.encode(senhaDto.senha()));
-        usuarioRepository.save(usuario);
-        log.info("RECUPERAÇÃO: Senha do usuario {} alterada com sucesso", usuario.getUuid());
-        tokensService.deletarToken(token);
     }
 }

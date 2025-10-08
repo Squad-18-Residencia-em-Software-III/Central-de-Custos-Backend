@@ -32,11 +32,10 @@ public class TokensService {
         return tokenFactory.criarToken(tipoToken).geraToken(usuario);
     }
 
-    public Tokens validarToken(String codigoToken, String cpf, TipoToken tipoToken){
+    public Tokens validarToken(String codigoToken, String cpf){
         usuarioValidator.validaUsuarioExisteCpf(cpf);
         Tokens token = tokenValidator.validaTokenExiste(codigoToken);
         tokenValidator.validaTokenExpirado(token);
-        tokenValidator.validaTipoToken(token, tipoToken);
         log.info("Token {} válido", codigoToken);
         return token;
     }

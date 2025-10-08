@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Configuration
 public class DefaultAdminConfig implements CommandLineRunner {
 
@@ -62,6 +64,7 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setBairro("Teste");
             usuario.setCep(99999999);
             usuario.setMunicipio(municipio);
+            usuario.setDataNascimento(LocalDate.of(2000, 7, 21));
 
             usuarioRepository.save(usuario);
             usuario.setPrimeiroAcesso(false);

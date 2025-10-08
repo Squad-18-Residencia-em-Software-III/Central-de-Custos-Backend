@@ -7,6 +7,6 @@ public interface AceitarSolicitacaoCadastroStrategy {
 
     void realiza(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
 
-    boolean statusSolicitacao(StatusSolicitacao solicitacao);
+    StatusSolicitacao getStatus();
 
 }

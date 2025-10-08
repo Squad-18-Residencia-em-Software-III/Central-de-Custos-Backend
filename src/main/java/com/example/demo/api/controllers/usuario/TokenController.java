@@ -26,9 +26,8 @@ public class TokenController {
     @SecurityRequirements()
     @PostMapping("/validar")
     public ResponseEntity<Void> validarTokenPrimeiroAcesso(@RequestParam(name = "token") String token,
-                                                           @RequestParam(name = "tipo") TipoToken tipoToken,
                                                            @Valid @RequestBody CpfDto cpfDto){
-        tokensService.validarToken(token, cpfDto.cpf(), tipoToken);
+        tokensService.validarToken(token, cpfDto.cpf());
         return ResponseEntity.ok().build();
     }
 }

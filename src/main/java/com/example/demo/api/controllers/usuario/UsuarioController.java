@@ -52,7 +52,7 @@ public class UsuarioController {
     public ResponseEntity<AccessTokenDto> definirRecuperarSenha(@RequestParam(name = "token") String token,
                                                                @RequestParam(name = "cpf") String cpf,
                                                                @Valid @RequestBody NovaSenhaDto dto) {
-        usuarioService.defineSenhaRecuperarUsuario(token, cpf, dto);
+        usuarioService.defineNovaSenhaUsuario(token, cpf, dto);
         return ResponseEntity.ok().build();
     }
 }
