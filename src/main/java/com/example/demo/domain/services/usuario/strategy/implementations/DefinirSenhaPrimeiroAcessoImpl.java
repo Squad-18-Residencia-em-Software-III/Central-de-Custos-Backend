@@ -4,7 +4,6 @@ import com.example.demo.domain.dto.usuario.NovaSenhaDto;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.exceptions.SenhaInvalidaException;
-import com.example.demo.domain.repositorios.UsuarioRepository;
 import com.example.demo.domain.services.usuario.strategy.DefinirSenhaUsuarioStrategy;
 import com.example.demo.domain.validations.SenhaValidator;
 import lombok.extern.slf4j.Slf4j;

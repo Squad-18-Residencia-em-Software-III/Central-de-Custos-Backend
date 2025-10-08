@@ -1,6 +1,5 @@
 package com.example.demo.domain.services.usuario.strategy.implementations;
 
-import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;

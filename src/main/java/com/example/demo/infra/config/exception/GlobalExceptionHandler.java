@@ -2,6 +2,7 @@ package com.example.demo.infra.config.exception;
 
 import com.example.demo.domain.dto.exceptions.CamposErros;
 import com.example.demo.domain.dto.exceptions.RespostaErro;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.exceptions.SenhaInvalidaException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EntityNotFoundException;
@@ -72,6 +73,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RespostaErro handleMethodBadCredentialsException(BadCredentialsException e){
         return RespostaErro.forbbiden(e.getMessage());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public RespostaErro handleMethodBusinessException(BusinessException e){
+        return RespostaErro.unauthorized(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

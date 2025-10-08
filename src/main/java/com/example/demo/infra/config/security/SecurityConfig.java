@@ -107,6 +107,10 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/item/buscar").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.DELETE, "/item/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->

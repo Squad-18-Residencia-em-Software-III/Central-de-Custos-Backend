@@ -1,13 +1,10 @@
 package com.example.demo.api.controllers.combo;
 
 import com.example.demo.domain.dto.combos.ComboDto;
-import com.example.demo.domain.services.ComboService;
+import com.example.demo.domain.services.combo.ComboService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -21,12 +18,12 @@ public class ComboController {
         this.comboService = comboService;
     }
 
-    @GetMapping("/buscar")
+    @GetMapping("/buscar/{id}")
     public ResponseEntity<Page<ComboDto>> buscarCombos(
             @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(name = "competencia", required = false) UUID competenciaId,
             @RequestParam(name = "nome", required = false) String nome,
-            @RequestParam(name = "estrutura") UUID estruturaId
+            @PathVariable UUID estruturaId
             ){
         return ResponseEntity.ok(comboService.buscarCombos(pageNumber, competenciaId, estruturaId, nome));
     }

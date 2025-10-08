@@ -104,8 +104,8 @@ create table usuario (
 create table item_combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
-    nome varchar(255) not null,
-    estrutura_id bigint references estrutura(id),
+    nome varchar(255) unique not null,
+    --estrutura_id bigint references estrutura(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );

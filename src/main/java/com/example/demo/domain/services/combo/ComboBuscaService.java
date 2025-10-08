@@ -1,4 +1,4 @@
-package com.example.demo.domain.services;
+package com.example.demo.domain.services.combo;
 
 import com.example.demo.domain.dto.combos.ComboDto;
 import com.example.demo.domain.entities.combos.Combo;
@@ -7,7 +7,6 @@ import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.mapper.ComboMapper;
 import com.example.demo.domain.repositorios.ComboRepository;
-import com.example.demo.domain.repositorios.CompetenciaRepository;
 import com.example.demo.domain.repositorios.specs.ComboSpecs;
 import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
@@ -18,48 +17,41 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
-
 @Service
-public class ComboService {
+public class ComboBuscaService {
 
     private final ComboRepository comboRepository;
     private final ComboValidator comboValidator;
     private final ComboMapper comboMapper;
     private final EstruturaValidator estruturaValidator;
-    private final CompetenciaRepository competenciaRepository;
 
-    public ComboService(ComboRepository comboRepository, ComboValidator comboValidator, ComboMapper comboMapper, EstruturaValidator estruturaValidator, CompetenciaRepository competenciaRepository) {
+    public ComboBuscaService(ComboRepository comboRepository, ComboValidator comboValidator, ComboMapper comboMapper, EstruturaValidator estruturaValidator) {
         this.comboRepository = comboRepository;
         this.comboValidator = comboValidator;
         this.comboMapper = comboMapper;
         this.estruturaValidator = estruturaValidator;
-        this.competenciaRepository = competenciaRepository;
     }
 
     public Page<ComboDto> buscarCombos(int pageNumber, UUID competenciaId, UUID estruturaId, String nome) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
-        Pageable pageable = PageRequest.of(pageNumber - 1, 6);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
 
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
         comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
 
-        Competencia competencia;
-        if (competenciaId != null) {
-            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
-        } else {
-            competencia = competenciaRepository.findByDataAbertura(LocalDate.now());
-        }
-
         Specification<Combo> spec = Specification.allOf(
-                ComboSpecs.competenciaEqual(competencia),
                 ComboSpecs.estruturaEqual(estrutura)
         );
 
         if (nome != null && !nome.isBlank()) {
             spec = spec.and(ComboSpecs.comNomeContendo(nome));
+        }
+
+        if (competenciaId != null){
+            Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+            spec = spec.and(ComboSpecs.competenciaEqual(competencia));
         }
 
         Page<Combo> combos = comboRepository.findAll(spec, pageable);

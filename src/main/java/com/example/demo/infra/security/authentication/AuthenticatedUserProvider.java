@@ -1,13 +1,23 @@
 package com.example.demo.infra.security.authentication;
 
 import com.example.demo.domain.entities.usuario.Usuario;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticatedUserProvider {
-    public static Usuario getAuthenticatedUser() {
+
+    public static Usuario getAuthenticatedUser(){
+        Usuario usuario = findAuthenticatedUser();
+        if (usuario == null){
+            throw new EntityNotFoundException("Nenhum usuario logado");
+        }
+        return usuario;
+    }
+
+    public static Usuario findAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) return null;

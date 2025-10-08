@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.combos;
 
-import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,12 +28,8 @@ public class ItemCombo {
     @Column(nullable = false, unique = true, updatable = false)
     private UUID uuid = UUID.randomUUID();
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nome;
-
-    @ManyToOne
-    @JoinColumn(name = "estrutura_id")
-    private Estrutura estrutura;
 
     @CreatedDate
     @Column(nullable = false)
