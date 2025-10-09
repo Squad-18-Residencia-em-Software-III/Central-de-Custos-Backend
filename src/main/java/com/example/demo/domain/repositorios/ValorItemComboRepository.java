@@ -2,6 +2,7 @@ package com.example.demo.domain.repositorios;
 
 import com.example.demo.domain.dto.combos.item.ItemComboDto;
 import com.example.demo.domain.entities.combos.Combo;
+import com.example.demo.domain.entities.combos.ItemCombo;
 import com.example.demo.domain.entities.combos.ValorItemCombo;
 import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, Long> {
 
@@ -34,4 +36,6 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
             @Param("estrutura") Estrutura estrutura,
             @Param("competencia") Competencia competencia
     );
+
+    Optional<ValorItemCombo> findByEstruturaAndComboAndItemComboAndCompetencia(Estrutura estrutura, Combo combo, ItemCombo itemCombo, Competencia competencia);
 }

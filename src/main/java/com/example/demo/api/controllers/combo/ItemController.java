@@ -1,10 +1,7 @@
 package com.example.demo.api.controllers.combo;
 
 import com.example.demo.domain.dto.combos.ComboDto;
-import com.example.demo.domain.dto.combos.item.CriarItemDto;
-import com.example.demo.domain.dto.combos.item.EditarItemDto;
-import com.example.demo.domain.dto.combos.item.ItemComboDto;
-import com.example.demo.domain.dto.combos.item.ItemDto;
+import com.example.demo.domain.dto.combos.item.*;
 import com.example.demo.domain.services.item.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -56,6 +53,16 @@ public class ItemController {
             @RequestParam(name = "estrutura") UUID estruturaUuid,
             @RequestParam(name = "competencia", required = false) UUID competenciaUuid){
         return ResponseEntity.ok(itemService.buscarItensCombo(comboUuid, estruturaUuid, competenciaUuid));
+    }
+
+    @Operation(
+            summary = "Inserir valor ao item do combo",
+            description = "Endpoint utilizado para inserir um valor ao determinado item do combo de uma estrutura",
+            tags = "Itens")
+    @PostMapping("/combo/inserirValor")
+    public ResponseEntity<List<ItemComboDto>> inserirValor(@Valid @RequestBody InserirValorItemDto dto){
+        itemService.inserirValor(dto);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(

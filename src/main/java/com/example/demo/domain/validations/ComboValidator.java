@@ -4,6 +4,8 @@ import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.StatusCompetencia;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.ComboRepository;
 import com.example.demo.domain.repositorios.CompetenciaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -57,6 +59,12 @@ public class ComboValidator {
     public Competencia validarCompetenciaExiste(UUID competenciaId){
         return competenciaRepository.findByUuid(competenciaId)
                 .orElseThrow(() -> new EntityNotFoundException("Competencia inválida ou inexistente"));
+    }
+
+    public void validarCompetenciaAberta(Competencia competencia){
+        if (!competencia.getStatusCompetencia().equals(StatusCompetencia.ABERTA)){
+            throw new BusinessException("A competencia está fechada, por tanto, não será possível inserir um valor");
+        }
     }
 
 }

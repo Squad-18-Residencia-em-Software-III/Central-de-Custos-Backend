@@ -1,9 +1,6 @@
 package com.example.demo.domain.services.item;
 
-import com.example.demo.domain.dto.combos.item.CriarItemDto;
-import com.example.demo.domain.dto.combos.item.EditarItemDto;
-import com.example.demo.domain.dto.combos.item.ItemComboDto;
-import com.example.demo.domain.dto.combos.item.ItemDto;
+import com.example.demo.domain.dto.combos.item.*;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -16,10 +13,12 @@ public class ItemService {
 
     private final ItemBuscarService itemBuscarService;
     private final ItemCriarService itemCriarService;
+    private final ItemValorService itemValorService;
 
-    public ItemService(ItemBuscarService itemBuscarService, ItemCriarService itemCriarService) {
+    public ItemService(ItemBuscarService itemBuscarService, ItemCriarService itemCriarService, ItemValorService itemValorService) {
         this.itemBuscarService = itemBuscarService;
         this.itemCriarService = itemCriarService;
+        this.itemValorService = itemValorService;
     }
 
     public Page<ItemDto> buscarItens(int pageNumber, String nome){
@@ -47,5 +46,10 @@ public class ItemService {
     @Transactional
     public void editarItem(UUID itemId, EditarItemDto dto){
         itemCriarService.editarItem(itemId, dto);
+    }
+
+    @Transactional
+    public void inserirValor(InserirValorItemDto dto){
+        itemValorService.inserirValor(dto);
     }
 }
