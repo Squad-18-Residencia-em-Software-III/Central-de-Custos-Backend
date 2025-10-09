@@ -30,7 +30,7 @@ public class Competencia {
     private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false, unique = true)
-    private String competencia;
+    private LocalDate competencia;
 
     @CreatedDate
     @Column(nullable = false)

@@ -1,6 +1,8 @@
 package com.example.demo.domain.entities.estrutura;
 
 import com.example.demo.domain.entities.Municipio;
+import com.example.demo.domain.entities.combos.Combo;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -36,9 +38,9 @@ public class Estrutura {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "classificacao_id", nullable = false)
-    private Classificacao classificacao;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ClassificacaoEstrutura classificacaoEstrutura;
 
     @Column(nullable = false)
     private String telefone;
@@ -71,6 +73,9 @@ public class Estrutura {
     @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL)
     @JsonManagedReference // evita loop infinito no JSON
     private List<Estrutura> subSetores = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "estruturas")
+    private List<Combo> combos;
 
     @CreatedDate
     @Column(nullable = false)

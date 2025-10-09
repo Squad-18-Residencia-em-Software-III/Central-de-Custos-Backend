@@ -35,9 +35,13 @@ public class Combo {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToOne
-    @JoinColumn(name = "estrutura_id", nullable = false)
-    private Estrutura estrutura;
+    @ManyToMany
+    @JoinTable(
+            name = "combo_estrutura",
+            joinColumns = @JoinColumn(name = "combo_id"),
+            inverseJoinColumns = @JoinColumn(name = "estrutura_id")
+    )
+    private List<Estrutura> estruturas = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -46,10 +50,6 @@ public class Combo {
             inverseJoinColumns = @JoinColumn(name = "item_combo_id")
     )
     private List<ItemCombo> itens = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "competencia_id", nullable = false)
-    private Competencia competencia;
 
     @CreatedDate
     @Column(nullable = false)

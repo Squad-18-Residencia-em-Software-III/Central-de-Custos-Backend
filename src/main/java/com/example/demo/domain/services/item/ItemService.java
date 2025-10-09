@@ -2,6 +2,7 @@ package com.example.demo.domain.services.item;
 
 import com.example.demo.domain.dto.combos.item.CriarItemDto;
 import com.example.demo.domain.dto.combos.item.EditarItemDto;
+import com.example.demo.domain.dto.combos.item.ItemComboDto;
 import com.example.demo.domain.dto.combos.item.ItemDto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,8 @@ public class ItemService {
         return itemBuscarService.buscarItens(pageNumber, nome);
     }
 
-    public List<ItemDto> buscarItensCombo(UUID comboId){
-        return itemBuscarService.buscarItensCombo(comboId);
+    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId, UUID competenciaId){
+        return itemBuscarService.buscarItensCombo(comboId, estruturaId, competenciaId);
     }
 
     public ItemDto buscarItem(UUID itemId){

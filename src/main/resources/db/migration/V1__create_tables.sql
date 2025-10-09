@@ -27,14 +27,6 @@ create table municipio (
     atualizado_em timestamp
 );
 
-create table classificacao (
-    id bigserial primary key,
-    uuid uuid not null unique default gen_random_uuid(),
-    nome varchar(100) not null,
-    criado_em timestamp not null,
-    atualizado_em timestamp
-);
-
 create table perfil (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
@@ -44,7 +36,7 @@ create table perfil (
 create table competencia (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
-    competencia varchar(7) not null,
+    competencia date not null,
     data_abertura timestamp not null,
     status varchar(20) not null
 );
@@ -57,7 +49,7 @@ create table estrutura (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
-    classificacao_id bigint not null references classificacao(id),
+    classificacao varchar(50) not null,
     telefone varchar(20) not null,
     logradouro varchar(255) not null,
     complemento varchar(255),
@@ -115,7 +107,6 @@ create table combo (
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
     estrutura_id bigint not null references estrutura(id),
-    competencia_id bigint not null references competencia(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );
@@ -126,12 +117,20 @@ create table combo_item_combo (
     primary key (combo_id, item_combo_id)
 );
 
+create table combo_estrutura (
+    combo_id bigint not null references combo(id),
+    estrutura_id bigint not null references estrutura(id),
+    primary key (combo_id, estrutura_id)
+);
+
 create table valor_item_combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     valor numeric(19,2) not null,
     combo_id bigint not null references combo(id),
+    estrutura_id bigint not null references estrutura(id),
     item_combo_id bigint not null references item_combo(id),
+    competencia_id bigint not null references competencia(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );
@@ -237,11 +236,6 @@ AND NOT EXISTS (
     SELECT 1 FROM municipio m WHERE m.nome = 'Aracaju' AND m.uf_id = u.id
 );
 
--- CLASSIFICAÇÃO
-INSERT INTO classificacao (nome, criado_em)
-SELECT 'Secretaria', NOW()
-WHERE NOT EXISTS (SELECT 1 FROM classificacao WHERE nome = 'Secretaria');
-
 -- ESTRUTURA RAIZ
 INSERT INTO estrutura (nome, classificacao_id, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
 SELECT
@@ -264,15 +258,15 @@ AND NOT EXISTS (
 -- COMPETÊNCIAS MENSAIS
 insert into competencia (competencia, data_abertura, status)
 values
-    ('01/2025', now(), 'ABERTA'),
-    ('02/2025', now(), 'ABERTA'),
-    ('03/2025', now(), 'ABERTA'),
-    ('04/2025', now(), 'ABERTA'),
-    ('05/2025', now(), 'ABERTA'),
-    ('06/2025', now(), 'ABERTA'),
-    ('07/2025', now(), 'ABERTA'),
-    ('08/2025', now(), 'ABERTA'),
-    ('09/2025', now(), 'ABERTA'),
-    ('10/2025', now(), 'ABERTA'),
-    ('11/2025', now(), 'ABERTA'),
-    ('12/2025', now(), 'ABERTA');
+    ('2025-01-01', now(), 'ABERTA'),
+    ('2025-02-01', now(), 'ABERTA'),
+    ('2025-03-01', now(), 'ABERTA'),
+    ('2025-04-01', now(), 'ABERTA'),
+    ('2025-05-01', now(), 'ABERTA'),
+    ('2025-06-01', now(), 'ABERTA'),
+    ('2025-07-01', now(), 'ABERTA'),
+    ('2025-08-01', now(), 'ABERTA'),
+    ('2025-09-01', now(), 'ABERTA'),
+    ('2025-10-01', now(), 'ABERTA'),
+    ('2025-11-01', now(), 'ABERTA'),
+    ('2025-12-01', now(), 'ABERTA');

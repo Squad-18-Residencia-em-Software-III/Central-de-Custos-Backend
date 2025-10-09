@@ -3,6 +3,7 @@ package com.example.demo.api.controllers.combo;
 import com.example.demo.domain.dto.combos.ComboDto;
 import com.example.demo.domain.dto.combos.item.CriarItemDto;
 import com.example.demo.domain.dto.combos.item.EditarItemDto;
+import com.example.demo.domain.dto.combos.item.ItemComboDto;
 import com.example.demo.domain.dto.combos.item.ItemDto;
 import com.example.demo.domain.services.item.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,8 +51,11 @@ public class ItemController {
             description = "Retorna informações dos itens do combo",
             tags = "Itens")
     @GetMapping("/combo/{id}")
-    public ResponseEntity<List<ItemDto>> buscarItemCombo(@PathVariable UUID id){
-        return ResponseEntity.ok(itemService.buscarItensCombo(id));
+    public ResponseEntity<List<ItemComboDto>> buscarItemCombo(
+            @PathVariable UUID comboUuid,
+            @RequestParam(name = "estrutura") UUID estruturaUuid,
+            @RequestParam(name = "competencia", required = false) UUID competenciaUuid){
+        return ResponseEntity.ok(itemService.buscarItensCombo(comboUuid, estruturaUuid, competenciaUuid));
     }
 
     @Operation(

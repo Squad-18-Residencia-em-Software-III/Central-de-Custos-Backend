@@ -28,14 +28,30 @@ public class ComboValidator {
                 .orElseThrow(() -> new EntityNotFoundException("Combo inválido ou inexistente"));
     }
 
-    public void validarAcessoBuscarCombos(Usuario usuario, Estrutura estrutura) {
-        boolean isAdmin = usuario.getPerfil().getNome().equals("ADMIN");
-        boolean mesmaEstrutura = usuario.getEstrutura().equals(estrutura);
-        boolean subSetor = usuario.getEstrutura().getSubSetores().contains(estrutura);
+    public void validarAcessoBuscarCombos(Usuario usuario, Estrutura estruturaCombo) {
+        Estrutura estruturaUsuario = usuario.getEstrutura();
 
-        if (!(isAdmin || mesmaEstrutura || subSetor)) {
+        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+        boolean mesmaEstrutura = estruturaUsuario.equals(estruturaCombo);
+        boolean contemNosSubSetores = contemSubSetorRecursivo(estruturaUsuario, estruturaCombo);
+
+        // Se NÃO for admin, e NÃO for a mesma estrutura, e NÃO estiver nos subsetores, então nega
+        if (!isAdmin && !mesmaEstrutura && !contemNosSubSetores) {
             throw new AccessDeniedException("Busca não permitida");
         }
+    }
+
+    private boolean contemSubSetorRecursivo(Estrutura estruturaPai, Estrutura estruturaProcurada) {
+        if (estruturaPai.getSubSetores() == null || estruturaPai.getSubSetores().isEmpty()) {
+            return false;
+        }
+
+        for (Estrutura sub : estruturaPai.getSubSetores()) {
+            if (sub.equals(estruturaProcurada) || contemSubSetorRecursivo(sub, estruturaProcurada)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Competencia validarCompetenciaExiste(UUID competenciaId){

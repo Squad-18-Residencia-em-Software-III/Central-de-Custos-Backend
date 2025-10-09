@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface ComboMapper {
 
     @Mapping(target = "id", source = "uuid")
-    @Mapping(target = "estruturaNome", source = "estrutura.nome")
     @Mapping(target = "competencia", source = "competencia.competencia")
     ComboDto toDto(Combo combo);
 

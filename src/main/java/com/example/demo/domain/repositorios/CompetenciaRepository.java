@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface CompetenciaRepository extends JpaRepository<Competencia, Long> {
     Optional<Competencia> findByUuid(UUID competenciaId);
 
-    Competencia findByDataAbertura(LocalDate now);
+    Optional<Competencia> findByCompetencia(LocalDate hoje);
 }

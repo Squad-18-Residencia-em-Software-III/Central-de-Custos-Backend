@@ -1,5 +1,6 @@
 package com.example.demo.domain.entities.combos;
 
+import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,10 @@ public class ValorItemCombo {
     @ManyToOne
     @JoinColumn(name = "combo_id", nullable = false)
     private Combo combo;
+
+    @ManyToOne
+    @JoinColumn(name = "estrutura_id", nullable = false)
+    private Estrutura estrutura;
 
     @ManyToOne
     @JoinColumn(name = "item_combo_id", nullable = false)
