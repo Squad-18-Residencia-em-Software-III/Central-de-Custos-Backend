@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record ItemComboDto(
-        UUID itemId,
-        String itemNome,
+        UUID itemUuid,
+        String nome,
         BigDecimal valor,
-        UUID valorId
+        UUID valorItemUuid
 ) {}

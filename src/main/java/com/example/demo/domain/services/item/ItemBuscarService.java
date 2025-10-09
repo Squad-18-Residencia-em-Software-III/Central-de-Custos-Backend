@@ -48,32 +48,17 @@ public class ItemBuscarService {
         this.valorItemComboRepository = valorItemComboRepository;
     }
 
-    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId, UUID competenciaId){
+    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId, UUID competenciaId) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
         Combo combo = comboValidator.validarComboExiste(comboId);
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
         comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
 
-        Specification<ValorItemCombo> spec = Specification
-                .allOf(ValorItemSpecs.doCombo(combo))
-                .and(ValorItemSpecs.daEstrutura(estrutura));
+        Competencia competencia = competenciaId != null
+                ? comboValidator.validarCompetenciaExiste(competenciaId)
+                : competenciaService.getCompetenciaAtual();
 
-        Competencia competencia;
-        if (competenciaId != null){
-            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
-        } else {
-            competencia = competenciaService.getCompetenciaAtual();
-        }
-        spec.and(ValorItemSpecs.daCompetencia(competencia));
-
-        return valorItemComboRepository.findAll(spec).stream()
-                .map(v -> new ItemComboDto(
-                        v.getItemCombo().getUuid(),
-                        v.getItemCombo().getNome(),
-                        v.getValor(),
-                        v.getUuid()
-                ))
-                .toList();
+        return valorItemComboRepository.buscarItensDoComboComValores(combo, estrutura, competencia);
     }
 
     public Page<ItemDto> buscarItens(int pageNumber, String nome){
