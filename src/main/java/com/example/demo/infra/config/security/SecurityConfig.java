@@ -107,6 +107,8 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/estrutura/all").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/combo/buscar").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.GET, "/item/buscar").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.POST, "/item/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");

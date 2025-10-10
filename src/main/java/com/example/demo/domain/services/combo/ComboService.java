@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -21,8 +22,12 @@ public class ComboService {
         this.comboCriarService = comboCriarService;
     }
 
-    public Page<ComboDto> buscarCombos(int pageNumber, UUID competenciaId, UUID estruturaId, String nome) {
-        return comboBuscaService.buscarCombos(pageNumber, competenciaId, estruturaId, nome);
+    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, String nome) {
+        return comboBuscaService.buscarCombosEstrutura(estruturaId, nome);
+    }
+
+    public Page<ComboDto> buscarCombos(int pageNumber, String nome) {
+        return comboBuscaService.buscarCombos(pageNumber, nome);
     }
 
     @Transactional

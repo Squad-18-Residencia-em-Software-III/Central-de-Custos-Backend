@@ -63,7 +63,8 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setLogradouro("Rua Teste");
             usuario.setBairro("Teste");
             usuario.setCep(99999999);
-            usuario.setMunicipio(municipio);
+            usuario.setCidade("Teste");
+            usuario.setEstado("Estado de Teste");
             usuario.setDataNascimento(LocalDate.of(2000, 7, 21));
 
             usuarioRepository.save(usuario);

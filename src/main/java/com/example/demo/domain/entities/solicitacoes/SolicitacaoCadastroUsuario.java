@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.solicitacoes;
 
-import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.enums.Genero;
 import com.example.demo.domain.enums.StatusSolicitacao;
@@ -64,9 +63,11 @@ public class SolicitacaoCadastroUsuario {
     @Column(nullable = false)
     private String bairro;
 
-    @ManyToOne
-    @JoinColumn(name = "municipio_id", nullable = false)
-    private Municipio municipio;
+    @Column(nullable = false)
+    private String cidade;
+
+    @Column(nullable = false)
+    private String estado;
 
     @Column(nullable = false)
     private Integer cep;

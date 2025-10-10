@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,9 +35,8 @@ public class ComboBuscaService {
         this.estruturaValidator = estruturaValidator;
     }
 
-    public Page<ComboDto> buscarCombos(int pageNumber, UUID competenciaId, UUID estruturaId, String nome) {
+    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, String nome) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
-        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
 
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
         comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
@@ -49,9 +49,18 @@ public class ComboBuscaService {
             spec = spec.and(ComboSpecs.comNomeContendo(nome));
         }
 
-        if (competenciaId != null){
-            Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
-            spec = spec.and(ComboSpecs.competenciaEqual(competencia));
+        List<Combo> combos = comboRepository.findAll(spec);
+
+        return combos.stream().map(comboMapper::toDto).toList();
+    }
+
+    public Page<ComboDto> buscarCombos(int pageNumber, String nome) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+
+        Specification<Combo> spec = Specification.allOf();
+
+        if (nome != null && !nome.isBlank()) {
+            spec = spec.and(ComboSpecs.comNomeContendo(nome));
         }
 
         Page<Combo> combos = comboRepository.findAll(spec, pageable);

@@ -44,11 +44,9 @@ public class SolicitacoesCadastroService {
     @Transactional
     public void solicitarCadastro(SolicitaCadastroUsuarioDto dto){
         solicitacaoValidator.validaSolicitacaoCadastroExisteCpf(dto.cpf());
-        Municipio municipio = estruturaValidator.validarMunicipioExiste(dto.municipioId());
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
 
         SolicitacaoCadastroUsuario solicitacao = solicitacoesMapper.cadastroUsuarioToEntity(dto);
-        solicitacao.setMunicipio(municipio);
         solicitacao.setEstrutura(estrutura);
 
         solicitacaoCadastroRepository.save(solicitacao);

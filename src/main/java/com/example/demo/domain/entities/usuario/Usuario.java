@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.usuario;
 
-import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.enums.Genero;
 import jakarta.persistence.*;
@@ -75,9 +74,11 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String bairro;
 
-    @ManyToOne
-    @JoinColumn(name = "municipio_id", nullable = false)
-    private Municipio municipio;
+    @Column(nullable = false)
+    private String cidade;
+
+    @Column(nullable = false)
+    private String estado;
 
     @Column(nullable = false)
     private Integer cep;

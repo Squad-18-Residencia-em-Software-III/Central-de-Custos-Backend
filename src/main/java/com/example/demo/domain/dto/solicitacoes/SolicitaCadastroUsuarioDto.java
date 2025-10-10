@@ -31,8 +31,10 @@ public record SolicitaCadastroUsuarioDto(
         String complemento,
         @NotBlank
         String bairro,
-        @NotNull
-        UUID municipioId,
+        @NotBlank
+        String municipio,
+        @NotBlank
+        String estado,
         @NotNull
         Integer cep
 ) {

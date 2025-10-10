@@ -3,8 +3,6 @@ package com.example.demo.api.controllers.combo;
 import com.example.demo.domain.dto.combos.ComboDto;
 import com.example.demo.domain.dto.combos.CriarComboDto;
 import com.example.demo.domain.dto.combos.EditarComboDto;
-import com.example.demo.domain.dto.combos.item.CriarItemDto;
-import com.example.demo.domain.dto.combos.item.EditarItemDto;
 import com.example.demo.domain.services.combo.ComboService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -12,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,14 +23,28 @@ public class ComboController {
         this.comboService = comboService;
     }
 
-    @GetMapping("/buscar/{id}")
+    @Operation(
+            summary = "Buscar combo do setor",
+            description = "Endpoint utilizado para buscar combos de um setor",
+            tags = "Combos")
+    @GetMapping("/buscar/estrutura")
+    public ResponseEntity<List<ComboDto>> buscarCombosEstrutura(
+            @RequestParam(name = "estruturaId") UUID estruturaId,
+            @RequestParam(name = "nome", required = false) String nome
+            ){
+        return ResponseEntity.ok(comboService.buscarCombosEstrutura(estruturaId, nome));
+    }
+
+    @Operation(
+            summary = "Buscar todos combos",
+            description = "Endpoint utilizado para buscar todos os combos",
+            tags = "Combos")
+    @GetMapping("/buscar")
     public ResponseEntity<Page<ComboDto>> buscarCombos(
             @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(name = "competencia", required = false) UUID competenciaId,
-            @RequestParam(name = "nome", required = false) String nome,
-            @PathVariable UUID estruturaId
-            ){
-        return ResponseEntity.ok(comboService.buscarCombos(pageNumber, competenciaId, estruturaId, nome));
+            @RequestParam(name = "nome", required = false) String nome
+    ){
+        return ResponseEntity.ok(comboService.buscarCombos(pageNumber, nome));
     }
 
     @Operation(
@@ -48,7 +61,7 @@ public class ComboController {
             summary = "Adicionar estrutura ao combo",
             description = "Endpoint utilizado para adicionar uma estrutura um combo",
             tags = "Combos")
-    @PostMapping("/new/estrutura")
+    @PostMapping("/novo/estrutura")
     public ResponseEntity<Void> adicionarEstruturaCombo(
             @RequestParam(name = "comboId") UUID comboId,
             @RequestParam(name = "estruturaId") UUID estruturaId
@@ -61,7 +74,7 @@ public class ComboController {
             summary = "Adicionar item ao combo",
             description = "Endpoint utilizado para adicionar um item um combo",
             tags = "Combos")
-    @PostMapping("/new/item")
+    @PostMapping("/novo/item")
     public ResponseEntity<Void> adicionarItemCombo(
             @RequestParam(name = "comboId") UUID comboId,
             @RequestParam(name = "itemId") UUID itemId
