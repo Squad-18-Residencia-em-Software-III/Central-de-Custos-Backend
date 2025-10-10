@@ -38,6 +38,7 @@ public class ItemCriarService {
     public void deletarItem(UUID itemId){
         ItemCombo item = itemValidator.validaItemExiste(itemId);
         itemValidator.validaCombosPossuemItem(item);
+        itemValidator.validaExisteValorNoItem(item);
         itemRepository.delete(item);
     }
 

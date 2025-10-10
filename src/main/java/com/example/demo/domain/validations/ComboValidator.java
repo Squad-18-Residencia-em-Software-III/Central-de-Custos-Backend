@@ -8,7 +8,9 @@ import com.example.demo.domain.enums.StatusCompetencia;
 import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.ComboRepository;
 import com.example.demo.domain.repositorios.CompetenciaRepository;
+import com.example.demo.domain.repositorios.EstruturaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class ComboValidator {
                 .orElseThrow(() -> new EntityNotFoundException("Combo inválido ou inexistente"));
     }
 
+    @Transactional
     public void validarAcessoBuscarCombos(Usuario usuario, Estrutura estruturaCombo) {
         Estrutura estruturaUsuario = usuario.getEstrutura();
 
@@ -37,14 +40,13 @@ public class ComboValidator {
         boolean mesmaEstrutura = estruturaUsuario.equals(estruturaCombo);
         boolean contemNosSubSetores = contemSubSetorRecursivo(estruturaUsuario, estruturaCombo);
 
-        // Se NÃO for admin, e NÃO for a mesma estrutura, e NÃO estiver nos subsetores, então nega
         if (!isAdmin && !mesmaEstrutura && !contemNosSubSetores) {
-            throw new AccessDeniedException("Busca não permitida");
+            throw new AccessDeniedException("Não permitido");
         }
     }
 
     private boolean contemSubSetorRecursivo(Estrutura estruturaPai, Estrutura estruturaProcurada) {
-        if (estruturaPai.getSubSetores() == null || estruturaPai.getSubSetores().isEmpty()) {
+        if (estruturaPai.getSubSetores().isEmpty()) {
             return false;
         }
 

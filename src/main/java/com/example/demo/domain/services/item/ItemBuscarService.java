@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,17 +49,27 @@ public class ItemBuscarService {
         this.valorItemComboRepository = valorItemComboRepository;
     }
 
-    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId, UUID competenciaId) {
-        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
-        Combo combo = comboValidator.validarComboExiste(comboId);
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
-        comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
-
-        Competencia competencia = competenciaId != null
-                ? comboValidator.validarCompetenciaExiste(competenciaId)
+    public List<ItemComboDto> buscarItensCombo(UUID comboUuid, UUID estruturaUuid, UUID competenciaUuid) {
+        Combo combo = comboValidator.validarComboExiste(comboUuid);
+        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaUuid);
+        Competencia competencia = competenciaUuid != null
+                ? comboValidator.validarCompetenciaExiste(competenciaUuid)
                 : competenciaService.getCompetenciaAtual();
 
-        return valorItemComboRepository.buscarItensDoComboComValores(combo, estrutura, competencia);
+        List<Object[]> resultados = valorItemComboRepository.buscarItensDoComboComValores(
+                estrutura.getId(),
+                competencia.getId(),
+                combo.getId()
+        );
+
+        return resultados.stream()
+                .map(r -> new ItemComboDto(
+                        (UUID) r[0],
+                        (String) r[1],
+                        (BigDecimal) r[2],
+                        (UUID) r[3]
+                ))
+                .toList();
     }
 
     public Page<ItemDto> buscarItens(int pageNumber, String nome){

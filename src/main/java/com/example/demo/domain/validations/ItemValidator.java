@@ -2,9 +2,11 @@ package com.example.demo.domain.validations;
 
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
+import com.example.demo.domain.entities.combos.ValorItemCombo;
 import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.ComboRepository;
 import com.example.demo.domain.repositorios.ItemRepository;
+import com.example.demo.domain.repositorios.ValorItemComboRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ public class ItemValidator {
 
     private final ItemRepository itemRepository;
     private final ComboRepository comboRepository;
+    private final ValorItemComboRepository valorItemComboRepository;
 
-    public ItemValidator(ItemRepository itemRepository, ComboRepository comboRepository) {
+    public ItemValidator(ItemRepository itemRepository, ComboRepository comboRepository, ValorItemComboRepository valorItemComboRepository) {
         this.itemRepository = itemRepository;
         this.comboRepository = comboRepository;
+        this.valorItemComboRepository = valorItemComboRepository;
     }
 
     public void validaItemExisteNome(String nome){
@@ -47,6 +51,12 @@ public class ItemValidator {
                     String.format("O item '%s' está sendo usado nos combos: %s",
                             itemCombo.getNome(), nomesCombos)
             );
+        }
+    }
+
+    public void validaExisteValorNoItem(ItemCombo itemCombo){
+        if (valorItemComboRepository.existsByItemCombo(itemCombo)){
+            throw new AccessDeniedException("Já existe um valor para este item, por tanto, não poderá ser deletado");
         }
     }
 }

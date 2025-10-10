@@ -1,6 +1,5 @@
 package com.example.demo.api.controllers.combo;
 
-import com.example.demo.domain.dto.combos.ComboDto;
 import com.example.demo.domain.dto.combos.item.*;
 import com.example.demo.domain.services.item.ItemService;
 import io.swagger.v3.oas.annotations.Operation;

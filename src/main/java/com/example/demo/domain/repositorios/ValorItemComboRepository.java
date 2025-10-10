@@ -15,27 +15,30 @@ import java.util.Optional;
 
 public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, Long> {
 
-    @Query("""
-        SELECT new com.example.demo.domain.dtos.ItemComboDto(
-            i.uuid,
-            i.nome,
-            COALESCE(v.valor, 0),
-            v.uuid
-        )
-        FROM Combo c
-        JOIN c.itens i
-        LEFT JOIN ValorItemCombo v
-          ON v.itemCombo = i
-          AND v.combo = c
-          AND v.estrutura = :estrutura
-          AND v.competencia = :competencia
-        WHERE c = :combo
-    """)
-    List<ItemComboDto> buscarItensDoComboComValores(
-            @Param("combo") Combo combo,
-            @Param("estrutura") Estrutura estrutura,
-            @Param("competencia") Competencia competencia
+    @Query(value = """
+    SELECT 
+        i.uuid AS uuid,
+        i.nome AS nome,
+        COALESCE(v.valor, 0.0) AS valor,
+        v.uuid AS valor_uuid
+    FROM combo c
+    JOIN combo_item_combo cic ON cic.combo_id = c.id
+    JOIN item_combo i ON i.id = cic.item_combo_id
+    LEFT JOIN valor_item_combo v
+        ON v.item_combo_id = i.id
+        AND v.combo_id = c.id
+        AND v.estrutura_id = :estruturaId
+        AND v.competencia_id = :competenciaId
+    WHERE c.id = :comboId
+""", nativeQuery = true)
+    List<Object[]> buscarItensDoComboComValores(
+            @Param("estruturaId") Long estruturaId,
+            @Param("competenciaId") Long competenciaId,
+            @Param("comboId") Long comboId
     );
 
+
     Optional<ValorItemCombo> findByEstruturaAndComboAndItemComboAndCompetencia(Estrutura estrutura, Combo combo, ItemCombo itemCombo, Competencia competencia);
+
+    boolean existsByItemCombo(ItemCombo itemCombo);
 }

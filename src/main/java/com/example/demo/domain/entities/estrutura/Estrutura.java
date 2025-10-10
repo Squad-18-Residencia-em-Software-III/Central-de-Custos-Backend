@@ -15,9 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity(name = "estrutura")
 @Table(name = "estrutura")
@@ -69,9 +67,8 @@ public class Estrutura {
     @JsonBackReference // evita loop infinito no JSON, não carrega o setorpai dos filhos na lista
     private Estrutura estruturaPai;
 
-    // Relacionamento para setores filhos (um setor pode ter vários filhos)
-    @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL)
-    @JsonManagedReference // evita loop infinito no JSON
+    @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Estrutura> subSetores = new ArrayList<>();
 
     @ManyToMany(mappedBy = "estruturas")

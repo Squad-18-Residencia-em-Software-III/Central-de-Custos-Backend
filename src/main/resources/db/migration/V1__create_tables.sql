@@ -49,7 +49,7 @@ create table estrutura (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
-    classificacao varchar(50) not null,
+    classificacao_estrutura varchar(50) not null,
     telefone varchar(20) not null,
     logradouro varchar(255) not null,
     complemento varchar(255),
@@ -106,7 +106,6 @@ create table combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
-    estrutura_id bigint not null references estrutura(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );
@@ -237,20 +236,19 @@ AND NOT EXISTS (
 );
 
 -- ESTRUTURA RAIZ
-INSERT INTO estrutura (nome, classificacao_id, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
+INSERT INTO estrutura (nome, classificacao_estrutura, telefone, logradouro, numero_rua, bairro, cep, municipio_id, criado_em)
 SELECT
     'SEED',
-    c.id,
+    'SECRETARIA',
     '(79)3194-3367',
     'Rua Gutemberg Chagas',
     169,
     'Inácio Barbosa',
-    '49040780',
+    49040780,
     m.id,
     NOW()
-FROM classificacao c
-JOIN municipio m ON m.nome = 'Aracaju'
-WHERE c.nome = 'Secretaria'
+FROM municipio m
+WHERE m.nome = 'Aracaju'
 AND NOT EXISTS (
     SELECT 1 FROM estrutura e WHERE e.nome = 'SEED'
 );

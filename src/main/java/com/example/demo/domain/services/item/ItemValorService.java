@@ -6,10 +6,12 @@ import com.example.demo.domain.entities.combos.ItemCombo;
 import com.example.demo.domain.entities.combos.ValorItemCombo;
 import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.repositorios.ValorItemComboRepository;
 import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.ItemValidator;
+import com.example.demo.infra.security.authentication.AuthenticatedUserProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,9 @@ public class ItemValorService {
 
     @Transactional
     public void inserirValor(InserirValorItemDto dto){
+        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
+        comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
         Combo combo = comboValidator.validarComboExiste(dto.comboId());
         Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
         ItemCombo itemCombo = itemValidator.validaItemExiste(dto.itemId());

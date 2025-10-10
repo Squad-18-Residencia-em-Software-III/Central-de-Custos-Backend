@@ -111,6 +111,8 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/item/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.DELETE, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/combo/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.PATCH, "/combo/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
