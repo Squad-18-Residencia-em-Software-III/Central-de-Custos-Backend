@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "valorItemCombo")
-@Table(name = "valores_itens_combo")
+@Table(name = "valor_item_combo")
 @Getter
 @Setter
 @AllArgsConstructor

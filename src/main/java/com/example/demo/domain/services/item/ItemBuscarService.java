@@ -67,7 +67,8 @@ public class ItemBuscarService {
                         (UUID) r[0],
                         (String) r[1],
                         (BigDecimal) r[2],
-                        (UUID) r[3]
+                        (UUID) r[3],
+                        (UUID) r[4]
                 ))
                 .toList();
     }

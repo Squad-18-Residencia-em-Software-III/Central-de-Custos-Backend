@@ -13,4 +13,20 @@ public interface EstruturaRepository extends JpaRepository<Estrutura, Long> {
     Optional<Estrutura> findByUuid(UUID uuid);
 
     Optional<Estrutura> findByNome(String nome);
+
+    @Query(value = """
+    WITH RECURSIVE hierarquia AS (
+        SELECT id, estrutura_pai_id
+        FROM estrutura
+        WHERE id = :idBase
+        UNION ALL
+        SELECT e.id, e.estrutura_pai_id
+        FROM estrutura e
+        JOIN hierarquia h ON e.estrutura_pai_id = h.id
+    )
+    SELECT EXISTS (
+        SELECT 1 FROM hierarquia WHERE id = :idAlvo
+    )
+    """, nativeQuery = true)
+    boolean pertenceAHierarquia(@Param("idBase") Long idBase, @Param("idAlvo") Long idAlvo);
 }

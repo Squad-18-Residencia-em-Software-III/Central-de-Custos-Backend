@@ -37,7 +37,12 @@ public class Competencia {
     private LocalDateTime dataAbertura;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private StatusCompetencia statusCompetencia;
+
+    @PrePersist
+    public void prePersist(){
+        this.statusCompetencia = StatusCompetencia.ABERTA;
+    }
 
 }

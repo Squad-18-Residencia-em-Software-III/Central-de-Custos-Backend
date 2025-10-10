@@ -42,11 +42,13 @@ public class ItemValorService {
         Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
         ItemCombo itemCombo = itemValidator.validaItemExiste(dto.itemId());
 
+        itemValidator.validaItemEstaNoCombo(combo, itemCombo);
         comboValidator.validarCompetenciaAberta(competencia);
 
+        System.out.println("Antes do erro");
         Optional<ValorItemCombo> optionalValor = valorItemComboRepository
                 .findByEstruturaAndComboAndItemComboAndCompetencia(estrutura, combo, itemCombo, competencia);
-
+        System.out.println("Depois do erro");
         ValorItemCombo valor;
 
         if (optionalValor.isPresent()) {
@@ -60,7 +62,8 @@ public class ItemValorService {
             valor.setCompetencia(competencia);
             valor.setValor(dto.valor());
         }
-
+        System.out.println("Antes do erro final");
         valorItemComboRepository.save(valor);
+        System.out.println("Depois do erro final");
     }
 }

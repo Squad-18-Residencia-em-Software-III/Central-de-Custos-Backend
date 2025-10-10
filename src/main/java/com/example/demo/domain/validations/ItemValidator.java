@@ -54,6 +54,13 @@ public class ItemValidator {
         }
     }
 
+    public void validaItemEstaNoCombo(Combo combo, ItemCombo itemCombo){
+        List<ItemCombo> itens = combo.getItens();
+        if (!itens.contains(itemCombo)){
+            throw new BusinessException("O item não está presente no combo informado");
+        }
+    }
+
     public void validaExisteValorNoItem(ItemCombo itemCombo){
         if (valorItemComboRepository.existsByItemCombo(itemCombo)){
             throw new AccessDeniedException("Já existe um valor para este item, por tanto, não poderá ser deletado");

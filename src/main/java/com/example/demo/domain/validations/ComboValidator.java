@@ -21,10 +21,12 @@ public class ComboValidator {
 
     private final CompetenciaRepository competenciaRepository;
     private final ComboRepository comboRepository;
+    private final EstruturaRepository estruturaRepository;
 
-    public ComboValidator(CompetenciaRepository competenciaRepository, ComboRepository comboRepository) {
+    public ComboValidator(CompetenciaRepository competenciaRepository, ComboRepository comboRepository, EstruturaRepository estruturaRepository) {
         this.competenciaRepository = competenciaRepository;
         this.comboRepository = comboRepository;
+        this.estruturaRepository = estruturaRepository;
     }
 
     public Combo validarComboExiste(UUID comboId){
@@ -32,30 +34,16 @@ public class ComboValidator {
                 .orElseThrow(() -> new EntityNotFoundException("Combo inválido ou inexistente"));
     }
 
-    @Transactional
     public void validarAcessoBuscarCombos(Usuario usuario, Estrutura estruturaCombo) {
         Estrutura estruturaUsuario = usuario.getEstrutura();
 
         boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
         boolean mesmaEstrutura = estruturaUsuario.equals(estruturaCombo);
-        boolean contemNosSubSetores = contemSubSetorRecursivo(estruturaUsuario, estruturaCombo);
+        boolean contemNosSubSetores = estruturaRepository.pertenceAHierarquia(estruturaUsuario.getId(), estruturaCombo.getId());
 
         if (!isAdmin && !mesmaEstrutura && !contemNosSubSetores) {
             throw new AccessDeniedException("Não permitido");
         }
-    }
-
-    private boolean contemSubSetorRecursivo(Estrutura estruturaPai, Estrutura estruturaProcurada) {
-        if (estruturaPai.getSubSetores().isEmpty()) {
-            return false;
-        }
-
-        for (Estrutura sub : estruturaPai.getSubSetores()) {
-            if (sub.equals(estruturaProcurada) || contemSubSetorRecursivo(sub, estruturaProcurada)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public Competencia validarCompetenciaExiste(UUID competenciaId){

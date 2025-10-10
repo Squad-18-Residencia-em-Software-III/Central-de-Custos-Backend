@@ -46,9 +46,9 @@ public class ItemController {
             summary = "Buscar Itens do combo",
             description = "Retorna informações dos itens do combo",
             tags = "Itens")
-    @GetMapping("/combo/{id}")
+    @GetMapping("/combo")
     public ResponseEntity<List<ItemComboDto>> buscarItemCombo(
-            @PathVariable UUID comboUuid,
+            @RequestParam(name = "combo") UUID comboUuid,
             @RequestParam(name = "estrutura") UUID estruturaUuid,
             @RequestParam(name = "competencia", required = false) UUID competenciaUuid){
         return ResponseEntity.ok(itemService.buscarItensCombo(comboUuid, estruturaUuid, competenciaUuid));

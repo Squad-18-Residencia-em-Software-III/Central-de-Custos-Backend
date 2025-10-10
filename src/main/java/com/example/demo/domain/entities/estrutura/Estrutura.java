@@ -58,20 +58,18 @@ public class Estrutura {
     @Column(nullable = false)
     private Integer cep;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipio_id", nullable = false)
     private Municipio municipio;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estrutura_pai_id")
-    @JsonBackReference // evita loop infinito no JSON, não carrega o setorpai dos filhos na lista
     private Estrutura estruturaPai;
 
     @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Estrutura> subSetores = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "estruturas")
+    @ManyToMany(mappedBy = "estruturas", fetch = FetchType.LAZY)
     private List<Combo> combos;
 
     @CreatedDate
