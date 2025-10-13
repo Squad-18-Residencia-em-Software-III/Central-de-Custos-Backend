@@ -20,7 +20,7 @@ public record CadastroUsuarioDto(
         Integer numeroRua,
         String complemento,
         String bairro,
-        String municipio,
+        String cidade,
         String estado,
         Integer cep,
         LocalDateTime criadoEm,

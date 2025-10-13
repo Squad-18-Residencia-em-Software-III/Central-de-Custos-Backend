@@ -44,6 +44,7 @@ public class SolicitacaoCadastroUsuario {
     private String cpf;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Genero genero;
 
     @Column(nullable = false)
@@ -56,7 +57,7 @@ public class SolicitacaoCadastroUsuario {
     @Column(nullable = false)
     private String logradouro;
 
-    private Integer numeroRua;
+    private String numeroRua;
 
     private String complemento;
 

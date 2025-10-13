@@ -20,6 +20,7 @@ public record SolicitaCadastroUsuarioDto(
         @NotBlank
         @CPF
         String cpf,
+        @NotNull
         Genero genero,
         @NotNull
         LocalDate dataNascimento,
@@ -27,16 +28,16 @@ public record SolicitaCadastroUsuarioDto(
         UUID estruturaId,
         @NotBlank
         String logradouro,
-        Integer numeroRua,
+        String numeroRua,
         String complemento,
         @NotBlank
         String bairro,
         @NotBlank
-        String municipio,
+        String cidade,
         @NotBlank
         String estado,
-        @NotNull
-        Integer cep
+        @NotBlank
+        String cep
 ) {
 }
 

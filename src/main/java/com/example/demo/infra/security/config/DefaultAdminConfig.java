@@ -4,6 +4,7 @@ import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.Genero;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.MunicipioRepository;
 import com.example.demo.domain.repositorios.PerfilRepository;
@@ -58,6 +59,7 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setEmail("admin@admin.com");
             usuario.setSenha(passwordEncoder.encode(senha));
             usuario.setPerfil(perfilAdmin);
+            usuario.setGenero(Genero.NAO_INFORMADO);
             usuario.setEstrutura(estrutura);
             usuario.setTelefone("(99)9999-9999");
             usuario.setLogradouro("Rua Teste");
