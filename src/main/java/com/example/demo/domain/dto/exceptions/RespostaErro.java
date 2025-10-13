@@ -22,4 +22,8 @@ public record RespostaErro(int status, String mensagem, List<CamposErros> campos
         return new RespostaErro(HttpStatus.UNAUTHORIZED.value(), mensagem, List.of());
     }
 
+    public static RespostaErro unprocessableEntity(String mensagem){
+        return new RespostaErro(HttpStatus.UNPROCESSABLE_ENTITY.value(), mensagem, List.of());
+    }
+
 }

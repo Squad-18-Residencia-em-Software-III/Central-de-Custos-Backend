@@ -56,7 +56,7 @@ public class Estrutura {
     private String bairro;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String cep;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipio_id", nullable = false)

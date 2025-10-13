@@ -62,7 +62,7 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setTelefone("(99)9999-9999");
             usuario.setLogradouro("Rua Teste");
             usuario.setBairro("Teste");
-            usuario.setCep(99999999);
+            usuario.setCep("99999999");
             usuario.setCidade("Teste");
             usuario.setEstado("Estado de Teste");
             usuario.setDataNascimento(LocalDate.of(2000, 7, 21));

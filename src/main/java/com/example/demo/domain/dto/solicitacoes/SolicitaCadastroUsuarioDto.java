@@ -39,3 +39,4 @@ public record SolicitaCadastroUsuarioDto(
         Integer cep
 ) {
 }
+

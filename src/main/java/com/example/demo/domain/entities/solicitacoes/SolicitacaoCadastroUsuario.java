@@ -70,7 +70,7 @@ public class SolicitacaoCadastroUsuario {
     private String estado;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String cep;
 
     @CreatedDate
     @Column(nullable = false)

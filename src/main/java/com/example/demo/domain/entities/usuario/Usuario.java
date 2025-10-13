@@ -81,7 +81,7 @@ public class Usuario implements UserDetails {
     private String estado;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String cep;
 
     @Column(nullable = false)
     private boolean primeiroAcesso;
