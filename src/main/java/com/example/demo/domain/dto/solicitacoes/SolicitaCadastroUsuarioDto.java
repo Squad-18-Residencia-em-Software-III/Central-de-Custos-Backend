@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record SolicitaCadastroUsuarioDto(
@@ -19,18 +20,24 @@ public record SolicitaCadastroUsuarioDto(
         @NotBlank
         @CPF
         String cpf,
+        @NotNull
         Genero genero,
+        @NotNull
+        LocalDate dataNascimento,
         @NotNull
         UUID estruturaId,
         @NotBlank
         String logradouro,
-        Integer numeroRua,
+        String numeroRua,
         String complemento,
         @NotBlank
         String bairro,
-        @NotNull
-        UUID municipioId,
-        @NotNull
-        Integer cep
+        @NotBlank
+        String cidade,
+        @NotBlank
+        String estado,
+        @NotBlank
+        String cep
 ) {
 }
+

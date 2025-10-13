@@ -2,7 +2,7 @@ package com.example.demo.api.controllers.usuario;
 
 import com.example.demo.domain.dto.usuario.CpfDto;
 import com.example.demo.domain.enums.TipoToken;
-import com.example.demo.domain.services.TokensService;
+import com.example.demo.domain.services.token.TokensService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
@@ -26,9 +26,8 @@ public class TokenController {
     @SecurityRequirements()
     @PostMapping("/validar")
     public ResponseEntity<Void> validarTokenPrimeiroAcesso(@RequestParam(name = "token") String token,
-                                                           @RequestParam(name = "tipo") TipoToken tipoToken,
                                                            @Valid @RequestBody CpfDto cpfDto){
-        tokensService.validarToken(token, cpfDto.cpf(), tipoToken);
+        tokensService.validarToken(token, cpfDto.cpf());
         return ResponseEntity.ok().build();
     }
 }

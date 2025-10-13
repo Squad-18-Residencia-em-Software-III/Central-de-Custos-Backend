@@ -1,4 +1,4 @@
-package com.example.demo.domain.services;
+package com.example.demo.domain.services.solicitacoes.cadastrousuario;
 
 import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
@@ -8,8 +8,11 @@ import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.mapper.SolicitacoesMapper;
 import com.example.demo.domain.repositorios.*;
+import com.example.demo.domain.services.solicitacoes.cadastrousuario.strategy.AceitarSolicitacaoCadastroStrategy;
+import com.example.demo.domain.services.solicitacoes.factory.SolicitacaoFactory;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SolicitacaoValidator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,38 +31,33 @@ public class SolicitacoesCadastroService {
     private final EstruturaValidator estruturaValidator;
     private final SolicitacaoValidator solicitacaoValidator;
     private final SolicitacoesMapper solicitacoesMapper;
-    private final UsuarioService usuarioService;
+    private final SolicitacaoFactory solicitacaoFactory;
 
-    public SolicitacoesCadastroService(SolicitacaoCadastroUsuarioRepository solicitacaoRepository, EstruturaValidator estruturaValidator, SolicitacaoValidator solicitacaoValidator, SolicitacoesMapper solicitacoesMapper, UsuarioService usuarioService) {
+    public SolicitacoesCadastroService(SolicitacaoCadastroUsuarioRepository solicitacaoRepository, EstruturaValidator estruturaValidator, SolicitacaoValidator solicitacaoValidator, SolicitacoesMapper solicitacoesMapper, SolicitacaoFactory solicitacaoFactory) {
         this.solicitacaoCadastroRepository = solicitacaoRepository;
         this.estruturaValidator = estruturaValidator;
         this.solicitacaoValidator = solicitacaoValidator;
         this.solicitacoesMapper = solicitacoesMapper;
-        this.usuarioService = usuarioService;
+        this.solicitacaoFactory = solicitacaoFactory;
     }
 
-    // criar validações em classe separada
     @Transactional
     public void solicitarCadastro(SolicitaCadastroUsuarioDto dto){
         solicitacaoValidator.validaSolicitacaoCadastroExisteCpf(dto.cpf());
-        Municipio municipio = estruturaValidator.validarMunicipioExiste(dto.municipioId());
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
 
         SolicitacaoCadastroUsuario solicitacao = solicitacoesMapper.cadastroUsuarioToEntity(dto);
-        solicitacao.setMunicipio(municipio);
         solicitacao.setEstrutura(estrutura);
 
         solicitacaoCadastroRepository.save(solicitacao);
     }
 
-    // aprimorar busca
     public Page<CadastroUsuarioDto> listarSolicitacoesCadastro(int numeroPagina){
         Pageable pageable = PageRequest.of(numeroPagina - 1, 10);
         Page<SolicitacaoCadastroUsuario> solicitacoesCadastro = solicitacaoCadastroRepository.findAll(pageable);
         return solicitacoesCadastro.map(solicitacoesMapper::cadastroUsuarioToDto);
     }
 
-    // colocar validação
     public CadastroUsuarioDto visualizarSolicitacaoCadastro(UUID id){
         SolicitacaoCadastroUsuario solicitacao = solicitacaoValidator.validaSolicitacaoCadastroExiste(id);
         return solicitacoesMapper.cadastroUsuarioToDto(solicitacao);
@@ -68,19 +67,7 @@ public class SolicitacoesCadastroService {
     public void aprovarOuReprovarSolicitacaoCadastro(UUID solicitacaoId, StatusSolicitacao statusSolicitacao){
         SolicitacaoCadastroUsuario solicitacao = solicitacaoValidator.validaSolicitacaoCadastroExiste(solicitacaoId);
         solicitacaoValidator.validaSolicitacaoCadastroPendente(solicitacao);
-
-        switch (statusSolicitacao) {
-            case APROVADA -> {
-                usuarioService.criarUsuarioSolicitacaoCadastro(solicitacao);
-                solicitacao.setStatus(StatusSolicitacao.APROVADA);
-                solicitacaoCadastroRepository.save(solicitacao);
-            }
-            case RECUSADA -> {
-                solicitacao.setStatus(StatusSolicitacao.RECUSADA);
-                log.info("Solicitação com ID: {} recusada e removida.", solicitacao.getUuid());
-                // Serviço de email
-            }
-        }
+        solicitacaoFactory.solicitacaoCadastroStatus(statusSolicitacao).realiza(solicitacao);
     }
 
 

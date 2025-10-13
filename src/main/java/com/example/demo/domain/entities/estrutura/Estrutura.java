@@ -1,6 +1,8 @@
 package com.example.demo.domain.entities.estrutura;
 
 import com.example.demo.domain.entities.Municipio;
+import com.example.demo.domain.entities.combos.Combo;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -13,9 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity(name = "estrutura")
 @Table(name = "estrutura")
@@ -36,9 +36,9 @@ public class Estrutura {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "classificacao_id", nullable = false)
-    private Classificacao classificacao;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ClassificacaoEstrutura classificacaoEstrutura;
 
     @Column(nullable = false)
     private String telefone;
@@ -56,21 +56,21 @@ public class Estrutura {
     private String bairro;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String cep;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "municipio_id", nullable = false)
     private Municipio municipio;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estrutura_pai_id")
-    @JsonBackReference // evita loop infinito no JSON, não carrega o setorpai dos filhos na lista
     private Estrutura estruturaPai;
 
-    // Relacionamento para setores filhos (um setor pode ter vários filhos)
-    @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL)
-    @JsonManagedReference // evita loop infinito no JSON
+    @OneToMany(mappedBy = "estruturaPai", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Estrutura> subSetores = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "estruturas", fetch = FetchType.LAZY)
+    private List<Combo> combos;
 
     @CreatedDate
     @Column(nullable = false)

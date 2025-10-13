@@ -3,6 +3,7 @@ package com.example.demo.domain.dto.solicitacoes;
 import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.enums.Genero;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -13,14 +14,17 @@ public record CadastroUsuarioDto(
         String telefone,
         String cpf,
         Genero genero,
+        LocalDate dataNascimento,
         UUID estruturaId,
         String logradouro,
         Integer numeroRua,
         String complemento,
         String bairro,
-        UUID municipioId,
+        String cidade,
+        String estado,
         Integer cep,
         LocalDateTime criadoEm,
         StatusSolicitacao status
 ) {
 }
+

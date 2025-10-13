@@ -4,6 +4,7 @@ import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.Genero;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.MunicipioRepository;
 import com.example.demo.domain.repositorios.PerfilRepository;
@@ -15,6 +16,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Configuration
 public class DefaultAdminConfig implements CommandLineRunner {
@@ -56,12 +59,15 @@ public class DefaultAdminConfig implements CommandLineRunner {
             usuario.setEmail("admin@admin.com");
             usuario.setSenha(passwordEncoder.encode(senha));
             usuario.setPerfil(perfilAdmin);
+            usuario.setGenero(Genero.NAO_INFORMADO);
             usuario.setEstrutura(estrutura);
             usuario.setTelefone("(99)9999-9999");
             usuario.setLogradouro("Rua Teste");
             usuario.setBairro("Teste");
-            usuario.setCep(99999999);
-            usuario.setMunicipio(municipio);
+            usuario.setCep("99999999");
+            usuario.setCidade("Teste");
+            usuario.setEstado("Estado de Teste");
+            usuario.setDataNascimento(LocalDate.of(2000, 7, 21));
 
             usuarioRepository.save(usuario);
             usuario.setPrimeiroAcesso(false);

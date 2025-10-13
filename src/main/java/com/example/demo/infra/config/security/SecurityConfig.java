@@ -107,6 +107,14 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/estrutura/all").permitAll();
+                    authorize.requestMatchers(HttpMethod.GET, "/combo/buscar").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.GET, "/item/buscar").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.DELETE, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/combo/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.PATCH, "/combo/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 ->
@@ -119,7 +127,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // permite cookies/authorization headers

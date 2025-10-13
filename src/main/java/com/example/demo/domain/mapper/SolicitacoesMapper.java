@@ -10,12 +10,10 @@ import org.mapstruct.Mapping;
 public interface SolicitacoesMapper {
 
     @Mapping(target = "estrutura", ignore = true)
-    @Mapping(target = "municipio", ignore = true)
     SolicitacaoCadastroUsuario cadastroUsuarioToEntity(SolicitaCadastroUsuarioDto dto);
 
     @Mapping(target = "id", source = "uuid")
     @Mapping(target = "estruturaId", source = "estrutura.uuid")
-    @Mapping(target = "municipioId", source = "municipio.uuid")
     CadastroUsuarioDto cadastroUsuarioToDto(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
 
 }

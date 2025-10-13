@@ -3,7 +3,7 @@ package com.example.demo.api.controllers.usuario;
 import com.example.demo.domain.dto.security.AccessTokenDto;
 import com.example.demo.domain.dto.usuario.CpfDto;
 import com.example.demo.domain.dto.usuario.NovaSenhaDto;
-import com.example.demo.domain.services.UsuarioService;
+import com.example.demo.domain.services.usuario.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
@@ -52,7 +52,7 @@ public class UsuarioController {
     public ResponseEntity<AccessTokenDto> definirRecuperarSenha(@RequestParam(name = "token") String token,
                                                                @RequestParam(name = "cpf") String cpf,
                                                                @Valid @RequestBody NovaSenhaDto dto) {
-        usuarioService.defineSenhaRecuperarUsuario(token, cpf, dto);
+        usuarioService.defineNovaSenhaUsuario(token, cpf, dto);
         return ResponseEntity.ok().build();
     }
 }

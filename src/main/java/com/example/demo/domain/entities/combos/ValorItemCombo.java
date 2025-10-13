@@ -1,5 +1,7 @@
 package com.example.demo.domain.entities.combos;
 
+import com.example.demo.domain.entities.competencia.Competencia;
+import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "valorItemCombo")
-@Table(name = "valores_itens_combo")
+@Table(name = "valor_item_combo")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,6 +37,14 @@ public class ValorItemCombo {
     @ManyToOne
     @JoinColumn(name = "combo_id", nullable = false)
     private Combo combo;
+
+    @ManyToOne
+    @JoinColumn(name = "estrutura_id", nullable = false)
+    private Estrutura estrutura;
+
+    @ManyToOne
+    @JoinColumn(name = "competencia_id", nullable = false)
+    private Competencia competencia;
 
     @ManyToOne
     @JoinColumn(name = "item_combo_id", nullable = false)

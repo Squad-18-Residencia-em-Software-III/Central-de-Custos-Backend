@@ -2,12 +2,14 @@ package com.example.demo.infra.config.exception;
 
 import com.example.demo.domain.dto.exceptions.CamposErros;
 import com.example.demo.domain.dto.exceptions.RespostaErro;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.exceptions.SenhaInvalidaException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,6 +74,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public RespostaErro handleMethodBadCredentialsException(BadCredentialsException e){
         return RespostaErro.forbbiden(e.getMessage());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public RespostaErro handleMethodBusinessException(BusinessException e){
+        return RespostaErro.unauthorized(e.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public RespostaErro handleMethodBusinessException(UsernameNotFoundException e){
+        return RespostaErro.unprocessableEntity(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

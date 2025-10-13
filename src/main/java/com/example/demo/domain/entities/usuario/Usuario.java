@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.usuario;
 
-import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.enums.Genero;
 import jakarta.persistence.*;
@@ -52,6 +51,7 @@ public class Usuario implements UserDetails {
     private String senha;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Genero genero;
 
     @Column(nullable = false)
@@ -68,19 +68,21 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String logradouro;
 
-    private Integer numeroRua;
+    private String numeroRua;
 
     private String complemento;
 
     @Column(nullable = false)
     private String bairro;
 
-    @ManyToOne
-    @JoinColumn(name = "municipio_id", nullable = false)
-    private Municipio municipio;
+    @Column(nullable = false)
+    private String cidade;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String estado;
+
+    @Column(nullable = false)
+    private String cep;
 
     @Column(nullable = false)
     private boolean primeiroAcesso;

@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.solicitacoes;
 
-import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.enums.Genero;
 import com.example.demo.domain.enums.StatusSolicitacao;
@@ -12,6 +11,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -44,7 +44,11 @@ public class SolicitacaoCadastroUsuario {
     private String cpf;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Genero genero;
+
+    @Column(nullable = false)
+    private LocalDate dataNascimento;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estrutura_id", nullable = false)
@@ -53,19 +57,21 @@ public class SolicitacaoCadastroUsuario {
     @Column(nullable = false)
     private String logradouro;
 
-    private Integer numeroRua;
+    private String numeroRua;
 
     private String complemento;
 
     @Column(nullable = false)
     private String bairro;
 
-    @ManyToOne
-    @JoinColumn(name = "municipio_id", nullable = false)
-    private Municipio municipio;
+    @Column(nullable = false)
+    private String cidade;
 
     @Column(nullable = false)
-    private Integer cep;
+    private String estado;
+
+    @Column(nullable = false)
+    private String cep;
 
     @CreatedDate
     @Column(nullable = false)
