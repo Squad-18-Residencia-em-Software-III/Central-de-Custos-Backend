@@ -3,9 +3,11 @@ package com.example.demo.domain.services.usuario.strategy.implementations;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.TipoEmail;
 import com.example.demo.domain.enums.TipoToken;
 import com.example.demo.domain.mapper.UsuarioMapper;
 import com.example.demo.domain.repositorios.UsuarioRepository;
+import com.example.demo.domain.services.email.factory.EmailFactory;
 import com.example.demo.domain.services.token.TokensService;
 import com.example.demo.domain.services.usuario.strategy.CriarUsuarioSolicitacaoStrategy;
 import com.example.demo.domain.validations.UsuarioValidator;
@@ -21,13 +23,15 @@ public class CriarUsuarioRhSolicitacao implements CriarUsuarioSolicitacaoStrateg
     private final TokensService tokensService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UsuarioMapper usuarioMapper;
+    private final EmailFactory emailFactory;
 
-    public CriarUsuarioRhSolicitacao(UsuarioValidator usuarioValidator, UsuarioRepository usuarioRepository, TokensService tokensService, BCryptPasswordEncoder bCryptPasswordEncoder, UsuarioMapper usuarioMapper) {
+    public CriarUsuarioRhSolicitacao(UsuarioValidator usuarioValidator, UsuarioRepository usuarioRepository, TokensService tokensService, BCryptPasswordEncoder bCryptPasswordEncoder, UsuarioMapper usuarioMapper, EmailFactory emailFactory) {
         this.usuarioValidator = usuarioValidator;
         this.usuarioRepository = usuarioRepository;
         this.tokensService = tokensService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.usuarioMapper = usuarioMapper;
+        this.emailFactory = emailFactory;
     }
 
     @Override
@@ -47,6 +51,7 @@ public class CriarUsuarioRhSolicitacao implements CriarUsuarioSolicitacaoStrateg
         ));
 
         usuarioRepository.save(novoUsuario);
-        tokensService.criarToken(novoUsuario, TipoToken.PRIMEIRO_ACESSO);
+        String token = tokensService.criarToken(novoUsuario, TipoToken.PRIMEIRO_ACESSO);
+        emailFactory.getStrategy(TipoEmail.PRIMEIRO_ACESSO).montarEmail(novoUsuario, token);
     }
 }

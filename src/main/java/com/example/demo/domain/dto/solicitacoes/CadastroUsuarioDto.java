@@ -17,14 +17,13 @@ public record CadastroUsuarioDto(
         LocalDate dataNascimento,
         UUID estruturaId,
         String logradouro,
-        Integer numeroRua,
+        String numeroRua,
         String complemento,
         String bairro,
         String cidade,
         String estado,
-        Integer cep,
+        String cep,
         LocalDateTime criadoEm,
         StatusSolicitacao status
-) {
-}
+) {}
 
