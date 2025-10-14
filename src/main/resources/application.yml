@@ -35,6 +35,9 @@ jwt:
 default:
   admin:
     password: 12345
+email:
+  service:
+    url: http://localhost:8082/mail
 
 # perfil prod - PostgreSQL
 ---
@@ -60,3 +63,6 @@ jwt:
 default:
   admin:
     password: ${DEFAULT_ADMIN_PASSWORD}
+email:
+  service:
+    url: http://servico-email:8082/mail
