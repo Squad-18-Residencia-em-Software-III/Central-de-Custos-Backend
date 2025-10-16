@@ -117,3 +117,100 @@ git push origin main
 
 ## BANCO H2
 `http://localhost:8080/h2-console/`
+
+---
+
+# ⚙️ Execução Local (Perfil `dev`)
+
+Ambiente de desenvolvimento local para o backend da Central de Custos.
+
+## 🔧 Configuração esperada
+
+| Item           | Valor                                    |
+| -------------- | ---------------------------------------- |
+| Porta          | `8080`                                   |
+| Banco de Dados | PostgreSQL → `dcentraldecustosdb`        |
+| Usuário/Senha  | `dev` / `dev`                            |
+| JWT Keys       | `src/main/resources/app.key` e `app.pub` |
+
+---
+
+## 🚀 Execução Rápida
+
+```bash
+# 1. Clonar e entrar no projeto
+git clone https://github.com/Squad-18-Residencia-em-Software-III/Central-de-Custos-Backend.git
+cd Central-de-Custos-Backend
+git checkout develop
+```
+
+---
+
+## 🗄️ Banco de Dados (PostgreSQL)
+
+```sql
+CREATE USER dev WITH PASSWORD 'dev';
+CREATE DATABASE dcentraldecustosdb OWNER dev;
+
+\c dcentraldecustosdb
+GRANT ALL PRIVILEGES ON DATABASE dcentraldecustosdb TO dev;
+GRANT ALL PRIVILEGES ON SCHEMA public TO dev;
+```
+
+---
+
+## 🔐 Chaves JWT (local)
+
+```bash
+# Gerar private/public key (RSA 2048)
+openssl genpkey -algorithm RSA -out app.key -pkeyopt rsa_keygen_bits:2048
+openssl rsa -in app.key -pubout -out app.pub
+
+# Mover para src/main/resources/
+mv app.key app.pub src/main/resources/
+```
+
+---
+
+## 🪪 Testar autenticação
+
+1. Acesse o endpoint `/auth/login` diretamente no **Swagger UI**  
+   👉 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+2. No corpo da requisição, informe o CPF padrão do administrador:
+
+```json
+{
+  "cpf": "22411451067",
+  "senha": "12345"
+}
+````
+
+3. Execute a requisição — a resposta trará um campo **`token`** (JWT).
+
+4. Copie o valor do token retornado.
+
+5. Clique no botão **"Authorize"** no canto superior direito do Swagger e cole o token no formato:
+
+```
+Bearer SEU_TOKEN_AQUI
+```
+
+6. Após autorizar, todos os endpoints protegidos estarão liberados para uso com perfil **ADMIN** ✅
+
+---
+
+## 🧰 Dicas & Troubleshooting
+
+* ❌ `URISyntaxException`: verifique se o profile `dev` está ativo.
+* 🔑 `FileNotFound`: confirme `app.key` e `app.pub` em `src/main/resources`.
+* 🐘 Erro JDBC: verifique permissões e owner do banco.
+* 🔧 Flyway falha: execute `CREATE EXTENSION` como superuser.
+
+---
+
+## 🔒 Boas práticas
+
+* Nunca comite chaves privadas.
+* Use `prod` profile em produção.
+* Configure secrets via variáveis de ambiente ou secret manager.
