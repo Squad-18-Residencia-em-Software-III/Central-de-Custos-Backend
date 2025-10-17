@@ -2,11 +2,18 @@ package com.example.demo.domain.services.solicitacoes.cadastrousuario.strategy;
 
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.enums.StatusSolicitacao;
+import com.example.demo.domain.repositorios.SolicitacaoCadastroUsuarioRepository;
 
-public interface AceitarSolicitacaoCadastroStrategy {
+public abstract class AceitarSolicitacaoCadastroStrategy {
 
-    void realiza(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
+    protected final SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository;
 
-    StatusSolicitacao getStatus();
+    protected AceitarSolicitacaoCadastroStrategy(SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository) {
+        this.solicitacaoCadastroUsuarioRepository = solicitacaoCadastroUsuarioRepository;
+    }
+
+    public abstract void realiza(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
+
+    public abstract StatusSolicitacao getStatus();
 
 }
