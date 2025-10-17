@@ -1,7 +1,7 @@
 package com.example.demo.domain.mapper;
 
-import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
-import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

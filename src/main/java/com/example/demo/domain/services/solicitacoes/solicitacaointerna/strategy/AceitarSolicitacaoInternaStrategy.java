@@ -1,7 +1,8 @@
 package com.example.demo.domain.services.solicitacoes.solicitacaointerna.strategy;
 
+import com.example.demo.domain.dto.solicitacoes.RespostaSolicitacaoInterna;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoInterna;
-import com.example.demo.domain.enums.StatusSolicitacao;
+import com.example.demo.domain.enums.TipoSolicitacao;
 import com.example.demo.domain.repositorios.SolicitacaoInternaRepository;
 
 public abstract class AceitarSolicitacaoInternaStrategy {
@@ -12,7 +13,8 @@ public abstract class AceitarSolicitacaoInternaStrategy {
         this.solicitacaoInternaRepository = solicitacaoInternaRepository;
     }
 
-    public abstract void aceitarSolicitacao(SolicitacaoInterna solicitacaoInterna);
+    public abstract void aceitarSolicitacao(SolicitacaoInterna solicitacaoInterna, RespostaSolicitacaoInterna respostaSolicitacaoInterna);
 
-    public abstract StatusSolicitacao getStatus();
+    public abstract TipoSolicitacao getTipo();
+
 }

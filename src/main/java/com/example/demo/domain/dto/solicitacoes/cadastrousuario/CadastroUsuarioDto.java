@@ -1,4 +1,4 @@
-package com.example.demo.domain.dto.solicitacoes;
+package com.example.demo.domain.dto.solicitacoes.cadastrousuario;
 
 import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.enums.Genero;

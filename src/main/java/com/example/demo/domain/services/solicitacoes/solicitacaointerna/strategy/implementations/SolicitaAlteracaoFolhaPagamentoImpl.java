@@ -10,6 +10,7 @@ import com.example.demo.domain.repositorios.SolicitacaoInternaRepository;
 import com.example.demo.domain.services.solicitacoes.solicitacaointerna.strategy.SolicitacaoInternaStrategy;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.FolhaPagamentoValidator;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
@@ -24,6 +25,7 @@ public class SolicitaAlteracaoFolhaPagamentoImpl extends SolicitacaoInternaStrat
     }
 
     @Override
+    @Transactional
     public void realiza(NovaSolicitacaoInternaDto dto) {
         Usuario usuario = usuarioSolicitacao();
         estruturaValidator.validaUsuarioPertenceEstrutura(usuario, "RH");

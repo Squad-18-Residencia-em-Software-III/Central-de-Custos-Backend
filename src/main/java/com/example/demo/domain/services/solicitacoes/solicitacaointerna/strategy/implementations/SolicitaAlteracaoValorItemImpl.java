@@ -14,6 +14,7 @@ import com.example.demo.domain.services.solicitacoes.solicitacaointerna.strategy
 import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.ItemValidator;
+import jakarta.transaction.Transactional;
 
 public class SolicitaAlteracaoValorItemImpl extends SolicitacaoInternaStrategy {
 
@@ -27,6 +28,7 @@ public class SolicitaAlteracaoValorItemImpl extends SolicitacaoInternaStrategy {
     }
 
     @Override
+    @Transactional
     public void realiza(NovaSolicitacaoInternaDto dto) {
         Usuario usuario = usuarioSolicitacao();
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
