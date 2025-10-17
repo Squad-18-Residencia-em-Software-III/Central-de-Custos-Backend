@@ -15,6 +15,7 @@ public record NovaSolicitacaoInternaDto(
         UUID folhaPagamentoId,
         UUID comboId,
         UUID itemComboId,
+        UUID competenciaId,
         UUID valorItemComboId
 ) {
 }

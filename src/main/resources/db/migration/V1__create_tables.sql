@@ -182,6 +182,8 @@ create table solicitacao_interna (
     combo_id bigint references combo(id),
     item_combo_id bigint references item_combo(id),
     valor_item_combo_id bigint references valor_item_combo(id),
+    competencia_id bigint references competencia(id),
+    resposta varchar(500),
     status varchar(50) not null,
     criado_em timestamp not null
 );
