@@ -181,6 +181,7 @@ create table solicitacao_interna (
     folha_pagamento_id bigint references folha_pagamento(id),
     combo_id bigint references combo(id),
     item_combo_id bigint references item_combo(id),
+    valor_item_combo_id bigint references valor_item_combo(id),
     status varchar(50) not null,
     criado_em timestamp not null
 );

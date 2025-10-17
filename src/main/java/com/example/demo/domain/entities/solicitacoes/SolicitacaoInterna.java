@@ -2,6 +2,7 @@ package com.example.demo.domain.entities.solicitacoes;
 
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
+import com.example.demo.domain.entities.combos.ValorItemCombo;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.estrutura.FolhaPagamento;
 import com.example.demo.domain.entities.usuario.Usuario;
@@ -64,6 +65,10 @@ public class SolicitacaoInterna {
     @ManyToOne
     @JoinColumn(name = "item_combo_id")
     private ItemCombo itemCombo;
+
+    @ManyToOne
+    @JoinColumn(name = "valor_item_combo_id")
+    private ValorItemCombo valorItemCombo;
 
     @CreatedDate
     @Column(nullable = false)
