@@ -172,7 +172,6 @@ create table solicitacao_cadastro_usuario (
 
 create table solicitacao_interna (
     id bigserial primary key,
-    uuid uuid not null unique default gen_random_uuid(),
     descricao varchar(500) not null,
     valor numeric(19,2),
     tipo_solicitacao varchar(50) not null,

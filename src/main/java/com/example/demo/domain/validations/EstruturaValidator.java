@@ -41,6 +41,7 @@ public class EstruturaValidator {
 
     public void validaUsuarioPertenceEstrutura(Usuario usuario, String nome){
         Estrutura estruturaUsuario = usuario.getEstrutura();
+        System.out.println(estruturaUsuario.getNome());
         Estrutura estrutura = estruturaRepository.findByNome(nome)
                 .orElseThrow(() -> new EntityNotFoundException("Setor inválido ou inexistente"));
 

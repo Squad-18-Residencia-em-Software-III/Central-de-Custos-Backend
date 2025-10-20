@@ -28,7 +28,7 @@ public class SolicitaAlteracaoFolhaPagamentoImpl extends SolicitacaoInternaStrat
     @Transactional
     public void realiza(NovaSolicitacaoInternaDto dto) {
         Usuario usuario = usuarioSolicitacao();
-        estruturaValidator.validaUsuarioPertenceEstrutura(usuario, "RH");
+        estruturaValidator.validaUsuarioPertenceEstrutura(usuario,"RH");
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
 
         SolicitacaoInterna solicitacaoInterna = new SolicitacaoInterna();

@@ -14,11 +14,12 @@ public record InfoSolicitacaoInternaDto(
         TipoSolicitacao tipoSolicitacao,
         StatusSolicitacao statusSolicitacao,
         String estruturaSolicitacao,
-        LocalDate competenciaFolhaPagamento,
+        LocalDate competencia,
         String combo,
         String itemCombo,
+        BigDecimal novoValor,
         BigDecimal valorItemCombo,
-        LocalDate competenciaValorItemCombo,
+        BigDecimal valorFolhaPagamento,
         LocalDateTime criadoEm
 ) {
 }

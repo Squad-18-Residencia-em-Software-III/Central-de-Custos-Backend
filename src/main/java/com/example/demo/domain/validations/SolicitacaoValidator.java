@@ -42,8 +42,8 @@ public class SolicitacaoValidator {
         }
     }
 
-    public SolicitacaoInterna validaSolicitacaoInternaExiste(UUID solicitacaoInternaId){
-        return solicitacaoInternaRepository.findByUuid(solicitacaoInternaId)
+    public SolicitacaoInterna validaSolicitacaoInternaExiste(Long solicitacaoInternaId){
+        return solicitacaoInternaRepository.findById(solicitacaoInternaId)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitação inválida ou inexistente"));
     }
 

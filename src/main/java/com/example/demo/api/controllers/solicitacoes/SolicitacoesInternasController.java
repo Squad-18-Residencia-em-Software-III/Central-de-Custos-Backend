@@ -1,5 +1,6 @@
 package com.example.demo.api.controllers.solicitacoes;
 
+import com.example.demo.domain.dto.solicitacoes.InfoSolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.NovaSolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.RespostaSolicitacaoInterna;
 import com.example.demo.domain.enums.StatusSolicitacao;
@@ -37,11 +38,20 @@ public class SolicitacoesInternasController {
             tags = "Solicitações Internas")
     @PostMapping("/definir-status")
     public ResponseEntity<Void> definirStatusSolicitacao(
-            @RequestParam(name = "solicitacaoInternaId") UUID solicitacaoInternaId,
+            @RequestParam(name = "solicitacaoInternaId") Long solicitacaoInternaId,
             @RequestParam(name = "status") StatusSolicitacao statusSolicitacao,
             @RequestBody RespostaSolicitacaoInterna resposta
             ){
         solicitacaoInternaService.definirStatusSolicitacao(solicitacaoInternaId, statusSolicitacao, resposta);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Buscar Detalhes da Solicitacao",
+            description = "Retorna os dados da solicitação",
+            tags = "Solicitações Internas")
+    @GetMapping("/{id}")
+    public ResponseEntity<InfoSolicitacaoInternaDto> buscarDetalhesSolicitacao(@PathVariable Long id){
+        return ResponseEntity.ok(solicitacaoInternaService.buscarDetalhesSolicitacao(id));
     }
 }
