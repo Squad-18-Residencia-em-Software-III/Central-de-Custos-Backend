@@ -28,7 +28,7 @@ public class AceitarSolicitacaoValorItemImpl extends AceitarSolicitacaoInternaSt
         if (solicitacaoInterna.getValorItemCombo() != null){
             valorItemCombo = solicitacaoInterna.getValorItemCombo();
             valorItemCombo.setValor(solicitacaoInterna.getValor());
-        } else {
+        } else { // Ter uma outra verificação dentro pra ver se realmente não existe esse valor la pela competencia e estrutura
             valorItemCombo = new ValorItemCombo();
             valorItemCombo.setEstrutura(solicitacaoInterna.getEstrutura());
             valorItemCombo.setCombo(solicitacaoInterna.getCombo());

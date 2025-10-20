@@ -3,10 +3,13 @@ package com.example.demo.api.controllers.solicitacoes;
 import com.example.demo.domain.dto.solicitacoes.InfoSolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.NovaSolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.RespostaSolicitacaoInterna;
+import com.example.demo.domain.dto.solicitacoes.SolicitacaoInternaDto;
 import com.example.demo.domain.enums.StatusSolicitacao;
+import com.example.demo.domain.enums.TipoSolicitacao;
 import com.example.demo.domain.services.solicitacoes.solicitacaointerna.SolicitacaoInternaService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,5 +56,18 @@ public class SolicitacoesInternasController {
     @GetMapping("/{id}")
     public ResponseEntity<InfoSolicitacaoInternaDto> buscarDetalhesSolicitacao(@PathVariable Long id){
         return ResponseEntity.ok(solicitacaoInternaService.buscarDetalhesSolicitacao(id));
+    }
+
+    @Operation(
+            summary = "Buscar Solicitacoes",
+            description = "Retorna solicitacoes",
+            tags = "Solicitações Internas")
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<SolicitacaoInternaDto>> buscarSolicitacoes(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "status", required = false) StatusSolicitacao statusSolicitacao,
+            @RequestParam(name = "tipo", required = false) TipoSolicitacao tipoSolicitacao
+    ){
+        return ResponseEntity.ok(solicitacaoInternaService.buscarSolicitacoes(pageNumber, statusSolicitacao, tipoSolicitacao));
     }
 }

@@ -29,7 +29,7 @@ public class AceitarSolicitacaoFolhaPagamentoImpl extends AceitarSolicitacaoInte
         if (solicitacaoInterna.getFolhaPagamento() != null){
             folhaPagamento = solicitacaoInterna.getFolhaPagamento();
             folhaPagamento.setValor(solicitacaoInterna.getValor());
-        } else {
+        } else { // Ter uma outra verificação dentro pra ver se realmente não existe esse valor la pela competencia e estrutura
             folhaPagamento = new FolhaPagamento();
             folhaPagamento.setValor(solicitacaoInterna.getValor());
             folhaPagamento.setCompetencia(solicitacaoInterna.getCompetencia());

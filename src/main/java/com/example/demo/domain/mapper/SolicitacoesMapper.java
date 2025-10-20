@@ -1,6 +1,7 @@
 package com.example.demo.domain.mapper;
 
 import com.example.demo.domain.dto.solicitacoes.InfoSolicitacaoInternaDto;
+import com.example.demo.domain.dto.solicitacoes.SolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
@@ -27,6 +28,11 @@ public interface SolicitacoesMapper {
     @Mapping(target = "novoValor", source = "valor")
     @Mapping(target = "valorItemCombo", source = "valorItemCombo.valor")
     @Mapping(target = "valorFolhaPagamento", source = "folhaPagamento.valor")
+    @Mapping(target = "statusSolicitacao", source = "status")
     InfoSolicitacaoInternaDto solicitacaoInternaToInfoDto(SolicitacaoInterna solicitacaoInterna);
+
+    @Mapping(target = "nomeUsuario", source = "usuario.nome")
+    @Mapping(target = "statusSolicitacao", source = "status")
+    SolicitacaoInternaDto solicitacaoInternaToDto(SolicitacaoInterna solicitacaoInterna);
 
 }

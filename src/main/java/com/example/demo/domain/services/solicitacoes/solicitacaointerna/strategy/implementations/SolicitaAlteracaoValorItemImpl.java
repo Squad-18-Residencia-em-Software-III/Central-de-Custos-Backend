@@ -21,9 +21,9 @@ public class SolicitaAlteracaoValorItemImpl extends SolicitacaoInternaStrategy {
     private final ComboValidator comboValidator;
     private final ItemValidator itemValidator;
 
-    protected SolicitaAlteracaoValorItemImpl(SolicitacaoInternaRepository solicitacaoInternaRepository, EstruturaValidator estruturaValidator, ComboValidator comboValidator, ItemValidator itemValidator) {
-        super(solicitacaoInternaRepository, estruturaValidator);
-        this.comboValidator = comboValidator;
+    protected SolicitaAlteracaoValorItemImpl(SolicitacaoInternaRepository solicitacaoInternaRepository, EstruturaValidator estruturaValidator, ComboValidator comboValidator, ComboValidator comboValidator1, ItemValidator itemValidator) {
+        super(solicitacaoInternaRepository, estruturaValidator, comboValidator);
+        this.comboValidator = comboValidator1;
         this.itemValidator = itemValidator;
     }
 

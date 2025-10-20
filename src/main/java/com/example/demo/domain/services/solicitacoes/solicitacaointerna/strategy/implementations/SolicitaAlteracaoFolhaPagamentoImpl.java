@@ -1,13 +1,16 @@
 package com.example.demo.domain.services.solicitacoes.solicitacaointerna.strategy.implementations;
 
 import com.example.demo.domain.dto.solicitacoes.NovaSolicitacaoInternaDto;
+import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.estrutura.FolhaPagamento;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoInterna;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.example.demo.domain.enums.TipoSolicitacao;
 import com.example.demo.domain.repositorios.SolicitacaoInternaRepository;
 import com.example.demo.domain.services.solicitacoes.solicitacaointerna.strategy.SolicitacaoInternaStrategy;
+import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.FolhaPagamentoValidator;
 import jakarta.transaction.Transactional;
@@ -19,8 +22,8 @@ public class SolicitaAlteracaoFolhaPagamentoImpl extends SolicitacaoInternaStrat
 
     private final FolhaPagamentoValidator folhaPagamentoValidator;
 
-    protected SolicitaAlteracaoFolhaPagamentoImpl(SolicitacaoInternaRepository solicitacaoInternaRepository, EstruturaValidator estruturaValidator, FolhaPagamentoValidator folhaPagamentoValidator) {
-        super(solicitacaoInternaRepository, estruturaValidator);
+    protected SolicitaAlteracaoFolhaPagamentoImpl(SolicitacaoInternaRepository solicitacaoInternaRepository, EstruturaValidator estruturaValidator, ComboValidator comboValidator, FolhaPagamentoValidator folhaPagamentoValidator) {
+        super(solicitacaoInternaRepository, estruturaValidator, comboValidator);
         this.folhaPagamentoValidator = folhaPagamentoValidator;
     }
 
@@ -28,8 +31,9 @@ public class SolicitaAlteracaoFolhaPagamentoImpl extends SolicitacaoInternaStrat
     @Transactional
     public void realiza(NovaSolicitacaoInternaDto dto) {
         Usuario usuario = usuarioSolicitacao();
-        estruturaValidator.validaUsuarioPertenceEstrutura(usuario,"RH");
+        estruturaValidator.validaUsuarioPertenceEstrutura(usuario, ClassificacaoEstrutura.RH);
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
+        Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
 
         SolicitacaoInterna solicitacaoInterna = new SolicitacaoInterna();
         if (dto.folhaPagamentoId() != null){
@@ -42,6 +46,7 @@ public class SolicitaAlteracaoFolhaPagamentoImpl extends SolicitacaoInternaStrat
         solicitacaoInterna.setDescricao(dto.descricao());
         solicitacaoInterna.setTipoSolicitacao(dto.tipoSolicitacao());
         solicitacaoInterna.setUsuario(usuario);
+        solicitacaoInterna.setCompetencia(competencia);
 
         solicitacaoInternaRepository.save(solicitacaoInterna);
     }
