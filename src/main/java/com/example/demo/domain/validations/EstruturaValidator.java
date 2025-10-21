@@ -8,6 +8,7 @@ import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.MunicipioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -46,6 +47,17 @@ public class EstruturaValidator {
                 .orElseThrow(() -> new EntityNotFoundException("Setor inválido ou inexistente"));
         if (!(estruturaUsuario.getId()).equals(estrutura.getId())){
             throw new BusinessException("O setor informado não pertence ao seu usuário");
+        }
+    }
+
+    public void validarAcessoBuscar(Usuario usuario, Estrutura estrutura) {
+        Estrutura estruturaUsuario = usuario.getEstrutura();
+
+        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+        boolean mesmaEstrutura = (estruturaUsuario.getId()).equals(estrutura.getId());
+
+        if (!isAdmin && !mesmaEstrutura) {
+            throw new AccessDeniedException("Não permitido");
         }
     }
 }

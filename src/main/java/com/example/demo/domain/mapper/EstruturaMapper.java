@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface EstruturaMapper {
 
     @Mapping(target = "id", source = "uuid")
+    @Mapping(target = "municipio", source = "municipio.nome")
+    @Mapping(target = "uf", source = "municipio.uf.sigla")
     EstruturaDto toDto(Estrutura estrutura);
 
 }
