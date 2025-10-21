@@ -1,12 +1,12 @@
 package com.example.demo.domain.services.estrutura;
 
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
+import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.example.demo.domain.mapper.EstruturaMapper;
 import com.example.demo.domain.repositorios.EstruturaRepository;
-import com.example.demo.domain.repositorios.specs.ComboSpecs;
 import com.example.demo.domain.repositorios.specs.EstruturaSpecs;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.infra.security.authentication.AuthenticatedUserProvider;
@@ -47,7 +47,13 @@ public class EstruturaService {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
         Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            estrutura = usuario.getEstrutura();
+        }
+
         estruturaValidator.validarAcessoBuscar(usuario, estrutura);
 
         Specification<Estrutura> spec = Specification.allOf(
@@ -63,6 +69,22 @@ public class EstruturaService {
         }
         Page<Estrutura> estruturas = estruturaRepository.findAll(spec, pageable);
         return estruturas.map(estruturaMapper::toDto);
+    }
+
+
+    public EstruturaInfoDto buscarInfoEstrutura(UUID estruturaId){
+        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            estrutura = usuario.getEstrutura();
+        }
+
+        estruturaValidator.validarAcessoBuscar(usuario, estrutura);
+
+        return estruturaMapper.toInfoDto(estrutura);
     }
 
 }

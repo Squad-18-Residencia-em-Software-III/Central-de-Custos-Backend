@@ -58,7 +58,7 @@ public class Estrutura {
     @Column(nullable = false)
     private String cep;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // verificar se isso prejudica
     @JoinColumn(name = "municipio_id", nullable = false)
     private Municipio municipio;
 

@@ -2,13 +2,16 @@ package com.example.demo.domain.dto.estrutura;
 
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
 
-import java.util.UUID;
-
-public record EstruturaComboDto(
-        UUID id,
+public record EstruturaInfoDto(
         String nome,
         ClassificacaoEstrutura classificacaoEstrutura,
         String municipio,
-        String uf
+        String uf,
+        String telefone,
+        String logradouro,
+        String complemento,
+        Integer numeroRua,
+        String bairro,
+        String cep
 ) {
 }
