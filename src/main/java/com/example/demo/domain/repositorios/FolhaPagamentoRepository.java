@@ -6,8 +6,11 @@ import com.example.demo.domain.entities.estrutura.FolhaPagamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface FolhaPagamentoRepository extends JpaRepository<FolhaPagamento, Long>{
 
     Optional<FolhaPagamento> findByEstruturaAndCompetencia(Estrutura estrutura, Competencia competencia);
+
+    Optional<FolhaPagamento> findByUuid(UUID folhaPagamentoId);
 }

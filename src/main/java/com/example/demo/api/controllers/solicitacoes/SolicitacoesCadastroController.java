@@ -1,7 +1,7 @@
 package com.example.demo.api.controllers.solicitacoes;
 
-import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
-import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.services.solicitacoes.cadastrousuario.SolicitacoesCadastroService;
 import io.swagger.v3.oas.annotations.Operation;

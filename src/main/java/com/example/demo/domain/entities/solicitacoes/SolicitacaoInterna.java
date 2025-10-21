@@ -2,6 +2,8 @@ package com.example.demo.domain.entities.solicitacoes;
 
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
+import com.example.demo.domain.entities.combos.ValorItemCombo;
+import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.estrutura.FolhaPagamento;
 import com.example.demo.domain.entities.usuario.Usuario;
@@ -31,9 +33,6 @@ public class SolicitacaoInterna {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true, updatable = false)
-    private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)
     private String descricao;
@@ -65,6 +64,14 @@ public class SolicitacaoInterna {
     @JoinColumn(name = "item_combo_id")
     private ItemCombo itemCombo;
 
+    @ManyToOne
+    @JoinColumn(name = "competencia_id")
+    private Competencia competencia;
+
+    @ManyToOne
+    @JoinColumn(name = "valor_item_combo_id")
+    private ValorItemCombo valorItemCombo;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime criadoEm;
@@ -72,6 +79,9 @@ public class SolicitacaoInterna {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusSolicitacao status;
+
+    @Column
+    private String resposta;
 
     @PrePersist
     public void prePersist() {

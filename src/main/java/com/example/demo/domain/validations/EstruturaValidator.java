@@ -2,6 +2,9 @@ package com.example.demo.domain.validations;
 
 import com.example.demo.domain.entities.Municipio;
 import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.MunicipioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,5 +31,21 @@ public class EstruturaValidator {
     public Municipio validarMunicipioExiste(UUID municipioId){
         return municipioRepository.findByUuid(municipioId)
                 .orElseThrow(() -> new EntityNotFoundException("Municipio inválido ou inexistente"));
+    }
+
+    public void validaUsuarioPertenceEstrutura(Usuario usuario, Estrutura estrutura){
+        Estrutura estruturaUsuario = usuario.getEstrutura();
+        if (!(estruturaUsuario.getId()).equals(estrutura.getId())){
+            throw new BusinessException("O setor informado não pertence ao seu usuário");
+        }
+    }
+
+    public void validaUsuarioPertenceEstrutura(Usuario usuario, ClassificacaoEstrutura classificacaoEstrutura){
+        Estrutura estruturaUsuario = usuario.getEstrutura();
+        Estrutura estrutura = estruturaRepository.findByClassificacaoEstrutura(classificacaoEstrutura)
+                .orElseThrow(() -> new EntityNotFoundException("Setor inválido ou inexistente"));
+        if (!(estruturaUsuario.getId()).equals(estrutura.getId())){
+            throw new BusinessException("O setor informado não pertence ao seu usuário");
+        }
     }
 }

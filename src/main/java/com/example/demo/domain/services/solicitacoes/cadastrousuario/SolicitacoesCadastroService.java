@@ -1,18 +1,15 @@
 package com.example.demo.domain.services.solicitacoes.cadastrousuario;
 
-import com.example.demo.domain.dto.solicitacoes.CadastroUsuarioDto;
-import com.example.demo.domain.dto.solicitacoes.SolicitaCadastroUsuarioDto;
-import com.example.demo.domain.entities.Municipio;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.mapper.SolicitacoesMapper;
 import com.example.demo.domain.repositorios.*;
-import com.example.demo.domain.services.solicitacoes.cadastrousuario.strategy.AceitarSolicitacaoCadastroStrategy;
 import com.example.demo.domain.services.solicitacoes.factory.SolicitacaoFactory;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.domain.validations.SolicitacaoValidator;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service

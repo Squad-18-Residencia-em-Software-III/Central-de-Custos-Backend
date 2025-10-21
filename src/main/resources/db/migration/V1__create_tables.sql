@@ -172,7 +172,6 @@ create table solicitacao_cadastro_usuario (
 
 create table solicitacao_interna (
     id bigserial primary key,
-    uuid uuid not null unique default gen_random_uuid(),
     descricao varchar(500) not null,
     valor numeric(19,2),
     tipo_solicitacao varchar(50) not null,
@@ -181,6 +180,9 @@ create table solicitacao_interna (
     folha_pagamento_id bigint references folha_pagamento(id),
     combo_id bigint references combo(id),
     item_combo_id bigint references item_combo(id),
+    valor_item_combo_id bigint references valor_item_combo(id),
+    competencia_id bigint references competencia(id),
+    resposta varchar(500),
     status varchar(50) not null,
     criado_em timestamp not null
 );

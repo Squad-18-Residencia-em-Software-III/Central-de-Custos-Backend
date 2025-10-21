@@ -1,6 +1,7 @@
 package com.example.demo.domain.repositorios;
 
 import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,6 @@ public interface EstruturaRepository extends JpaRepository<Estrutura, Long>, Jpa
     )
     """, nativeQuery = true)
     boolean pertenceAHierarquia(@Param("idBase") Long idBase, @Param("idAlvo") Long idAlvo);
+
+    Optional<Estrutura> findByClassificacaoEstrutura(ClassificacaoEstrutura classificacaoEstrutura);
 }

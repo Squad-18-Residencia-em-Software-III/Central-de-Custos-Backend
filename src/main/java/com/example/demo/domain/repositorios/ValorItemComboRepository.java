@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, Long> {
 
@@ -44,4 +45,6 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
     Optional<ValorItemCombo> findByEstruturaAndComboAndItemComboAndCompetencia(Estrutura estrutura, Combo combo, ItemCombo itemCombo, Competencia competencia);
 
     boolean existsByItemCombo(ItemCombo itemCombo);
+
+    Optional<ValorItemCombo> findByUuid(UUID valorItemComboId);
 }

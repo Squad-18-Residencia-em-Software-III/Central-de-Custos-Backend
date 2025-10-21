@@ -66,4 +66,9 @@ public class ItemValidator {
             throw new AccessDeniedException("Já existe um valor para este item, por tanto, não poderá ser deletado");
         }
     }
+
+    public ValorItemCombo validaValorExiste(UUID valorItemComboId){
+        return valorItemComboRepository.findByUuid(valorItemComboId)
+                .orElseThrow(() -> new EntityNotFoundException("Valor inválido ou inexistente"));
+    }
 }

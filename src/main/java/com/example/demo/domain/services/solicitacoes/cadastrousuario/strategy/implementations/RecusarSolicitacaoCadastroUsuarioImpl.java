@@ -5,15 +5,16 @@ import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.repositorios.SolicitacaoCadastroUsuarioRepository;
 import com.example.demo.domain.services.solicitacoes.cadastrousuario.strategy.AceitarSolicitacaoCadastroStrategy;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class RecusarSolicitacaoCadastroUsuarioImpl implements AceitarSolicitacaoCadastroStrategy {
+@Service
+public class RecusarSolicitacaoCadastroUsuarioImpl extends AceitarSolicitacaoCadastroStrategy {
 
     private final SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository;
 
-    public RecusarSolicitacaoCadastroUsuarioImpl(SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository) {
-        this.solicitacaoCadastroUsuarioRepository = solicitacaoCadastroUsuarioRepository;
+    protected RecusarSolicitacaoCadastroUsuarioImpl(SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository, SolicitacaoCadastroUsuarioRepository solicitacaoCadastroUsuarioRepository1) {
+        super(solicitacaoCadastroUsuarioRepository);
+        this.solicitacaoCadastroUsuarioRepository = solicitacaoCadastroUsuarioRepository1;
     }
 
     @Override
