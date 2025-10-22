@@ -110,7 +110,7 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.GET, "/estrutura/all").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/combo/buscar").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.GET, "/item/buscar").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.POST, "/item/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST, "/item").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.DELETE, "/item/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.POST, "/combo/**").hasRole("ADMIN");
