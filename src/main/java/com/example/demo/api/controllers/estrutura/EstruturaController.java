@@ -34,20 +34,6 @@ public class EstruturaController {
     }
 
     @Operation(
-            summary = "Buscar Sub Setores",
-            description = "Retorna uma lista de subsetores (estruturas filhas) de uma estrutura. (Se não informar o id da estrutura, puxa a do usuario logado)",
-            tags = "Estrutura(Setor)")
-    @GetMapping("/buscar-subsetores")
-    public ResponseEntity<Page<EstruturaDto>> buscarSubSetores(
-            @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(name = "estruturaId", required = false) UUID estruturaId,
-            @RequestParam(name = "nome", required = false) String nome,
-            @RequestParam(name = "classificacao", required = false) ClassificacaoEstrutura classificacaoEstrutura
-    ){
-        return ResponseEntity.ok(estruturaService.buscarSubSetores(pageNumber, estruturaId, nome, classificacaoEstrutura));
-    }
-
-    @Operation(
             summary = "Buscar informações da Estrutura",
             description = "Retorna informações da estrutura escolhida (Se não informar o id da estrutura, puxa a do usuario logado)",
             tags = "Estrutura(Setor)")

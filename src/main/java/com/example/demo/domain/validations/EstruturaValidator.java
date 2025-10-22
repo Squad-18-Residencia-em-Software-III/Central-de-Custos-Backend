@@ -50,13 +50,16 @@ public class EstruturaValidator {
         }
     }
 
-    public void validarAcessoBuscar(Usuario usuario, Estrutura estrutura) {
+    public void validarAcessoBuscar(Usuario usuario, UUID estrutura) {
         Estrutura estruturaUsuario = usuario.getEstrutura();
 
-        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
-        boolean mesmaEstrutura = (estruturaUsuario.getId()).equals(estrutura.getId());
+        Estrutura estruturaSelecionada = validarEstruturaExiste(estrutura);
 
-        if (!isAdmin && !mesmaEstrutura) {
+        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+        boolean mesmaEstrutura = (estruturaUsuario.getId()).equals(estruturaSelecionada.getId());
+        boolean contemNosSubSetores = estruturaRepository.pertenceAHierarquia(estruturaUsuario.getId(), estruturaSelecionada.getId());
+
+        if (!isAdmin && !mesmaEstrutura && !contemNosSubSetores) {
             throw new AccessDeniedException("Não permitido");
         }
     }

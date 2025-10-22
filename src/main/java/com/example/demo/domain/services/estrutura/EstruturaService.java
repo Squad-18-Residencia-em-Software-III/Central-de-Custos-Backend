@@ -10,11 +10,10 @@ import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.specs.EstruturaSpecs;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.infra.security.authentication.AuthenticatedUserProvider;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,11 +24,13 @@ public class EstruturaService {
     private final EstruturaRepository estruturaRepository;
     private final EstruturaMapper estruturaMapper;
     private final EstruturaValidator estruturaValidator;
+    private final ObjectMapper objectMapper;
 
-    public EstruturaService(EstruturaRepository estruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator) {
+    public EstruturaService(EstruturaRepository estruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator, ObjectMapper objectMapper) {
         this.estruturaRepository = estruturaRepository;
         this.estruturaMapper = estruturaMapper;
         this.estruturaValidator = estruturaValidator;
+        this.objectMapper = objectMapper;
     }
 
     public List<EstruturaDto> buscarEstruturas(String nome){
@@ -43,48 +44,30 @@ public class EstruturaService {
         return estruturas.stream().map(estruturaMapper::toDto).toList();
     }
 
-    public Page<EstruturaDto> buscarSubSetores(int pageNumber, UUID estruturaId, String nome, ClassificacaoEstrutura classificacaoEstrutura){
+    @Transactional(readOnly = true)
+    public EstruturaInfoDto buscarInfoEstrutura(UUID estruturaId) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
-        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
-        Estrutura estrutura;
+        UUID estrutura;
+
         if (estruturaId != null){
-            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+            estrutura = estruturaId;
         } else {
-            estrutura = usuario.getEstrutura();
+            estrutura = usuario.getEstrutura().getUuid();
         }
 
         estruturaValidator.validarAcessoBuscar(usuario, estrutura);
-
-        Specification<Estrutura> spec = Specification.allOf(
-                EstruturaSpecs.pertenceAEstruturaPai(estrutura)
-        );
-
-        if (nome != null && !nome.isBlank()) {
-            spec = spec.and(EstruturaSpecs.comNomeContendo(nome));
+        String json = estruturaRepository.buscarInfoEstruturaJson(estrutura);
+        if (json == null) {
+            throw new IllegalArgumentException("Estrutura não encontrada para o ID informado: " + estrutura);
         }
 
-        if (classificacaoEstrutura != null) {
-            spec = spec.and(EstruturaSpecs.comClassificacao(classificacaoEstrutura));
+        try {
+            return objectMapper.readValue(json, EstruturaInfoDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao converter JSON para EstruturaInfoDto", e);
         }
-        Page<Estrutura> estruturas = estruturaRepository.findAll(spec, pageable);
-        return estruturas.map(estruturaMapper::toDto);
     }
 
-
-    public EstruturaInfoDto buscarInfoEstrutura(UUID estruturaId){
-        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
-
-        Estrutura estrutura;
-        if (estruturaId != null){
-            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
-        } else {
-            estrutura = usuario.getEstrutura();
-        }
-
-        estruturaValidator.validarAcessoBuscar(usuario, estrutura);
-
-        return estruturaMapper.toInfoDto(estrutura);
-    }
 
 }
