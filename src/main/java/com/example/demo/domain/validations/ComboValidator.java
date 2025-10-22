@@ -38,7 +38,7 @@ public class ComboValidator {
         Estrutura estruturaUsuario = usuario.getEstrutura();
 
         boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
-        boolean mesmaEstrutura = estruturaUsuario.equals(estruturaCombo);
+        boolean mesmaEstrutura = (estruturaUsuario.getId()).equals(estruturaCombo.getId());
         boolean contemNosSubSetores = estruturaRepository.pertenceAHierarquia(estruturaUsuario.getId(), estruturaCombo.getId());
 
         if (!isAdmin && !mesmaEstrutura && !contemNosSubSetores) {
