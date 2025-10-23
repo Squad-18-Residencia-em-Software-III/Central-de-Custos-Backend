@@ -29,8 +29,11 @@ public class EstruturaController {
             tags = "Estrutura(Setor)")
     @SecurityRequirements()
     @GetMapping("/all")
-    public ResponseEntity<List<EstruturaDto>> buscarEstruturas(@RequestParam(name = "nome", required = false) String nome){
-        return ResponseEntity.ok(estruturaService.buscarEstruturas(nome));
+    public ResponseEntity<Page<EstruturaDto>> buscarEstruturas(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "nome", required = false
+            ) String nome){
+        return ResponseEntity.ok(estruturaService.buscarEstruturas(pageNumber, nome));
     }
 
     @Operation(
