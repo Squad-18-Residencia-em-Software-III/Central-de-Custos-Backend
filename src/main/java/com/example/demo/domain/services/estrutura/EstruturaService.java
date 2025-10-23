@@ -36,7 +36,7 @@ public class EstruturaService {
     }
 
     public Page<EstruturaDto> buscarEstruturas(int pageNumber, String nome){
-        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
         Specification<Estrutura> spec = Specification.allOf();
 

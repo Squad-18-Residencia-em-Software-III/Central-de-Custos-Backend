@@ -74,7 +74,7 @@ public class ItemBuscarService {
     }
 
     public Page<ItemDto> buscarItens(int pageNumber, String nome){
-        Pageable pageable = PageRequest.of(pageNumber - 1, 20);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
         Specification<ItemCombo> spec = Specification.allOf();
 

@@ -21,7 +21,7 @@ public class ItemService {
         this.itemValorService = itemValorService;
     }
 
-    public Page<ItemDto> buscarItens(int pageNumber, String nome){
+    public Page<ItemDto>buscarItens(int pageNumber, String nome){
         return itemBuscarService.buscarItens(pageNumber, nome);
     }
 
