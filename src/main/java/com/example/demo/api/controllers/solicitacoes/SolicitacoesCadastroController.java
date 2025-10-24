@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class SolicitacoesCadastroController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Aceitar ou Recusar Solicitação",
             description = "Endpoint utilizado para aceitar ou recusar a solicitação de cadastro, criando um token de primeiro acesso e enviando para o email",
@@ -45,6 +47,7 @@ public class SolicitacoesCadastroController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Todas as Solicitações",
             description = "Retorna todas as solicitações registradas em páginas",
@@ -55,6 +58,7 @@ public class SolicitacoesCadastroController {
         return ResponseEntity.ok(solicitacoes);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Visualizar Solicitação",
             description = "Retorna informações da solicitação",

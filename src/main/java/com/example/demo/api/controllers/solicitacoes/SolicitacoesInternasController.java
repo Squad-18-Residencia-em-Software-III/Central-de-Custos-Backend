@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class SolicitacoesInternasController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Definir Status Solicitacao (ACEITAR OU RECUSAR)",
             description = "Endpoint utilizado aceitar ou recusar uma solicitacao interna",
@@ -49,6 +51,7 @@ public class SolicitacoesInternasController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Buscar Detalhes da Solicitacao",
             description = "Retorna os dados da solicitação",
@@ -58,6 +61,7 @@ public class SolicitacoesInternasController {
         return ResponseEntity.ok(solicitacaoInternaService.buscarDetalhesSolicitacao(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Buscar Solicitacoes",
             description = "Retorna solicitacoes",

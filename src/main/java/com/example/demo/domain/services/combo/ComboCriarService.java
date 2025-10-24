@@ -2,9 +2,11 @@ package com.example.demo.domain.services.combo;
 
 import com.example.demo.domain.dto.combos.CriarComboDto;
 import com.example.demo.domain.dto.combos.EditarComboDto;
+import com.example.demo.domain.dto.combos.InclusaoDto;
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
 import com.example.demo.domain.entities.estrutura.Estrutura;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.mapper.ComboMapper;
 import com.example.demo.domain.repositorios.ComboRepository;
 import com.example.demo.domain.services.combo.strategy.EditarCampoComboStrategy;
@@ -14,9 +16,7 @@ import com.example.demo.domain.validations.ItemValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,22 +56,48 @@ public class ComboCriarService {
     }
 
     @Transactional
-    public void adicionarEstruturaAoCombo(UUID comboId, UUID estruturaId) {
+    public void adicionarEstruturasAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
 
-        combo.getEstruturas().add(estrutura);
-        estrutura.getCombos().add(combo); // atualiza o outro lado
+        Set<Estrutura> estruturasExistentes = new HashSet<>(combo.getEstruturas());
+
+        List<Estrutura> estruturasParaAdicionar = dto.ids().stream()
+                .map(estruturaValidator::validarEstruturaExiste)
+                .filter(estrutura -> {
+                    if (estruturasExistentes.contains(estrutura)){
+                        throw new BusinessException(
+                                String.format("A estrutura %s já faz parte desse combo", estrutura.getNome())
+                        );
+                    }
+                    return true;
+                })
+                .toList();
+
+        combo.getEstruturas().addAll(estruturasParaAdicionar);
 
         comboRepository.save(combo);
     }
 
     @Transactional
-    public void adicionarItemAoCombo(UUID comboId, UUID itemId) {
+    public void adicionarItensAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-        ItemCombo itemCombo = itemValidator.validaItemExiste(itemId);
 
-        combo.getItens().add(itemCombo);
+        Set<ItemCombo> itensExistentes = new HashSet<>(combo.getItens());
+
+        List<ItemCombo> itensParaAdicionar = dto.ids().stream()
+                .map(itemValidator::validaItemExiste)
+                .filter(item -> {
+                    if (itensExistentes.contains(item)) {
+                        throw new BusinessException(
+                                String.format("O item %s já faz parte desse combo", item.getNome())
+                        );
+                    }
+                    return true;
+                })
+                .toList();
+
+        combo.getItens().addAll(itensParaAdicionar);
+
         comboRepository.save(combo);
     }
 

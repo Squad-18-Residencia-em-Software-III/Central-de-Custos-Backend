@@ -1,13 +1,12 @@
 package com.example.demo.api.controllers.combo;
 
-import com.example.demo.domain.dto.combos.ComboDto;
-import com.example.demo.domain.dto.combos.CriarComboDto;
-import com.example.demo.domain.dto.combos.EditarComboDto;
+import com.example.demo.domain.dto.combos.*;
 import com.example.demo.domain.services.combo.ComboService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +34,7 @@ public class ComboController {
         return ResponseEntity.ok(comboService.buscarCombosEstrutura(estruturaId, nome));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Buscar todos combos",
             description = "Endpoint utilizado para buscar todos os combos",
@@ -47,6 +47,17 @@ public class ComboController {
         return ResponseEntity.ok(comboService.buscarCombos(pageNumber, nome));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Visualizar combo",
+            description = "Endpoint utilizado para visualizar detalhes de um combo",
+            tags = "Combos")
+    @GetMapping("/{id}")
+    public ResponseEntity<ComboDetalhadoDto> visualizarCombo(@PathVariable UUID id){
+        return ResponseEntity.ok(comboService.buscarComboInfo(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Criar combo",
             description = "Endpoint utilizado para criar um combo",
@@ -57,32 +68,35 @@ public class ComboController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Adicionar estrutura ao combo",
             description = "Endpoint utilizado para adicionar uma estrutura um combo",
             tags = "Combos")
-    @PostMapping("/novo/estrutura")
+    @PostMapping("/novo/estrutura/{id}")
     public ResponseEntity<Void> adicionarEstruturaCombo(
-            @RequestParam(name = "comboId") UUID comboId,
-            @RequestParam(name = "estruturaId") UUID estruturaId
+            @PathVariable UUID id,
+            @Valid @RequestBody InclusaoDto dto
             ){
-        comboService.adicionarEstruturaAoCombo(comboId, estruturaId);
+        comboService.adicionarEstruturasAoCombo(id, dto);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Adicionar item ao combo",
             description = "Endpoint utilizado para adicionar um item um combo",
             tags = "Combos")
-    @PostMapping("/novo/item")
+    @PostMapping("/novo/item/{id}")
     public ResponseEntity<Void> adicionarItemCombo(
-            @RequestParam(name = "comboId") UUID comboId,
-            @RequestParam(name = "itemId") UUID itemId
+            @PathVariable UUID id,
+            @Valid @RequestBody InclusaoDto dto
     ){
-        comboService.adicionarItemAoCombo(comboId, itemId);
+        comboService.adicionarItensAoCombo(id, dto);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Remover estrutura do combo",
             description = "Endpoint utilizado para remover uma estrutura de um combo",
@@ -96,6 +110,7 @@ public class ComboController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Remover item do combo",
             description = "Endpoint utilizado para remover um item de um combo",
@@ -109,7 +124,7 @@ public class ComboController {
         return ResponseEntity.ok().build();
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Editar combo",
             description = "Endpoint utilizado para editar um combo",

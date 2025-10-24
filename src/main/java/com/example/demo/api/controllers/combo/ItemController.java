@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Buscar Item",
             description = "Retorna informações do item",
@@ -30,6 +32,7 @@ public class ItemController {
         return ResponseEntity.ok(itemService.buscarItem(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Buscar todos os Itens",
             description = "Endpoint utilizado para fazer uma busca de todos os itens",
@@ -64,6 +67,7 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Criar item",
             description = "Endpoint utilizado para criar um item",
@@ -74,6 +78,7 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Editar Item",
             description = "Endpoint utilizado para editar um item",
@@ -84,6 +89,7 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Deletar Item",
             description = "Endpoint utilizado para deletar um item",

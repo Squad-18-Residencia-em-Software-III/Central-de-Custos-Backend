@@ -12,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,6 +38,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
@@ -90,36 +92,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJwtAuthenticationConverter converter) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // desativar apenas localmente
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers(
-                            "/h2-console/**",
-                            "/v3/api-docs/**",
-                            "/swagger-ui/**",
-                            "/swagger-ui.html"
-                    ).permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/token/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/cadastro/novo").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/cadastro/solicitacao/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-p-senha").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/usuario/definir-r-senha").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/usuario/recuperar-senha").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/estrutura/all").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/combo/buscar").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.GET, "/item/buscar").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.POST, "/item").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.PUT, "/item/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.DELETE, "/item/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.POST, "/combo/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.PATCH, "/combo/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.POST, "/folha-pagamento/**").hasAnyRole("ADMIN", "RH");
-                    authorize.requestMatchers(HttpMethod.GET, "/folha-pagamento/**").hasAnyRole("ADMIN", "RH");
-                    authorize.requestMatchers(HttpMethod.POST, "/solicitacao/definir-status").hasRole("ADMIN");
-                    authorize.anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(auth -> auth
+
+                        // Endpoints públicos (sem autenticação)
+                        .requestMatchers(
+                                "/h2-console/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        // Login, token e registro de novos usuários
+                        .requestMatchers(HttpMethod.POST,
+                                "/auth/**",
+                                "/token/**",
+                                "/cadastro/novo",
+                                "/usuario/definir-p-senha",
+                                "/usuario/definir-r-senha",
+                                "/usuario/recuperar-senha"
+                        ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/estrutura/all").permitAll()
+
+                        // Todos os outros endpoints precisam estar autenticados
+                        .anyRequest().authenticated()
+                )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
                 )

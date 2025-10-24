@@ -1,8 +1,6 @@
 package com.example.demo.domain.services.combo;
 
-import com.example.demo.domain.dto.combos.ComboDto;
-import com.example.demo.domain.dto.combos.CriarComboDto;
-import com.example.demo.domain.dto.combos.EditarComboDto;
+import com.example.demo.domain.dto.combos.*;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -30,19 +28,23 @@ public class ComboService {
         return comboBuscaService.buscarCombos(pageNumber, nome);
     }
 
+    public ComboDetalhadoDto buscarComboInfo(UUID comboId){
+        return comboBuscaService.buscarComboInfo(comboId);
+    }
+
     @Transactional
     public void criarCombo(CriarComboDto dto){
         comboCriarService.criarCombo(dto);
     }
 
     @Transactional
-    public void adicionarEstruturaAoCombo(UUID comboId, UUID estruturaId) {
-        comboCriarService.adicionarEstruturaAoCombo(comboId, estruturaId);
+    public void adicionarEstruturasAoCombo(UUID comboId, InclusaoDto dto) {
+        comboCriarService.adicionarEstruturasAoCombo(comboId, dto);
     }
 
     @Transactional
-    public void adicionarItemAoCombo(UUID comboId, UUID itemId) {
-        comboCriarService.adicionarItemAoCombo(comboId, itemId);
+    public void adicionarItensAoCombo(UUID comboId, InclusaoDto dto) {
+        comboCriarService.adicionarItensAoCombo(comboId, dto);
     }
 
     @Transactional

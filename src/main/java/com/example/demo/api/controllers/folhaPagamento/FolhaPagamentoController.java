@@ -6,6 +6,7 @@ import com.example.demo.domain.services.folhapagamento.FolhaPagamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class FolhaPagamentoController {
         this.folhaPagamentoService = folhaPagamentoService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'RH')")
     @Operation(
             summary = "Buscar folha de Pagamento",
             description = "Retorna a folha de pagamento da estrutura na competencia informada",
@@ -37,6 +39,7 @@ public class FolhaPagamentoController {
         return ResponseEntity.ok(folhaPagamento);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'RH')")
     @Operation(
             summary = "Inserir valor na folha de Pagamento",
             description = "Endpoint responsável por inserir valor na folha de pagamento",

@@ -1,5 +1,6 @@
 package com.example.demo.domain.services.combo;
 
+import com.example.demo.domain.dto.combos.ComboDetalhadoDto;
 import com.example.demo.domain.dto.combos.ComboDto;
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.competencia.Competencia;
@@ -66,6 +67,11 @@ public class ComboBuscaService {
         Page<Combo> combos = comboRepository.findAll(spec, pageable);
 
         return combos.map(comboMapper::toDto);
+    }
+
+    public ComboDetalhadoDto buscarComboInfo(UUID comboId){
+        Combo combo = comboValidator.validarComboExiste(comboId);
+        return comboMapper.toDtoInfo(combo);
     }
 
 }
