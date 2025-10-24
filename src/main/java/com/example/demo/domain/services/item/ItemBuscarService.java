@@ -52,9 +52,7 @@ public class ItemBuscarService {
     public List<ItemComboDto> buscarItensCombo(UUID comboUuid, UUID estruturaUuid, UUID competenciaUuid) {
         Combo combo = comboValidator.validarComboExiste(comboUuid);
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaUuid);
-        Competencia competencia = competenciaUuid != null
-                ? comboValidator.validarCompetenciaExiste(competenciaUuid)
-                : competenciaService.getCompetenciaAtual();
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaUuid);
 
         List<Object[]> resultados = valorItemComboRepository.buscarItensDoComboComValores(
                 estrutura.getId(),
