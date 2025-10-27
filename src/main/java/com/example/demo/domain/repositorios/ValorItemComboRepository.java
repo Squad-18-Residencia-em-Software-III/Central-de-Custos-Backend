@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,4 +48,23 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
     boolean existsByItemCombo(ItemCombo itemCombo);
 
     Optional<ValorItemCombo> findByUuid(UUID valorItemComboId);
+
+    // graficos
+
+    @Query(value = """
+    SELECT 
+        TO_CHAR(c.competencia, 'YYYY-MM') AS competencia,
+        COALESCE(SUM(vic.valor), 0) AS total_valor
+    FROM competencia c
+    LEFT JOIN valor_item_combo vic 
+        ON vic.competencia_id = c.id 
+        AND vic.estrutura_id = :estruturaId
+    WHERE EXTRACT(YEAR FROM c.competencia) = :ano
+    GROUP BY c.competencia
+    ORDER BY c.competencia
+    """, nativeQuery = true)
+    List<Object[]> gastosTotaisPorCompetenciaAno(
+            @Param("estruturaId") Long estruturaId,
+            @Param("ano") int ano
+    );
 }
