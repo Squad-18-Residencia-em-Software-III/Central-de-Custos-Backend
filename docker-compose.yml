@@ -4,7 +4,7 @@ services:
     image: queijobrando/centraldecustos-squad18:latest
     container_name: central-de-custos-app
     env_file:
-      - .env      # arquivo com DB_USERNAME, DB_PASSWORD, DEFAULT_ADMIN_PASSWORD
+      - .env
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     ports:
@@ -59,6 +59,3 @@ services:
 networks:
   central-custos-seduc-network:
     driver: bridge
-
-volumes:
-  centraldecustosdb_data:

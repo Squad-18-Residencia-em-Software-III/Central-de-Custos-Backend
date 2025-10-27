@@ -46,7 +46,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://centraldecustosdb:5432/centraldecustosdb
+    url: ${DB_URL}
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
@@ -65,4 +65,4 @@ default:
     password: ${DEFAULT_ADMIN_PASSWORD}
 email:
   service:
-    url: http://servico-email:8082/mail
+    url: ${EMAIL_SERVICE_URL}
