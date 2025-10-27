@@ -3,6 +3,7 @@ package com.example.demo.domain.mapper;
 import com.example.demo.domain.dto.solicitacoes.InfoSolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.SolicitacaoInternaDto;
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioInfoDto;
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoInterna;
@@ -16,8 +17,12 @@ public interface SolicitacoesMapper {
     SolicitacaoCadastroUsuario cadastroUsuarioToEntity(SolicitaCadastroUsuarioDto dto);
 
     @Mapping(target = "id", source = "uuid")
-    @Mapping(target = "estruturaId", source = "estrutura.uuid")
     CadastroUsuarioDto cadastroUsuarioToDto(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
+
+    @Mapping(target = "id", source = "uuid")
+    @Mapping(target = "estruturaId", source = "estrutura.uuid")
+    @Mapping(target = "estruturaNome", source = "estrutura.nome")
+    CadastroUsuarioInfoDto cadastroUsuarioToInfoDto(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
 
     @Mapping(target = "nomeUsuario", source = "usuario.nome")
     @Mapping(target = "estruturaUsuario", source = "usuario.estrutura.nome")

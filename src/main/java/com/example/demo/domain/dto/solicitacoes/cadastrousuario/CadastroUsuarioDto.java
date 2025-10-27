@@ -10,19 +10,6 @@ import java.util.UUID;
 public record CadastroUsuarioDto(
         UUID id,
         String nome,
-        String email,
-        String telefone,
-        String cpf,
-        Genero genero,
-        LocalDate dataNascimento,
-        UUID estruturaId,
-        String logradouro,
-        String numeroRua,
-        String complemento,
-        String bairro,
-        String cidade,
-        String estado,
-        String cep,
         LocalDateTime criadoEm,
         StatusSolicitacao status
 ) {}

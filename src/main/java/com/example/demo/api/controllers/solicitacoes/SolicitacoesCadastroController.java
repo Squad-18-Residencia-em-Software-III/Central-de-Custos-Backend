@@ -1,6 +1,7 @@
 package com.example.demo.api.controllers.solicitacoes;
 
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioDto;
+import com.example.demo.domain.dto.solicitacoes.cadastrousuario.CadastroUsuarioInfoDto;
 import com.example.demo.domain.dto.solicitacoes.cadastrousuario.SolicitaCadastroUsuarioDto;
 import com.example.demo.domain.enums.StatusSolicitacao;
 import com.example.demo.domain.services.solicitacoes.cadastrousuario.SolicitacoesCadastroService;
@@ -53,9 +54,12 @@ public class SolicitacoesCadastroController {
             description = "Retorna todas as solicitações registradas em páginas",
             tags = "Solicitações Cadastro")
     @GetMapping("/solicitacao/all")
-    public ResponseEntity<Page<CadastroUsuarioDto>> listarTodasSolicitacoes(@RequestParam(defaultValue = "1") int pagina){
-        Page<CadastroUsuarioDto> solicitacoes = solicitacoesCadastroService.listarSolicitacoesCadastro(pagina);
-        return ResponseEntity.ok(solicitacoes);
+    public ResponseEntity<Page<CadastroUsuarioDto>> listarTodasSolicitacoes(
+            @RequestParam(defaultValue = "1") int pagina,
+            @RequestParam(name = "nome", required = false) String nome,
+            @RequestParam(name = "status", required = false) StatusSolicitacao statusSolicitacao
+    ){
+        return ResponseEntity.ok(solicitacoesCadastroService.listarSolicitacoesCadastro(pagina, nome, statusSolicitacao));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -64,7 +68,7 @@ public class SolicitacoesCadastroController {
             description = "Retorna informações da solicitação",
             tags = "Solicitações Cadastro")
     @GetMapping("/solicitacao/{id}")
-    public ResponseEntity<CadastroUsuarioDto> visualizarSolicitacao(@PathVariable UUID id){
+    public ResponseEntity<CadastroUsuarioInfoDto> visualizarSolicitacao(@PathVariable UUID id){
         return ResponseEntity.ok(solicitacoesCadastroService.visualizarSolicitacaoCadastro(id));
     }
 }
