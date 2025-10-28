@@ -2,6 +2,7 @@ package com.example.demo.api.controllers.usuario;
 
 import com.example.demo.domain.dto.security.AccessTokenDto;
 import com.example.demo.domain.dto.usuario.CpfDto;
+import com.example.demo.domain.dto.usuario.InfoDto;
 import com.example.demo.domain.dto.usuario.NovaSenhaDto;
 import com.example.demo.domain.services.usuario.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/usuario")
@@ -54,5 +57,17 @@ public class UsuarioController {
                                                                @Valid @RequestBody NovaSenhaDto dto) {
         usuarioService.defineNovaSenhaUsuario(token, cpf, dto);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Visualizar Informações do Usuário",
+            description = "Retorna informações do usuário por uuid ou cpf. Usuários não-admin só podem ver seu próprio perfil.",
+            tags = "Usuario")
+    @GetMapping("/info")
+    public ResponseEntity<InfoDto> visualizarInfoUsuario(
+            @RequestParam(name = "uuid", required = false) UUID uuid,
+            @RequestParam(name = "cpf", required = false) String cpf) {
+
+        return ResponseEntity.ok(usuarioService.visualizarInfoUsuario(uuid, cpf));
     }
 }
