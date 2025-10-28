@@ -1,12 +1,18 @@
 package com.example.demo.domain.services.estrutura;
 
+import com.example.demo.domain.dto.estrutura.CompetenciaAlunoEstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
+import com.example.demo.domain.entities.competencia.Competencia;
+import com.example.demo.domain.entities.estrutura.CompetenciaAlunoEstrutura;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.example.demo.domain.mapper.EstruturaMapper;
+import com.example.demo.domain.repositorios.CompetenciaAlunoEstruturaRepository;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.specs.EstruturaSpecs;
+import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.infra.security.authentication.AuthenticatedUserProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,22 +23,26 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class EstruturaService {
 
     private final EstruturaRepository estruturaRepository;
+    private final CompetenciaAlunoEstruturaRepository competenciaAlunoEstruturaRepository;
     private final EstruturaMapper estruturaMapper;
     private final EstruturaValidator estruturaValidator;
     private final ObjectMapper objectMapper;
+    private final ComboValidator comboValidator;
 
-    public EstruturaService(EstruturaRepository estruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator, ObjectMapper objectMapper) {
+    public EstruturaService(EstruturaRepository estruturaRepository, CompetenciaAlunoEstruturaRepository competenciaAlunoEstruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator, ObjectMapper objectMapper, ComboValidator comboValidator) {
         this.estruturaRepository = estruturaRepository;
+        this.competenciaAlunoEstruturaRepository = competenciaAlunoEstruturaRepository;
         this.estruturaMapper = estruturaMapper;
         this.estruturaValidator = estruturaValidator;
         this.objectMapper = objectMapper;
+        this.comboValidator = comboValidator;
     }
 
     public Page<EstruturaDto> buscarEstruturas(int pageNumber, String nome){
@@ -73,5 +83,39 @@ public class EstruturaService {
         }
     }
 
+    @Transactional
+    public void inserirNumeroAlunosCompetencia(CompetenciaAlunoEstruturaDto dto){
+        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
+        estruturaValidator.validaUsuarioPertenceEstrutura(usuario, estrutura);
+        estruturaValidator.validaClassificacaoEstrutura(estrutura, ClassificacaoEstrutura.ESCOLA);
+        Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
+        comboValidator.validarCompetenciaAberta(competencia);
+
+        Optional<CompetenciaAlunoEstrutura> optionalCompetenciaAlunoEstrutura = competenciaAlunoEstruturaRepository.findByEstruturaAndCompetencia(estrutura, competencia);
+        CompetenciaAlunoEstrutura competenciaAlunoEstrutura;
+
+        if (optionalCompetenciaAlunoEstrutura.isEmpty()){
+            competenciaAlunoEstrutura = new CompetenciaAlunoEstrutura();
+            competenciaAlunoEstrutura.setEstrutura(estrutura);
+            competenciaAlunoEstrutura.setCompetencia(competencia);
+            competenciaAlunoEstrutura.setNumeroAlunos(dto.numeroAlunos());
+        } else {
+            competenciaAlunoEstrutura = optionalCompetenciaAlunoEstrutura.get();
+            competenciaAlunoEstrutura.setNumeroAlunos(dto.numeroAlunos());
+        }
+
+        competenciaAlunoEstruturaRepository.save(competenciaAlunoEstrutura);
+    }
+
+    public Optional<CompetenciaAlunoEstruturaDto> buscarNumeroAlunosCompetencia(UUID estruturaUuid, UUID competenciaUuid) {
+        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaUuid);
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaUuid);
+
+        return competenciaAlunoEstruturaRepository.findByEstruturaAndCompetencia(estrutura, competencia)
+                .map(estruturaMapper::competenciaAlunoToDto);
+    }
+// teste
 
 }

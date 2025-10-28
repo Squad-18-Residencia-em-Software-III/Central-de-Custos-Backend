@@ -36,7 +36,10 @@ public class EstruturaValidator {
 
     public void validaUsuarioPertenceEstrutura(Usuario usuario, Estrutura estrutura){
         Estrutura estruturaUsuario = usuario.getEstrutura();
-        if (!(estruturaUsuario.getId()).equals(estrutura.getId())){
+
+        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+
+        if (!isAdmin && !(estruturaUsuario.getId()).equals(estrutura.getId())){
             throw new BusinessException("O setor informado não pertence ao seu usuário");
         }
     }
@@ -45,8 +48,17 @@ public class EstruturaValidator {
         Estrutura estruturaUsuario = usuario.getEstrutura();
         Estrutura estrutura = estruturaRepository.findByClassificacaoEstrutura(classificacaoEstrutura)
                 .orElseThrow(() -> new EntityNotFoundException("Setor inválido ou inexistente"));
-        if (!(estruturaUsuario.getId()).equals(estrutura.getId())){
+
+        boolean isAdmin = usuario.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+
+        if (!isAdmin && !(estruturaUsuario.getId()).equals(estrutura.getId())){
             throw new BusinessException("O setor informado não pertence ao seu usuário");
+        }
+    }
+
+    public void validaClassificacaoEstrutura(Estrutura estrutura, ClassificacaoEstrutura classificacaoEstrutura){
+        if (!estrutura.getClassificacaoEstrutura().equals(classificacaoEstrutura)){
+            throw new BusinessException("O setor informado não pertence a classificação necessária");
         }
     }
 

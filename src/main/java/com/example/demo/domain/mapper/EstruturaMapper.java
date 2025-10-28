@@ -1,7 +1,9 @@
 package com.example.demo.domain.mapper;
 
+import com.example.demo.domain.dto.estrutura.CompetenciaAlunoEstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
+import com.example.demo.domain.entities.estrutura.CompetenciaAlunoEstrutura;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,4 +21,7 @@ public interface EstruturaMapper {
     @Mapping(target = "uf", source = "municipio.uf.sigla")
     EstruturaInfoDto toInfoDto(Estrutura estrutura);
 
+    @Mapping(target = "estruturaId", source = "estrutura.uuid")
+    @Mapping(target = "competenciaId", source = "competencia.uuid")
+    CompetenciaAlunoEstruturaDto competenciaAlunoToDto(CompetenciaAlunoEstrutura competenciaAlunoEstrutura);
 }
