@@ -4,5 +4,6 @@ public enum ClassificacaoEstrutura {
     SETOR,
     SECRETARIA,
     ESCOLA,
-    RH
+    RH,
+    DIRETORIA
 }

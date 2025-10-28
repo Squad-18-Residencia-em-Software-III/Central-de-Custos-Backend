@@ -1,16 +1,19 @@
 package com.example.demo.api.controllers.estrutura;
 
+import com.example.demo.domain.dto.estrutura.CompetenciaAlunoEstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.example.demo.domain.services.estrutura.EstruturaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -43,5 +46,30 @@ public class EstruturaController {
     @GetMapping("/info")
     public ResponseEntity<EstruturaInfoDto> buscarDetalhesEstrutura(@RequestParam(name = "estruturaId", required = false) UUID estruturaId){
         return ResponseEntity.ok(estruturaService.buscarInfoEstrutura(estruturaId));
+    }
+
+
+    @Operation(
+            summary = "Buscar numero de alunos por competencia",
+            description = "Retorna informações do numero de alunos de uma escola pela competencia",
+            tags = "Estrutura(Setor)")
+    @GetMapping("/competencia-alunos")
+    public ResponseEntity<CompetenciaAlunoEstruturaDto> buscarNumeroAlunosCompetencia(
+            @RequestParam(name = "estruturaId") UUID estruturaUuid,
+            @RequestParam(name = "competenciaId") UUID competenciaUuid) {
+
+        return estruturaService.buscarNumeroAlunosCompetencia(estruturaUuid, competenciaUuid)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    @Operation(
+            summary = "Inserir numero de alunos",
+            description = "Endpointpara inserir o numero de alunos de uma escola em uma competencia",
+            tags = "Estrutura(Setor)")
+    @PostMapping("/competencia-alunos")
+    public ResponseEntity<Void> inserirNumeroAlunosCompetencia(@Valid @RequestBody CompetenciaAlunoEstruturaDto dto){
+        estruturaService.inserirNumeroAlunosCompetencia(dto);
+        return ResponseEntity.ok().build();
     }
 }
