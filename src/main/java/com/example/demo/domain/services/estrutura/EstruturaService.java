@@ -116,6 +116,6 @@ public class EstruturaService {
         return competenciaAlunoEstruturaRepository.findByEstruturaAndCompetencia(estrutura, competencia)
                 .map(estruturaMapper::competenciaAlunoToDto);
     }
-
+// teste
 
 }
