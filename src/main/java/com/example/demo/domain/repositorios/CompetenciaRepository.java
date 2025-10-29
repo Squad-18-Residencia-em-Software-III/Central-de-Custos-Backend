@@ -12,4 +12,6 @@ public interface CompetenciaRepository extends JpaRepository<Competencia, Long>,
     Optional<Competencia> findByUuid(UUID competenciaId);
 
     Optional<Competencia> findByCompetencia(LocalDate hoje);
+
+    boolean existsByCompetencia(LocalDate localDate);
 }

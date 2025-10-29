@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -54,6 +55,12 @@ public class ComboValidator {
     public void validarCompetenciaAberta(Competencia competencia){
         if (!competencia.getStatusCompetencia().equals(StatusCompetencia.ABERTA)){
             throw new BusinessException("A competencia está fechada, por tanto, não será possível inserir um valor");
+        }
+    }
+
+    public void validarCompetenciaExiste(LocalDate localDate){
+        if (competenciaRepository.existsByCompetencia(localDate)){
+            throw new BusinessException(String.format("Uma competencia com a data %s já existe", localDate));
         }
     }
 
