@@ -2,6 +2,7 @@ package com.example.demo.domain.services.usuario;
 
 import com.example.demo.domain.dto.security.AccessTokenDto;
 import com.example.demo.domain.dto.security.LoginDto;
+import com.example.demo.domain.dto.usuario.InfoDto;
 import com.example.demo.domain.dto.usuario.NovaSenhaDto;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
@@ -26,6 +27,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.example.demo.infra.security.authentication.AuthenticatedUserProvider.getAuthenticatedUser;
 
 
 @Service
@@ -36,12 +40,14 @@ public class UsuarioService {
     private final TokensService tokensService;
     private final UsuarioSenhaService usuarioSenhaService;
     private final UsuarioCriarService usuarioCriarService;
+    private final UsuarioMapper usuarioMapper;
 
-    public UsuarioService(UsuarioValidator usuarioValidator, TokensService tokensService, UsuarioSenhaService usuarioSenhaService, UsuarioCriarService usuarioCriarService) {
+    public UsuarioService(UsuarioValidator usuarioValidator, TokensService tokensService, UsuarioSenhaService usuarioSenhaService, UsuarioCriarService usuarioCriarService, UsuarioMapper usuarioMapper) {
         this.usuarioValidator = usuarioValidator;
         this.tokensService = tokensService;
         this.usuarioSenhaService = usuarioSenhaService;
         this.usuarioCriarService = usuarioCriarService;
+        this.usuarioMapper = usuarioMapper;
     }
 
     @Transactional
@@ -57,5 +63,27 @@ public class UsuarioService {
     public void solicitaRecuperarSenha(String cpf){
         Usuario usuario = usuarioValidator.validaUsuarioCpf(cpf);
         tokensService.criarToken(usuario, TipoToken.RECUPERAR_SENHA); // cria token
+    }
+
+    public InfoDto visualizarInfoUsuario(UUID uuid, String cpf) {
+        Usuario usuario = getAuthenticatedUser();
+
+        // Se nenhum identificador foi fornecido, a consulta é para o próprio usuário autenticado.
+        if (uuid == null && (cpf == null || cpf.isBlank())) {
+            usuarioValidator.validaUsuarioAutenticadoIdentificavel(usuario);
+
+            uuid = usuario.getUuid();
+            cpf = usuario.getCpf();
+        }
+
+        usuarioValidator.validaPermissaoVisualizacao(usuario, uuid, cpf);
+
+        Usuario usuarioEncontrado;
+        if (uuid != null) {
+            usuarioEncontrado = usuarioValidator.validaUsuarioExisteUuid(uuid);
+        } else {
+            usuarioEncontrado = usuarioValidator.validaUsuarioExisteCpf(cpf);
+        }
+        return usuarioMapper.usuarioToInfoDto(usuarioEncontrado);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.domain.mapper;
 
+import com.example.demo.domain.dto.usuario.InfoDto;
 import com.example.demo.domain.entities.solicitacoes.SolicitacaoCadastroUsuario;
 import com.example.demo.domain.entities.usuario.Usuario;
 import org.mapstruct.Mapper;
@@ -13,5 +14,10 @@ public interface UsuarioMapper {
     @Mapping(target = "perfil", ignore = true)
     @Mapping(target = "senha", ignore = true)
     Usuario toEntity(SolicitacaoCadastroUsuario solicitacaoCadastroUsuario);
+
+    @Mapping(target = "id", source = "uuid")
+    @Mapping(target = "estruturaId", source = "estrutura.uuid")
+    @Mapping(target = "estruturaNome", source = "estrutura.nome")
+    InfoDto usuarioToInfoDto(Usuario usuario);
 
 }
