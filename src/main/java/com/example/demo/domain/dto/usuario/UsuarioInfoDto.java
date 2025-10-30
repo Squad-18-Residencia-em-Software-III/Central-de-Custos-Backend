@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record InfoDto (
+public record UsuarioInfoDto (
         UUID id,
         String nome,
         String email,
@@ -24,6 +24,7 @@ public record InfoDto (
         String estado,
         String cep,
         boolean primeiroAcesso,
+        String perfilNome,
         LocalDateTime criadoEm,
         LocalDateTime atualizadoEm
 ) { }

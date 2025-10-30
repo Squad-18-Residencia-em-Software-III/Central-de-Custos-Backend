@@ -2,6 +2,7 @@ package com.example.demo.domain.validations;
 
 import com.example.demo.domain.entities.usuario.Perfil;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.repositorios.PerfilRepository;
 import com.example.demo.domain.repositorios.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,36 +48,12 @@ public class UsuarioValidator {
         }
     }
 
-    public void validaUsuarioAutenticadoIdentificavel(Usuario usuarioAutenticado) {
-        UUID uuid = usuarioAutenticado.getUuid();
-        String cpf = usuarioAutenticado.getCpf();
+    public void validaPermissaoVisualizacao(Usuario usuarioAutenticado, Usuario usuarioDestino) {
+        boolean isAdmin = usuarioAutenticado.getPerfil().getNome().equalsIgnoreCase("ADMIN");
+        boolean seuUsuario = usuarioAutenticado.getId().equals(usuarioDestino.getId());
 
-        if (uuid == null && (cpf == null || cpf.isBlank())) {
-            throw new AccessDeniedException("Não foi possível identificar o usuário autenticado. Informe uuid ou cpf.");
-        }
-    }
-
-    public void validaPermissaoVisualizacao(Usuario usuarioAutenticado, UUID uuidAlvo, String cpfAlvo) {
-        boolean isAdmin = usuarioAutenticado.getAuthorities()
-                .stream()
-                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
-
-        if (isAdmin) {
-            return;
-        }
-
-        UUID uuidAutenticado = usuarioAutenticado.getUuid();
-        String cpfAutenticado = usuarioAutenticado.getCpf();
-
-        boolean temPermissao = false;
-        if (uuidAlvo != null) {
-            temPermissao = uuidAlvo.equals(uuidAutenticado);
-        } else if (cpfAlvo != null && !cpfAlvo.isBlank()) {
-            temPermissao = cpfAlvo.equals(cpfAutenticado);
-        }
-
-        if (!temPermissao) {
-            throw new AccessDeniedException("Acesso negado: só é possível visualizar o próprio perfil.");
+        if (!isAdmin && !seuUsuario){
+            throw new BusinessException("Não permitido");
         }
     }
 }
