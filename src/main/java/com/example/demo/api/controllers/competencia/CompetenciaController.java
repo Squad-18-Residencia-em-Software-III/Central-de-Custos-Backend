@@ -29,10 +29,11 @@ public class CompetenciaController {
             description = "Endpoint utilizado para buscar todos as competencias",
             tags = "Competencia")
     @GetMapping("/buscar")
-    public ResponseEntity<List<CompetenciaDto>> buscarCompetencias(
+    public ResponseEntity<Page<CompetenciaDto>> buscarCompetencias(
+            @RequestParam(defaultValue = "1") int pageNumber,
             @RequestParam(name = "status", required = false) StatusCompetencia statusCompetencia
     ){
-        return ResponseEntity.ok(competenciaService.buscarCompetencias(statusCompetencia));
+        return ResponseEntity.ok(competenciaService.buscarCompetencias(pageNumber, statusCompetencia));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

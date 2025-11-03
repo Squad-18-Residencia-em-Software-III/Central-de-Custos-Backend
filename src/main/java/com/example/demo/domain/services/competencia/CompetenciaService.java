@@ -10,6 +10,10 @@ import com.example.demo.domain.repositorios.specs.CompetenciaSpecs;
 import com.example.demo.domain.validations.ComboValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -37,16 +41,18 @@ public class CompetenciaService {
                 .orElseThrow(() -> new EntityNotFoundException("Competência atual não encontrada"));
     }
 
-    public List<CompetenciaDto> buscarCompetencias(StatusCompetencia statusCompetencia){
+    public Page<CompetenciaDto> buscarCompetencias(int pageNumber, StatusCompetencia statusCompetencia){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 12, Sort.by("competencia").descending());
+
         Specification<Competencia> spec = Specification.allOf();
 
         if (statusCompetencia != null) {
             spec = spec.and(CompetenciaSpecs.doStatus(statusCompetencia));
         }
 
-        List<Competencia> competencias = competenciaRepository.findAll(spec);
+        Page<Competencia> competencias = competenciaRepository.findAll(spec, pageable);
 
-        return competencias.stream().map(competenciaMapper::toDto).toList();
+        return competencias.map(competenciaMapper::toDto);
     }
 
     public void criarCompetencia(LocalDate dataCompetencia){
