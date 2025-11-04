@@ -1,5 +1,6 @@
 package com.example.demo.api.controllers.relatorio;
 
+import com.example.demo.domain.dto.relatorios.escola.CustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.graficos.GastosTotaisCompetenciaDto;
 import com.example.demo.domain.services.relatorios.RelatorioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,5 +29,17 @@ public class RelatorioController {
             @RequestParam(name = "ano") int ano
     ) {
         return relatorioService.buscarGatosTotaisPorCompetencia(estruturaId, ano);
+    }
+
+    @Operation(
+            summary = "RELATÓRIO: Buscar custos por aluno",
+            description = "Retorna dados dos custos por aluno",
+            tags = "Relatórios")
+    @GetMapping("/relatorio/custo-p-aluno")
+    public List<CustoPorAlunoDto> buscarCustosPorAluno(
+            @RequestParam(name = "estruturaId") UUID estruturaId,
+            @RequestParam(name = "ano") int ano
+    ) {
+        return relatorioService.buscarCustoPorAluno(estruturaId, ano);
     }
 }

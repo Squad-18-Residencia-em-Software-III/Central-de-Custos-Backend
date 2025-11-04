@@ -67,4 +67,32 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
             @Param("estruturaId") Long estruturaId,
             @Param("ano") int ano
     );
+
+    // custo por aluno
+
+    @Query(value = """
+            SELECT
+                TO_CHAR(c.competencia, 'YYYY-MM') AS competencia,
+                COALESCE(SUM(vic.valor), 0) AS total_valor,
+                COALESCE(cae.numero_alunos, 0) AS numero_alunos,
+                CASE
+                    WHEN COALESCE(cae.numero_alunos, 0) > 0
+                    THEN ROUND(COALESCE(SUM(vic.valor), 0) / cae.numero_alunos, 2)
+                    ELSE 0
+                END AS custo_por_aluno
+            FROM competencia c
+            LEFT JOIN valor_item_combo vic
+                ON vic.competencia_id = c.id
+                AND vic.estrutura_id = :estruturaId
+            LEFT JOIN competencia_aluno_estrutura cae
+                ON cae.competencia_id = c.id
+                AND cae.estrutura_id = :estruturaId
+            WHERE EXTRACT(YEAR FROM c.competencia) = :ano
+            GROUP BY c.competencia, cae.numero_alunos
+            ORDER BY c.competencia
+            """ ,nativeQuery = true)
+    List<Object[]> custosPorAluno(
+            @Param("estruturaId") Long estruturaId,
+            @Param("ano") int ano
+    );
 }
