@@ -1,5 +1,7 @@
 package com.example.demo.domain.dto.combos.item;
 
+import com.example.demo.domain.enums.UnidadeMedida;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -9,7 +11,8 @@ public record ItemComboDto(
         String nome,
         BigDecimal valor,
         UUID valorUuid,
-        UUID competenciaId
+        UnidadeMedida unidadeMedida,
+        BigDecimal quantidadeUnidadeMedida
 ) {
 
 }

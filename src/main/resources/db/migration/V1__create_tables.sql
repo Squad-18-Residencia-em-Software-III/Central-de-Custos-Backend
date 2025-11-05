@@ -98,7 +98,7 @@ create table item_combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) unique not null,
-    --estrutura_id bigint references estrutura(id),
+    unidade_medida varchar(50) not null,
     criado_em timestamp not null,
     atualizado_em timestamp
 );
@@ -107,6 +107,7 @@ create table combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     nome varchar(255) not null,
+    competencia_id bigint not null references competencia(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );
@@ -127,10 +128,10 @@ create table valor_item_combo (
     id bigserial primary key,
     uuid uuid not null unique default gen_random_uuid(),
     valor numeric(19,2) not null,
+    quantidade_unidade_medida numeric(19,2) not null,
     combo_id bigint not null references combo(id),
     estrutura_id bigint not null references estrutura(id),
     item_combo_id bigint not null references item_combo(id),
-    competencia_id bigint not null references competencia(id),
     criado_em timestamp not null,
     atualizado_em timestamp
 );

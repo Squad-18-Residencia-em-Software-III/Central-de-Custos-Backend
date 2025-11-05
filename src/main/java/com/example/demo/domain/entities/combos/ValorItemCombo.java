@@ -1,6 +1,5 @@
 package com.example.demo.domain.entities.combos;
 
-import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +33,9 @@ public class ValorItemCombo {
     @Column(nullable = false)
     private BigDecimal valor;
 
+    @Column(nullable = false)
+    private BigDecimal quantidadeUnidadeMedida;
+
     @ManyToOne
     @JoinColumn(name = "combo_id", nullable = false)
     private Combo combo;
@@ -41,10 +43,6 @@ public class ValorItemCombo {
     @ManyToOne
     @JoinColumn(name = "estrutura_id", nullable = false)
     private Estrutura estrutura;
-
-    @ManyToOne
-    @JoinColumn(name = "competencia_id", nullable = false)
-    private Competencia competencia;
 
     @ManyToOne
     @JoinColumn(name = "item_combo_id", nullable = false)

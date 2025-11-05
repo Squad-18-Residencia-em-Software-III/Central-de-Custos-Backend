@@ -5,6 +5,7 @@ import com.example.demo.domain.dto.combos.EditarComboDto;
 import com.example.demo.domain.dto.combos.InclusaoDto;
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
+import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.mapper.ComboMapper;
@@ -40,6 +41,7 @@ public class ComboCriarService {
 
     @Transactional
     public void criarCombo(CriarComboDto dto){
+        Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
         List<Estrutura> estruturas = dto.estruturas().stream()
                 .map(estruturaValidator::validarEstruturaExiste)
                 .toList();
@@ -49,6 +51,7 @@ public class ComboCriarService {
                 .toList();
 
         Combo combo = comboMapper.toEntity(dto);
+        combo.setCompetencia(competencia);
         combo.setEstruturas(estruturas);
         combo.setItens(itens);
 

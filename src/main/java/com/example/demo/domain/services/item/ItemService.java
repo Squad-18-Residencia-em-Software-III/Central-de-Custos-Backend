@@ -1,6 +1,7 @@
 package com.example.demo.domain.services.item;
 
 import com.example.demo.domain.dto.combos.item.*;
+import com.example.demo.domain.enums.UnidadeMedida;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,12 @@ public class ItemService {
         this.itemValorService = itemValorService;
     }
 
-    public Page<ItemDto>buscarItens(int pageNumber, String nome){
-        return itemBuscarService.buscarItens(pageNumber, nome);
+    public Page<ItemDto>buscarItens(int pageNumber, String nome, UnidadeMedida unidadeMedida){
+        return itemBuscarService.buscarItens(pageNumber, nome, unidadeMedida);
     }
 
-    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId, UUID competenciaId){
-        return itemBuscarService.buscarItensCombo(comboId, estruturaId, competenciaId);
+    public List<ItemComboDto> buscarItensCombo(UUID comboId, UUID estruturaId){
+        return itemBuscarService.buscarItensCombo(comboId, estruturaId);
     }
 
     public ItemDto buscarItem(UUID itemId){

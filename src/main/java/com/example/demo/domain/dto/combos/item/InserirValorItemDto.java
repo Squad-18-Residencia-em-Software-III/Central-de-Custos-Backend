@@ -12,9 +12,7 @@ public record InserirValorItemDto(
         UUID comboId,
         @NotNull
         UUID estruturaId,
-        @NotNull
-        UUID competenciaId,
-        @NotNull
-        BigDecimal valor
+        BigDecimal valor,
+        BigDecimal quantidadeUnidademedida
 ) {
 }

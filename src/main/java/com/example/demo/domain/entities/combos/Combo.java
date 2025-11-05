@@ -49,6 +49,10 @@ public class Combo {
     )
     private List<ItemCombo> itens = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "competencia_id", nullable = false)
+    private Competencia competencia;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime criadoEm;

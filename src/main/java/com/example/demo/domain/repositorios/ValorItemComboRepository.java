@@ -23,7 +23,8 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         i.nome AS nome,
         COALESCE(v.valor, 0.0) AS valor,
         v.uuid AS valor_uuid,
-        COALESCE(cmp.uuid, cpadrao.uuid) AS competencia_uuid
+        i.unidade_medida AS unidade_medida,
+        COALESCE(v.quantidade_unidade_medida, 0.0) AS quantidade_unidade_medida
     FROM combo c
     JOIN combo_item_combo cic ON cic.combo_id = c.id
     JOIN item_combo i ON i.id = cic.item_combo_id
@@ -31,19 +32,15 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         ON v.item_combo_id = i.id
         AND v.combo_id = c.id
         AND v.estrutura_id = :estruturaId
-        AND (v.competencia_id = :competenciaId OR v.competencia_id IS NULL)
-    LEFT JOIN competencia cmp ON cmp.id = v.competencia_id
-    LEFT JOIN competencia cpadrao ON cpadrao.id = :competenciaId
     WHERE c.id = :comboId
 """, nativeQuery = true)
     List<Object[]> buscarItensDoComboComValores(
             @Param("estruturaId") Long estruturaId,
-            @Param("competenciaId") Long competenciaId,
             @Param("comboId") Long comboId
     );
 
 
-    Optional<ValorItemCombo> findByEstruturaAndComboAndItemComboAndCompetencia(Estrutura estrutura, Combo combo, ItemCombo itemCombo, Competencia competencia);
+    Optional<ValorItemCombo> findByEstruturaAndComboAndItemCombo(Estrutura estrutura, Combo combo, ItemCombo itemCombo);
 
     boolean existsByItemCombo(ItemCombo itemCombo);
 
