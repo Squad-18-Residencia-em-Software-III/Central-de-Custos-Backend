@@ -42,6 +42,7 @@ public class ComboCriarService {
     @Transactional
     public void criarCombo(CriarComboDto dto){
         Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
+        comboValidator.validarCompetenciaAberta(competencia);
         List<Estrutura> estruturas = dto.estruturas().stream()
                 .map(estruturaValidator::validarEstruturaExiste)
                 .toList();
@@ -61,7 +62,7 @@ public class ComboCriarService {
     @Transactional
     public void adicionarEstruturasAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Set<Estrutura> estruturasExistentes = new HashSet<>(combo.getEstruturas());
 
         List<Estrutura> estruturasParaAdicionar = dto.ids().stream()
@@ -84,7 +85,7 @@ public class ComboCriarService {
     @Transactional
     public void adicionarItensAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Set<ItemCombo> itensExistentes = new HashSet<>(combo.getItens());
 
         List<ItemCombo> itensParaAdicionar = dto.ids().stream()
@@ -107,6 +108,7 @@ public class ComboCriarService {
     @Transactional
     public void removerItemDoCombo(UUID comboId, UUID itemId) {
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         ItemCombo itemCombo = itemValidator.validaItemExiste(itemId);
         itemValidator.validaExisteValorNoItem(itemCombo);
 
@@ -117,6 +119,7 @@ public class ComboCriarService {
     @Transactional
     public void removerEstruturaDoCombo(UUID comboId, UUID estruturaId) {
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
 
         combo.getEstruturas().remove(estrutura);
@@ -127,6 +130,7 @@ public class ComboCriarService {
     @Transactional
     public void editarCombo(UUID comboId, EditarComboDto dto){
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         editarCampoComboStrategies.forEach(s -> s.editar(combo, dto));
         comboRepository.save(combo);
     }
