@@ -25,5 +25,12 @@ public interface ComboMapper {
     @Mapping(target = "competencia", source = "competencia.competencia")
     ComboDetalhadoDto toDtoInfo(Combo combo);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "criadoEm", ignore = true)
+    @Mapping(target = "atualizadoEm", ignore = true)
+    @Mapping(target = "competencia", ignore = true)
+    Combo clonarCombo(Combo combo);
+
 
 }

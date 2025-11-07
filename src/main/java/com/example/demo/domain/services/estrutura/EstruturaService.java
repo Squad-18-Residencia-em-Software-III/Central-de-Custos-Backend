@@ -1,5 +1,6 @@
 package com.example.demo.domain.services.estrutura;
 
+import com.example.demo.domain.dto.competencia.CompetenciaDto;
 import com.example.demo.domain.dto.estrutura.CompetenciaAlunoEstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
@@ -8,7 +9,10 @@ import com.example.demo.domain.entities.estrutura.CompetenciaAlunoEstrutura;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
+import com.example.demo.domain.enums.StatusCompetencia;
+import com.example.demo.domain.mapper.CompetenciaMapper;
 import com.example.demo.domain.mapper.EstruturaMapper;
+import com.example.demo.domain.repositorios.ComboRepository;
 import com.example.demo.domain.repositorios.CompetenciaAlunoEstruturaRepository;
 import com.example.demo.domain.repositorios.EstruturaRepository;
 import com.example.demo.domain.repositorios.specs.EstruturaSpecs;
@@ -35,14 +39,18 @@ public class EstruturaService {
     private final EstruturaValidator estruturaValidator;
     private final ObjectMapper objectMapper;
     private final ComboValidator comboValidator;
+    private final ComboRepository comboRepository;
+    private final CompetenciaMapper competenciaMapper;
 
-    public EstruturaService(EstruturaRepository estruturaRepository, CompetenciaAlunoEstruturaRepository competenciaAlunoEstruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator, ObjectMapper objectMapper, ComboValidator comboValidator) {
+    public EstruturaService(EstruturaRepository estruturaRepository, CompetenciaAlunoEstruturaRepository competenciaAlunoEstruturaRepository, EstruturaMapper estruturaMapper, EstruturaValidator estruturaValidator, ObjectMapper objectMapper, ComboValidator comboValidator, ComboRepository comboRepository, CompetenciaMapper competenciaMapper) {
         this.estruturaRepository = estruturaRepository;
         this.competenciaAlunoEstruturaRepository = competenciaAlunoEstruturaRepository;
         this.estruturaMapper = estruturaMapper;
         this.estruturaValidator = estruturaValidator;
         this.objectMapper = objectMapper;
         this.comboValidator = comboValidator;
+        this.comboRepository = comboRepository;
+        this.competenciaMapper = competenciaMapper;
     }
 
     public Page<EstruturaDto> buscarEstruturas(int pageNumber, String nome){
@@ -116,6 +124,23 @@ public class EstruturaService {
         return competenciaAlunoEstruturaRepository.findByEstruturaAndCompetencia(estrutura, competencia)
                 .map(estruturaMapper::competenciaAlunoToDto);
     }
-// teste
+
+    public Page<CompetenciaDto> buscarCompetenciasPorEstrutura(
+            int pageNumber,
+            UUID estruturaId,
+            StatusCompetencia status
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, 12);
+        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+
+        Page<Competencia> competencias = comboRepository.findCompetenciasByEstruturaIdAndStatus(
+                estrutura.getId(),
+                status,
+                pageable
+        );
+
+        return competencias.map(competenciaMapper::toDto);
+    }
+
 
 }

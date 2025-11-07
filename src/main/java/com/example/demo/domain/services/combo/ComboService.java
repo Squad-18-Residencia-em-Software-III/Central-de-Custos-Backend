@@ -38,6 +38,11 @@ public class ComboService {
     }
 
     @Transactional
+    public void clonarCombo(UUID comboId, UUID competenciaId, boolean clonarEstruturas){
+        comboCriarService.clonarCombo(comboId, competenciaId, clonarEstruturas);
+    }
+
+    @Transactional
     public void adicionarEstruturasAoCombo(UUID comboId, InclusaoDto dto) {
         comboCriarService.adicionarEstruturasAoCombo(comboId, dto);
     }

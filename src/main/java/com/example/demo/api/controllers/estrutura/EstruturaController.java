@@ -1,9 +1,11 @@
 package com.example.demo.api.controllers.estrutura;
 
+import com.example.demo.domain.dto.competencia.CompetenciaDto;
 import com.example.demo.domain.dto.estrutura.CompetenciaAlunoEstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaDto;
 import com.example.demo.domain.dto.estrutura.EstruturaInfoDto;
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
+import com.example.demo.domain.enums.StatusCompetencia;
 import com.example.demo.domain.services.estrutura.EstruturaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -46,6 +48,19 @@ public class EstruturaController {
     @GetMapping("/info")
     public ResponseEntity<EstruturaInfoDto> buscarDetalhesEstrutura(@RequestParam(name = "estruturaId", required = false) UUID estruturaId){
         return ResponseEntity.ok(estruturaService.buscarInfoEstrutura(estruturaId));
+    }
+
+    @Operation(
+            summary = "Buscar competencias que possuem combos",
+            description = "Retorna competencias que possuem combos",
+            tags = "Estrutura(Setor)")
+    @GetMapping("/competencia/combo")
+    public ResponseEntity<Page<CompetenciaDto>> buscarCompetenciasPorComboEstrutura(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "estruturaId") UUID estruturaUuid,
+            @RequestParam(name = "status", required = false) StatusCompetencia statusCompetencia
+            ){
+        return ResponseEntity.ok(estruturaService.buscarCompetenciasPorEstrutura(pageNumber, estruturaUuid, statusCompetencia));
     }
 
 

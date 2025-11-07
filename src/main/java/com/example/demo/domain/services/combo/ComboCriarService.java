@@ -134,4 +134,21 @@ public class ComboCriarService {
         editarCampoComboStrategies.forEach(s -> s.editar(combo, dto));
         comboRepository.save(combo);
     }
+
+    @Transactional
+    public void clonarCombo(UUID comboId, UUID competenciaId, boolean clonarEstruturas){
+        Combo combo = comboValidator.validarComboExiste(comboId);
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        comboValidator.validarCompetenciaAberta(competencia);
+        comboValidator.validarComboJaExiste(combo.getNome(), competencia);
+
+        Combo novoCombo = comboMapper.clonarCombo(combo);
+        if (clonarEstruturas){
+            novoCombo.setEstruturas(new ArrayList<>(combo.getEstruturas()));
+        }
+        novoCombo.setItens(new ArrayList<>(combo.getItens()));
+        novoCombo.setCompetencia(competencia);
+
+        comboRepository.save(novoCombo);
+    }
 }

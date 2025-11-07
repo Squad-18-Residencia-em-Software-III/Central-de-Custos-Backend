@@ -100,6 +100,21 @@ public class ComboController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
+            summary = "Clonar combo",
+            description = "Endpoint utilizado para clonar um combo para outra competencia",
+            tags = "Combos")
+    @PostMapping("/clonar")
+    public ResponseEntity<Void> clonarCombo(
+            @RequestParam(name = "comboId") UUID comboId,
+            @RequestParam(name = "competenciaId") UUID competenciaId,
+            @RequestParam(name = "clonarEstruturas") boolean clonarEstruturas
+    ){
+        comboService.clonarCombo(comboId, competenciaId, clonarEstruturas);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
             summary = "Remover estrutura do combo",
             description = "Endpoint utilizado para remover uma estrutura de um combo",
             tags = "Combos")
