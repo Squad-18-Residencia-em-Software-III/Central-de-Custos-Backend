@@ -53,8 +53,8 @@ public class ItemValorService {
             if (dto.valor() != null){
                 valor.setValor(dto.valor());
             }
-            if (dto.quantidadeUnidademedida() != null){
-                valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidademedida());
+            if (dto.quantidadeUnidadeMedida() != null){
+                valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidadeMedida());
             }
         } else {
             valor = new ValorItemCombo();
@@ -62,10 +62,8 @@ public class ItemValorService {
             valor.setCombo(combo);
             valor.setItemCombo(itemCombo);
             valor.setValor(dto.valor());
-            valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidademedida());
+            valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidadeMedida());
         }
-        System.out.println("Antes do erro final");
         valorItemComboRepository.save(valor);
-        System.out.println("Depois do erro final");
     }
 }

@@ -13,6 +13,6 @@ public record InserirValorItemDto(
         @NotNull
         UUID estruturaId,
         BigDecimal valor,
-        BigDecimal quantidadeUnidademedida
+        BigDecimal quantidadeUnidadeMedida
 ) {
 }

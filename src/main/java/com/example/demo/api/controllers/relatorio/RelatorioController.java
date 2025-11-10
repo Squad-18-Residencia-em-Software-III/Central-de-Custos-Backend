@@ -1,9 +1,11 @@
 package com.example.demo.api.controllers.relatorio;
 
+import com.example.demo.domain.dto.relatorios.HeaderPainelSetorDto;
 import com.example.demo.domain.dto.relatorios.escola.CustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.graficos.GastosTotaisCompetenciaDto;
 import com.example.demo.domain.services.relatorios.RelatorioService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +26,11 @@ public class RelatorioController {
             description = "Retorna dados para gerar grafico de gastos totais separados por competencia e ano",
             tags = "Relatórios")
     @GetMapping("/grafico/gastos-t-competencia")
-    public List<GastosTotaisCompetenciaDto> buscarGastosPorCompetencia(
+    public ResponseEntity<List<GastosTotaisCompetenciaDto>> buscarGastosPorCompetencia(
             @RequestParam(name = "estruturaId") UUID estruturaId,
             @RequestParam(name = "ano") int ano
     ) {
-        return relatorioService.buscarGatosTotaisPorCompetencia(estruturaId, ano);
+        return ResponseEntity.ok(relatorioService.buscarGatosTotaisPorCompetencia(estruturaId, ano));
     }
 
     @Operation(
@@ -36,10 +38,17 @@ public class RelatorioController {
             description = "Retorna dados dos custos por aluno",
             tags = "Relatórios")
     @GetMapping("/relatorio/custo-p-aluno")
-    public List<CustoPorAlunoDto> buscarCustosPorAluno(
+    public ResponseEntity<List<CustoPorAlunoDto>> buscarCustosPorAluno(
             @RequestParam(name = "estruturaId") UUID estruturaId,
             @RequestParam(name = "ano") int ano
     ) {
-        return relatorioService.buscarCustoPorAluno(estruturaId, ano);
+        return ResponseEntity.ok(relatorioService.buscarCustoPorAluno(estruturaId, ano));
+    }
+
+    @GetMapping("/dashboard/header/{estruturaId}")
+    public ResponseEntity<HeaderPainelSetorDto> getHeader(
+            @PathVariable UUID estruturaId
+    ) {
+        return ResponseEntity.ok(relatorioService.exibirDadosHeaderPainelSetor(estruturaId));
     }
 }
