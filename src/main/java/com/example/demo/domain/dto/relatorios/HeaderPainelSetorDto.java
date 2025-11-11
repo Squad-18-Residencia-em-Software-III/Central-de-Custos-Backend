@@ -8,6 +8,7 @@ public record HeaderPainelSetorDto(
         Integer quantidadeSetores,
         Integer quantidadeEscolas,
         Integer quantidadeAlunos,
-        BigDecimal valorTotalCompetencia
+        BigDecimal valorTotalCompetencia,
+        BigDecimal custoPorAluno
 ) {
 }

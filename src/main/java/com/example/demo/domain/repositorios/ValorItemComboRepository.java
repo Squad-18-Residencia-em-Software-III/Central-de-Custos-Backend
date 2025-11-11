@@ -96,4 +96,53 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
             @Param("estruturaId") Long estruturaId,
             @Param("ano") int ano
     );
+
+    @Query(value = """
+WITH current_competencia AS (
+    SELECT id
+    FROM competencia
+    WHERE EXTRACT(YEAR FROM competencia) = :ano
+      AND EXTRACT(MONTH FROM competencia) = :mes
+    LIMIT 1
+),
+valor_por_escola AS (
+    SELECT v.estrutura_id,
+           SUM(v.valor) AS total_valor
+    FROM valor_item_combo v
+    JOIN combo cb ON cb.id = v.combo_id
+    JOIN current_competencia cc ON cb.competencia_id = cc.id
+    GROUP BY v.estrutura_id
+),
+alunos_por_escola AS (
+    SELECT cae.estrutura_id,
+           SUM(cae.numero_alunos) AS total_alunos
+    FROM competencia_aluno_estrutura cae
+    JOIN current_competencia cc ON cae.competencia_id = cc.id
+    GROUP BY cae.estrutura_id
+)
+SELECT
+    e_f.id AS escola_id,
+    e_f.nome AS nome_escola,
+    COALESCE(vpe.total_valor, 0) AS total_valor,
+    COALESCE(ape.total_alunos, 0) AS numero_alunos,
+    CASE
+        WHEN COALESCE(ape.total_alunos, 0) > 0
+        THEN ROUND(COALESCE(vpe.total_valor, 0) / NULLIF(ape.total_alunos, 0), 2)
+        ELSE 0
+    END AS custo_aluno
+FROM estrutura e_f
+JOIN estrutura e ON e.id = e_f.estrutura_pai_id
+LEFT JOIN valor_por_escola vpe ON vpe.estrutura_id = e_f.id
+LEFT JOIN alunos_por_escola ape ON ape.estrutura_id = e_f.id
+WHERE e.id = :diretoriaId
+  AND e_f.classificacao_estrutura = 'ESCOLA'
+ORDER BY e_f.nome
+""", nativeQuery = true)
+    List<Object[]> findEscolasComCustoPorAluno(
+            @Param("diretoriaId") Long diretoriaId,
+            @Param("ano") int ano,
+            @Param("mes") int mes
+    );
+
+
 }
