@@ -23,7 +23,8 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         i.nome AS nome,
         COALESCE(v.valor, 0.0) AS valor,
         v.uuid AS valor_uuid,
-        COALESCE(cmp.uuid, cpadrao.uuid) AS competencia_uuid
+        i.unidade_medida AS unidade_medida,
+        COALESCE(v.quantidade_unidade_medida, 0.0) AS quantidade_unidade_medida
     FROM combo c
     JOIN combo_item_combo cic ON cic.combo_id = c.id
     JOIN item_combo i ON i.id = cic.item_combo_id
@@ -31,19 +32,15 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         ON v.item_combo_id = i.id
         AND v.combo_id = c.id
         AND v.estrutura_id = :estruturaId
-        AND (v.competencia_id = :competenciaId OR v.competencia_id IS NULL)
-    LEFT JOIN competencia cmp ON cmp.id = v.competencia_id
-    LEFT JOIN competencia cpadrao ON cpadrao.id = :competenciaId
     WHERE c.id = :comboId
 """, nativeQuery = true)
     List<Object[]> buscarItensDoComboComValores(
             @Param("estruturaId") Long estruturaId,
-            @Param("competenciaId") Long competenciaId,
             @Param("comboId") Long comboId
     );
 
 
-    Optional<ValorItemCombo> findByEstruturaAndComboAndItemComboAndCompetencia(Estrutura estrutura, Combo combo, ItemCombo itemCombo, Competencia competencia);
+    Optional<ValorItemCombo> findByEstruturaAndComboAndItemCombo(Estrutura estrutura, Combo combo, ItemCombo itemCombo);
 
     boolean existsByItemCombo(ItemCombo itemCombo);
 
@@ -52,16 +49,18 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
     // graficos
 
     @Query(value = """
-    SELECT 
-        TO_CHAR(c.competencia, 'YYYY-MM') AS competencia,
+    SELECT
+        TO_CHAR(comp.competencia, 'YYYY-MM') AS competencia,
         COALESCE(SUM(vic.valor), 0) AS total_valor
-    FROM competencia c
-    LEFT JOIN valor_item_combo vic 
-        ON vic.competencia_id = c.id 
+    FROM competencia comp
+    LEFT JOIN combo c
+        ON c.competencia_id = comp.id
+    LEFT JOIN valor_item_combo vic
+        ON vic.combo_id = c.id
         AND vic.estrutura_id = :estruturaId
-    WHERE EXTRACT(YEAR FROM c.competencia) = :ano
-    GROUP BY c.competencia
-    ORDER BY c.competencia
+    WHERE EXTRACT(YEAR FROM comp.competencia) = :ano
+    GROUP BY comp.competencia
+    ORDER BY comp.competencia
     """, nativeQuery = true)
     List<Object[]> gastosTotaisPorCompetenciaAno(
             @Param("estruturaId") Long estruturaId,
@@ -72,21 +71,23 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
 
     @Query(value = """
             SELECT
-                TO_CHAR(c.competencia, 'YYYY-MM') AS competencia,
-                COALESCE(SUM(vic.valor), 0) AS total_valor,
-                COALESCE(cae.numero_alunos, 0) AS numero_alunos,
-                CASE
-                    WHEN COALESCE(cae.numero_alunos, 0) > 0
-                    THEN ROUND(COALESCE(SUM(vic.valor), 0) / cae.numero_alunos, 2)
-                    ELSE 0
-                END AS custo_por_aluno
+            	TO_CHAR(c.competencia, 'YYYY-MM') AS competencia,
+            	COALESCE(SUM(vic.valor), 0) AS total_valor,
+            	COALESCE(cae.numero_alunos, 0) AS numero_alunos,
+            	CASE
+            		WHEN COALESCE(cae.numero_alunos, 0) > 0
+            		THEN ROUND(COALESCE(SUM(vic.valor), 0) / cae.numero_alunos, 2)
+            		ELSE 0
+            	END AS custo_por_aluno
             FROM competencia c
+            LEFT JOIN combo
+             ON combo.competencia_id = c.id
             LEFT JOIN valor_item_combo vic
-                ON vic.competencia_id = c.id
-                AND vic.estrutura_id = :estruturaId
+            	ON vic.combo_id = combo.id
+            	AND vic.estrutura_id = :estruturaId
             LEFT JOIN competencia_aluno_estrutura cae
-                ON cae.competencia_id = c.id
-                AND cae.estrutura_id = :estruturaId
+            	ON cae.competencia_id = c.id
+            	AND cae.estrutura_id = :estruturaId
             WHERE EXTRACT(YEAR FROM c.competencia) = :ano
             GROUP BY c.competencia, cae.numero_alunos
             ORDER BY c.competencia
@@ -95,4 +96,53 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
             @Param("estruturaId") Long estruturaId,
             @Param("ano") int ano
     );
+
+    @Query(value = """
+WITH current_competencia AS (
+    SELECT id
+    FROM competencia
+    WHERE EXTRACT(YEAR FROM competencia) = :ano
+      AND EXTRACT(MONTH FROM competencia) = :mes
+    LIMIT 1
+),
+valor_por_escola AS (
+    SELECT v.estrutura_id,
+           SUM(v.valor) AS total_valor
+    FROM valor_item_combo v
+    JOIN combo cb ON cb.id = v.combo_id
+    JOIN current_competencia cc ON cb.competencia_id = cc.id
+    GROUP BY v.estrutura_id
+),
+alunos_por_escola AS (
+    SELECT cae.estrutura_id,
+           SUM(cae.numero_alunos) AS total_alunos
+    FROM competencia_aluno_estrutura cae
+    JOIN current_competencia cc ON cae.competencia_id = cc.id
+    GROUP BY cae.estrutura_id
+)
+SELECT
+    e_f.id AS escola_id,
+    e_f.nome AS nome_escola,
+    COALESCE(vpe.total_valor, 0) AS total_valor,
+    COALESCE(ape.total_alunos, 0) AS numero_alunos,
+    CASE
+        WHEN COALESCE(ape.total_alunos, 0) > 0
+        THEN ROUND(COALESCE(vpe.total_valor, 0) / NULLIF(ape.total_alunos, 0), 2)
+        ELSE 0
+    END AS custo_aluno
+FROM estrutura e_f
+JOIN estrutura e ON e.id = e_f.estrutura_pai_id
+LEFT JOIN valor_por_escola vpe ON vpe.estrutura_id = e_f.id
+LEFT JOIN alunos_por_escola ape ON ape.estrutura_id = e_f.id
+WHERE e.id = :diretoriaId
+  AND e_f.classificacao_estrutura = 'ESCOLA'
+ORDER BY e_f.nome
+""", nativeQuery = true)
+    List<Object[]> findEscolasComCustoPorAluno(
+            @Param("diretoriaId") Long diretoriaId,
+            @Param("ano") int ano,
+            @Param("mes") int mes
+    );
+
+
 }

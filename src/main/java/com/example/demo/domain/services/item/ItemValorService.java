@@ -39,31 +39,31 @@ public class ItemValorService {
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(dto.estruturaId());
         comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
         Combo combo = comboValidator.validarComboExiste(dto.comboId());
-        Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
         ItemCombo itemCombo = itemValidator.validaItemExiste(dto.itemId());
 
         itemValidator.validaItemEstaNoCombo(combo, itemCombo);
-        comboValidator.validarCompetenciaAberta(competencia);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
 
-        System.out.println("Antes do erro");
         Optional<ValorItemCombo> optionalValor = valorItemComboRepository
-                .findByEstruturaAndComboAndItemComboAndCompetencia(estrutura, combo, itemCombo, competencia);
-        System.out.println("Depois do erro");
+                .findByEstruturaAndComboAndItemCombo(estrutura, combo, itemCombo);
         ValorItemCombo valor;
 
         if (optionalValor.isPresent()) {
             valor = optionalValor.get();
-            valor.setValor(dto.valor());
+            if (dto.valor() != null){
+                valor.setValor(dto.valor());
+            }
+            if (dto.quantidadeUnidadeMedida() != null){
+                valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidadeMedida());
+            }
         } else {
             valor = new ValorItemCombo();
             valor.setEstrutura(estrutura);
             valor.setCombo(combo);
             valor.setItemCombo(itemCombo);
-            valor.setCompetencia(competencia);
             valor.setValor(dto.valor());
+            valor.setQuantidadeUnidadeMedida(dto.quantidadeUnidadeMedida());
         }
-        System.out.println("Antes do erro final");
         valorItemComboRepository.save(valor);
-        System.out.println("Depois do erro final");
     }
 }

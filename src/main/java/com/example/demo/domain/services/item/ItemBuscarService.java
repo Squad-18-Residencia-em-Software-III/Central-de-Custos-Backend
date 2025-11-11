@@ -8,6 +8,7 @@ import com.example.demo.domain.entities.combos.ValorItemCombo;
 import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
+import com.example.demo.domain.enums.UnidadeMedida;
 import com.example.demo.domain.mapper.ItemMapper;
 import com.example.demo.domain.repositorios.ItemRepository;
 import com.example.demo.domain.repositorios.ValorItemComboRepository;
@@ -49,14 +50,12 @@ public class ItemBuscarService {
         this.valorItemComboRepository = valorItemComboRepository;
     }
 
-    public List<ItemComboDto> buscarItensCombo(UUID comboUuid, UUID estruturaUuid, UUID competenciaUuid) {
+    public List<ItemComboDto> buscarItensCombo(UUID comboUuid, UUID estruturaUuid) {
         Combo combo = comboValidator.validarComboExiste(comboUuid);
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaUuid);
-        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaUuid);
 
         List<Object[]> resultados = valorItemComboRepository.buscarItensDoComboComValores(
                 estrutura.getId(),
-                competencia.getId(),
                 combo.getId()
         );
 
@@ -66,18 +65,23 @@ public class ItemBuscarService {
                         (String) r[1],
                         (BigDecimal) r[2],
                         (UUID) r[3],
-                        (UUID) r[4]
+                        UnidadeMedida.valueOf((String) r[4]),
+                        (BigDecimal) r[5]
                 ))
                 .toList();
     }
 
-    public Page<ItemDto> buscarItens(int pageNumber, String nome){
-        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+    public Page<ItemDto> buscarItens(int pageNumber, String nome, UnidadeMedida unidadeMedida){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
 
         Specification<ItemCombo> spec = Specification.allOf();
 
         if (nome != null && !nome.isBlank()) {
             spec = spec.and(ItemSpecs.comNomeContendo(nome));
+        }
+
+        if (unidadeMedida != null) {
+            spec = spec.and(ItemSpecs.daUnidadeMedida(unidadeMedida));
         }
 
         Page<ItemCombo> items = itemRepository.findAll(spec, pageable);

@@ -28,8 +28,6 @@ services:
       - "5432:5432"
     networks:
       - central-custos-seduc-network
-    volumes:
-      - centraldecustosdb_data:/var/lib/postgresql/data
 
   dcentraldecustosdb:
     image: postgres:16

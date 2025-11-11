@@ -20,12 +20,12 @@ public class ComboService {
         this.comboCriarService = comboCriarService;
     }
 
-    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, String nome) {
-        return comboBuscaService.buscarCombosEstrutura(estruturaId, nome);
+    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, UUID competenciaId, String nome) {
+        return comboBuscaService.buscarCombosEstrutura(estruturaId, competenciaId, nome);
     }
 
-    public Page<ComboDto> buscarCombos(int pageNumber, String nome) {
-        return comboBuscaService.buscarCombos(pageNumber, nome);
+    public Page<ComboDto> buscarCombos(int pageNumber, String nome, UUID competenciaId) {
+        return comboBuscaService.buscarCombos(pageNumber, nome, competenciaId);
     }
 
     public ComboDetalhadoDto buscarComboInfo(UUID comboId){
@@ -35,6 +35,11 @@ public class ComboService {
     @Transactional
     public void criarCombo(CriarComboDto dto){
         comboCriarService.criarCombo(dto);
+    }
+
+    @Transactional
+    public void clonarCombo(UUID comboId, UUID competenciaId, boolean clonarEstruturas){
+        comboCriarService.clonarCombo(comboId, competenciaId, clonarEstruturas);
     }
 
     @Transactional

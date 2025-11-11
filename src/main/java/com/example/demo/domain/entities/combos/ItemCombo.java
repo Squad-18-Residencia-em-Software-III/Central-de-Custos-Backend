@@ -1,5 +1,6 @@
 package com.example.demo.domain.entities.combos;
 
+import com.example.demo.domain.enums.UnidadeMedida;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,10 @@ public class ItemCombo {
 
     @Column(nullable = false, unique = true)
     private String nome;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UnidadeMedida unidadeMedida;
 
     @CreatedDate
     @Column(nullable = false)

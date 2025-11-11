@@ -64,4 +64,10 @@ public class ComboValidator {
         }
     }
 
+    public void validarComboJaExiste(String nome, Competencia competencia){
+        if (comboRepository.existsByNomeAndCompetencia(nome, competencia)){
+            throw new BusinessException("Esse combo já existe na competencia informada");
+        }
+    }
+
 }

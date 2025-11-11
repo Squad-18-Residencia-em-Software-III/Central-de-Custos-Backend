@@ -29,9 +29,10 @@ public class ComboController {
     @GetMapping("/buscar/estrutura")
     public ResponseEntity<List<ComboDto>> buscarCombosEstrutura(
             @RequestParam(name = "estruturaId") UUID estruturaId,
+            @RequestParam(name = "competenciaId") UUID competenciaId,
             @RequestParam(name = "nome", required = false) String nome
             ){
-        return ResponseEntity.ok(comboService.buscarCombosEstrutura(estruturaId, nome));
+        return ResponseEntity.ok(comboService.buscarCombosEstrutura(estruturaId, competenciaId, nome));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -42,9 +43,10 @@ public class ComboController {
     @GetMapping("/buscar")
     public ResponseEntity<Page<ComboDto>> buscarCombos(
             @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "competenciaId") UUID competenciaId,
             @RequestParam(name = "nome", required = false) String nome
     ){
-        return ResponseEntity.ok(comboService.buscarCombos(pageNumber, nome));
+        return ResponseEntity.ok(comboService.buscarCombos(pageNumber, nome, competenciaId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -93,6 +95,21 @@ public class ComboController {
             @Valid @RequestBody InclusaoDto dto
     ){
         comboService.adicionarItensAoCombo(id, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Clonar combo",
+            description = "Endpoint utilizado para clonar um combo para outra competencia",
+            tags = "Combos")
+    @PostMapping("/clonar")
+    public ResponseEntity<Void> clonarCombo(
+            @RequestParam(name = "comboId") UUID comboId,
+            @RequestParam(name = "competenciaId") UUID competenciaId,
+            @RequestParam(name = "clonarEstruturas") boolean clonarEstruturas
+    ){
+        comboService.clonarCombo(comboId, competenciaId, clonarEstruturas);
         return ResponseEntity.ok().build();
     }
 

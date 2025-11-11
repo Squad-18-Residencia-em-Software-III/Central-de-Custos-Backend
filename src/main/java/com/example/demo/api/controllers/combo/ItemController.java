@@ -1,6 +1,7 @@
 package com.example.demo.api.controllers.combo;
 
 import com.example.demo.domain.dto.combos.item.*;
+import com.example.demo.domain.enums.UnidadeMedida;
 import com.example.demo.domain.services.item.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -40,9 +41,10 @@ public class ItemController {
     @GetMapping("/buscar")
     public ResponseEntity<Page<ItemDto>> buscarCombos(
             @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(name = "nome", required = false) String nome
+            @RequestParam(name = "nome", required = false) String nome,
+            @RequestParam(name = "unidadeMedida", required = false) UnidadeMedida unidadeMedida
     ){
-        return ResponseEntity.ok(itemService.buscarItens(pageNumber, nome));
+        return ResponseEntity.ok(itemService.buscarItens(pageNumber, nome, unidadeMedida));
     }
 
     @Operation(
@@ -52,9 +54,9 @@ public class ItemController {
     @GetMapping("/combo")
     public ResponseEntity<List<ItemComboDto>> buscarItemCombo(
             @RequestParam(name = "combo") UUID comboUuid,
-            @RequestParam(name = "estrutura") UUID estruturaUuid,
-            @RequestParam(name = "competencia", required = false) UUID competenciaUuid){
-        return ResponseEntity.ok(itemService.buscarItensCombo(comboUuid, estruturaUuid, competenciaUuid));
+            @RequestParam(name = "estrutura") UUID estruturaUuid)
+    {
+        return ResponseEntity.ok(itemService.buscarItensCombo(comboUuid, estruturaUuid));
     }
 
     @Operation(

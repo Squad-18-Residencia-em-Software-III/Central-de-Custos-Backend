@@ -36,14 +36,17 @@ public class ComboBuscaService {
         this.estruturaValidator = estruturaValidator;
     }
 
-    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, String nome) {
+    public List<ComboDto> buscarCombosEstrutura(UUID estruturaId, UUID competenciaId, String nome) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
 
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
         comboValidator.validarAcessoBuscarCombos(usuario, estrutura);
 
         Specification<Combo> spec = Specification.allOf(
-                ComboSpecs.estruturaEqual(estrutura)
+                ComboSpecs.estruturaEqual(estrutura),
+                ComboSpecs.daCompetencia(competencia)
         );
 
         if (nome != null && !nome.isBlank()) {
@@ -55,10 +58,14 @@ public class ComboBuscaService {
         return combos.stream().map(comboMapper::toDto).toList();
     }
 
-    public Page<ComboDto> buscarCombos(int pageNumber, String nome) {
+    public Page<ComboDto> buscarCombos(int pageNumber, String nome, UUID competenciaId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, 10);
 
-        Specification<Combo> spec = Specification.allOf();
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+
+        Specification<Combo> spec = Specification.allOf(
+                ComboSpecs.daCompetencia(competencia)
+        );
 
         if (nome != null && !nome.isBlank()) {
             spec = spec.and(ComboSpecs.comNomeContendo(nome));

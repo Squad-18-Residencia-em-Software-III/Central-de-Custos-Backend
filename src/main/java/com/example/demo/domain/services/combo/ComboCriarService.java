@@ -5,6 +5,7 @@ import com.example.demo.domain.dto.combos.EditarComboDto;
 import com.example.demo.domain.dto.combos.InclusaoDto;
 import com.example.demo.domain.entities.combos.Combo;
 import com.example.demo.domain.entities.combos.ItemCombo;
+import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.exceptions.BusinessException;
 import com.example.demo.domain.mapper.ComboMapper;
@@ -40,6 +41,8 @@ public class ComboCriarService {
 
     @Transactional
     public void criarCombo(CriarComboDto dto){
+        Competencia competencia = comboValidator.validarCompetenciaExiste(dto.competenciaId());
+        comboValidator.validarCompetenciaAberta(competencia);
         List<Estrutura> estruturas = dto.estruturas().stream()
                 .map(estruturaValidator::validarEstruturaExiste)
                 .toList();
@@ -49,6 +52,7 @@ public class ComboCriarService {
                 .toList();
 
         Combo combo = comboMapper.toEntity(dto);
+        combo.setCompetencia(competencia);
         combo.setEstruturas(estruturas);
         combo.setItens(itens);
 
@@ -58,7 +62,7 @@ public class ComboCriarService {
     @Transactional
     public void adicionarEstruturasAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Set<Estrutura> estruturasExistentes = new HashSet<>(combo.getEstruturas());
 
         List<Estrutura> estruturasParaAdicionar = dto.ids().stream()
@@ -81,7 +85,7 @@ public class ComboCriarService {
     @Transactional
     public void adicionarItensAoCombo(UUID comboId, InclusaoDto dto) {
         Combo combo = comboValidator.validarComboExiste(comboId);
-
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Set<ItemCombo> itensExistentes = new HashSet<>(combo.getItens());
 
         List<ItemCombo> itensParaAdicionar = dto.ids().stream()
@@ -104,6 +108,7 @@ public class ComboCriarService {
     @Transactional
     public void removerItemDoCombo(UUID comboId, UUID itemId) {
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         ItemCombo itemCombo = itemValidator.validaItemExiste(itemId);
         itemValidator.validaExisteValorNoItem(itemCombo);
 
@@ -114,6 +119,7 @@ public class ComboCriarService {
     @Transactional
     public void removerEstruturaDoCombo(UUID comboId, UUID estruturaId) {
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
 
         combo.getEstruturas().remove(estrutura);
@@ -124,7 +130,25 @@ public class ComboCriarService {
     @Transactional
     public void editarCombo(UUID comboId, EditarComboDto dto){
         Combo combo = comboValidator.validarComboExiste(comboId);
+        comboValidator.validarCompetenciaAberta(combo.getCompetencia());
         editarCampoComboStrategies.forEach(s -> s.editar(combo, dto));
         comboRepository.save(combo);
+    }
+
+    @Transactional
+    public void clonarCombo(UUID comboId, UUID competenciaId, boolean clonarEstruturas){
+        Combo combo = comboValidator.validarComboExiste(comboId);
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        comboValidator.validarCompetenciaAberta(competencia);
+        comboValidator.validarComboJaExiste(combo.getNome(), competencia);
+
+        Combo novoCombo = comboMapper.clonarCombo(combo);
+        if (clonarEstruturas){
+            novoCombo.setEstruturas(new ArrayList<>(combo.getEstruturas()));
+        }
+        novoCombo.setItens(new ArrayList<>(combo.getItens()));
+        novoCombo.setCompetencia(competencia);
+
+        comboRepository.save(novoCombo);
     }
 }

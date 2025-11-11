@@ -32,7 +32,6 @@ public class AceitarSolicitacaoValorItemImpl extends AceitarSolicitacaoInternaSt
             valorItemCombo = new ValorItemCombo();
             valorItemCombo.setEstrutura(solicitacaoInterna.getEstrutura());
             valorItemCombo.setCombo(solicitacaoInterna.getCombo());
-            valorItemCombo.setCompetencia(solicitacaoInterna.getCompetencia());
             valorItemCombo.setItemCombo(solicitacaoInterna.getItemCombo());
             valorItemCombo.setValor(solicitacaoInterna.getValor());
         }
