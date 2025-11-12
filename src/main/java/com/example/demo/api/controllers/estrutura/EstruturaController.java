@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,20 @@ public class EstruturaController {
             @RequestParam(name = "nome", required = false
             ) String nome){
         return ResponseEntity.ok(estruturaService.buscarEstruturas(pageNumber, nome));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Buscar estruturas que não possuem o combo",
+            description = "Retorna uma lista de estruturas que não possuem o comboid, suporta pesquisa por nome",
+            tags = "Estrutura(Setor)")
+    @GetMapping("/all/n-p-combo")
+    public ResponseEntity<Page<EstruturaDto>> buscarEstruturas(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "comboId") UUID comboId,
+            @RequestParam(name = "nome", required = false) String nome
+    ){
+        return ResponseEntity.ok(estruturaService.buscarEstruturasNaoPossuemCombo(pageNumber, nome, comboId));
     }
 
     @Operation(

@@ -54,9 +54,24 @@ public class EstruturaService {
     }
 
     public Page<EstruturaDto> buscarEstruturas(int pageNumber, String nome){
-        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
 
         Specification<Estrutura> spec = Specification.allOf();
+
+        if (nome != null && !nome.isBlank()) {
+            spec = spec.and(EstruturaSpecs.comNomeContendo(nome));
+        }
+
+        Page<Estrutura> estruturas = estruturaRepository.findAll(spec, pageable);
+        return estruturas.map(estruturaMapper::toDto);
+    }
+
+    public Page<EstruturaDto> buscarEstruturasNaoPossuemCombo(int pageNumber, String nome, UUID comboId){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+
+        Specification<Estrutura> spec = Specification.allOf(
+                EstruturaSpecs.naoPossuiCombo(comboId)
+        );
 
         if (nome != null && !nome.isBlank()) {
             spec = spec.and(EstruturaSpecs.comNomeContendo(nome));
