@@ -65,8 +65,9 @@ public class RelatorioController {
             tags = "Relatórios")
     @GetMapping("/dashboard/header")
     public ResponseEntity<HeaderPainelSetorDto> getHeader(
-            @RequestParam(name = "estruturaId", required = false) UUID estruturaId
+            @RequestParam(name = "estruturaId", required = false) UUID estruturaId,
+            @RequestParam(name = "competenciaId") UUID competenciaId
     ) {
-        return ResponseEntity.ok(relatorioService.exibirDadosHeaderPainelSetor(estruturaId));
+        return ResponseEntity.ok(relatorioService.exibirDadosHeaderPainelSetor(estruturaId, competenciaId));
     }
 }

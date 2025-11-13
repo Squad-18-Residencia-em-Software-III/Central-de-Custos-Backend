@@ -4,11 +4,13 @@ import com.example.demo.domain.dto.relatorios.HeaderPainelSetorDto;
 import com.example.demo.domain.dto.relatorios.escola.CustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.escola.ListaCustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.graficos.GastosTotaisCompetenciaDto;
+import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
 import com.example.demo.domain.enums.ClassificacaoEstrutura;
 import com.example.demo.domain.repositorios.CompetenciaRepository;
 import com.example.demo.domain.repositorios.ValorItemComboRepository;
+import com.example.demo.domain.validations.ComboValidator;
 import com.example.demo.domain.validations.EstruturaValidator;
 import com.example.demo.infra.security.authentication.AuthenticatedUserProvider;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,13 @@ public class RelatorioService {
 
     private final ValorItemComboRepository valorItemComboRepository;
     private final EstruturaValidator estruturaValidator;
+    private final ComboValidator comboValidator;
     private final CompetenciaRepository competenciaRepository;
 
-    public RelatorioService(ValorItemComboRepository valorItemComboRepository, EstruturaValidator estruturaValidator, CompetenciaRepository competenciaRepository) {
+    public RelatorioService(ValorItemComboRepository valorItemComboRepository, EstruturaValidator estruturaValidator, ComboValidator comboValidator, CompetenciaRepository competenciaRepository) {
         this.valorItemComboRepository = valorItemComboRepository;
         this.estruturaValidator = estruturaValidator;
+        this.comboValidator = comboValidator;
         this.competenciaRepository = competenciaRepository;
     }
 
@@ -74,7 +78,9 @@ public class RelatorioService {
                 .toList();
     }
 
-    public HeaderPainelSetorDto exibirDadosHeaderPainelSetor(UUID estruturaId){
+    public HeaderPainelSetorDto exibirDadosHeaderPainelSetor(UUID estruturaId, UUID competenciaId){
+        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+
         Estrutura estrutura;
         if (estruturaId != null){
             estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
@@ -86,9 +92,9 @@ public class RelatorioService {
         Object[] resultado;
 
         switch (estrutura.getClassificacaoEstrutura()){
-            case SECRETARIA -> resultado = (Object[]) competenciaRepository.findHeaderForSecretaria();
-            case DIRETORIA -> resultado = (Object[]) competenciaRepository.findHeaderForDiretoria(estrutura.getId());
-            case ESCOLA -> resultado = (Object[]) competenciaRepository.findHeaderForEscola(estrutura.getId());
+            case SECRETARIA -> resultado = (Object[]) competenciaRepository.findHeaderForSecretaria(competencia.getId());
+            case DIRETORIA -> resultado = (Object[]) competenciaRepository.findHeaderForDiretoria(estrutura.getId(), competencia.getId());
+            case ESCOLA -> resultado = (Object[]) competenciaRepository.findHeaderForEscola(estrutura.getId(), competencia.getId());
             default -> throw new IllegalArgumentException("Tipo de estrutura inválido");
         }
 

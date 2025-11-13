@@ -31,18 +31,18 @@ public interface CompetenciaRepository extends JpaRepository<Competencia, Long>,
     JOIN combo cb ON cb.competencia_id = c.id
     JOIN valor_item_combo vic ON vic.combo_id = cb.id
     JOIN estrutura e ON e.id = vic.estrutura_id
-    WHERE DATE_TRUNC('month', c.competencia) = DATE_TRUNC('month', CURRENT_DATE)
+    WHERE c.id = :competenciaId
     GROUP BY c.competencia
     """,
             nativeQuery = true)
-    Object findHeaderForSecretaria();
+    Object findHeaderForSecretaria(@Param("competenciaId") Long competenciaId);
 
 
     @Query(value = """
 WITH current_competencia AS (
     SELECT id, competencia
     FROM competencia
-    WHERE DATE_TRUNC('month', competencia) = DATE_TRUNC('month', CURRENT_DATE)
+    WHERE competencia.id = :competenciaId
     LIMIT 1
 ),
 -- total de alunos das escolas filhas da diretoria na competência atual
@@ -76,7 +76,10 @@ SELECT
     COALESCE((SELECT total_valor FROM valor_cte), 0) AS valor_total_competencia,
     NULL AS custo_por_aluno
 """, nativeQuery = true)
-    Object findHeaderForDiretoria(@Param("diretoriaId") Long diretoriaId);
+    Object findHeaderForDiretoria(
+            @Param("diretoriaId") Long diretoriaId,
+            @Param("competenciaId") Long competenciaId
+    );
 
 
     @Query(value = """
@@ -100,9 +103,12 @@ SELECT
         LEFT JOIN competencia_aluno_estrutura cae
             ON cae.competencia_id = c.id
             AND cae.estrutura_id = :estruturaId
-        WHERE DATE_TRUNC('month', c.competencia) = DATE_TRUNC('month', CURRENT_DATE)
+        WHERE competencia.id = :competenciaId
         GROUP BY c.competencia, cae.numero_alunos
 """, nativeQuery = true)
-    Object findHeaderForEscola(@Param("estruturaId") Long estruturaId);
+    Object findHeaderForEscola(
+            @Param("estruturaId") Long estruturaId,
+            @Param("competenciaId") Long competenciaId
+    );
 
 }
