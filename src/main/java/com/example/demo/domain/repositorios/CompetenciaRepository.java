@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface CompetenciaRepository extends JpaRepository<Competencia, Long>, JpaSpecificationExecutor<Competencia> {
     Optional<Competencia> findByUuid(UUID competenciaId);
 
-    Optional<Competencia> findByCompetencia(LocalDate hoje);
+    Competencia findByCompetencia(LocalDate hoje);
 
     boolean existsByCompetencia(LocalDate localDate);
 

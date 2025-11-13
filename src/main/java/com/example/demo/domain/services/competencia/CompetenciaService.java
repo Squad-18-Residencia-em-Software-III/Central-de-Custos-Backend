@@ -35,12 +35,6 @@ public class CompetenciaService {
         this.comboValidator = comboValidator;
     }
 
-    public Competencia getCompetenciaAtual() {
-        LocalDate hoje = LocalDate.now();
-        return competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1))
-                .orElseThrow(() -> new EntityNotFoundException("Competência atual não encontrada"));
-    }
-
     public Page<CompetenciaDto> buscarCompetencias(int pageNumber, StatusCompetencia statusCompetencia){
         Pageable pageable = PageRequest.of(pageNumber - 1, 12, Sort.by("competencia").descending());
 

@@ -4,6 +4,7 @@ import com.example.demo.domain.dto.relatorios.HeaderPainelSetorDto;
 import com.example.demo.domain.dto.relatorios.escola.CustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.escola.ListaCustoPorAlunoDto;
 import com.example.demo.domain.dto.relatorios.graficos.GastosTotaisCompetenciaDto;
+import com.example.demo.domain.dto.relatorios.graficos.ItensMaisCarosEstruturaDto;
 import com.example.demo.domain.entities.competencia.Competencia;
 import com.example.demo.domain.entities.estrutura.Estrutura;
 import com.example.demo.domain.entities.usuario.Usuario;
@@ -35,9 +36,23 @@ public class RelatorioService {
         this.competenciaRepository = competenciaRepository;
     }
 
-    public List<GastosTotaisCompetenciaDto> buscarGatosTotaisPorCompetencia(UUID estruturaId, int ano){
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
-        List<Object[]> resultados = valorItemComboRepository.gastosTotaisPorCompetenciaAno(estrutura.getId(), ano);
+    public List<GastosTotaisCompetenciaDto> buscarGatosTotaisPorCompetencia(UUID estruturaId, UUID competenciaId){
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
+
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+            estrutura = usuario.getEstrutura();
+        }
+        List<Object[]> resultados = valorItemComboRepository.gastosTotaisPorCompetencia(estrutura.getId(), competencia.getId());
 
         return resultados.stream()
                 .map(obj -> new GastosTotaisCompetenciaDto(
@@ -47,10 +62,25 @@ public class RelatorioService {
                 .toList();
     }
 
-    public List<CustoPorAlunoDto> buscarCustoPorAluno(UUID estruturaId, int ano){
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+    // ESCOLA
+    public List<CustoPorAlunoDto> buscarCustoPorAluno(UUID estruturaId, UUID competenciaId){
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
+
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+            estrutura = usuario.getEstrutura();
+        }
         estruturaValidator.validaClassificacaoEstrutura(estrutura, ClassificacaoEstrutura.ESCOLA);
-        List<Object[]> resultados = valorItemComboRepository.custosPorAluno(estrutura.getId(), ano);
+        List<Object[]> resultados = valorItemComboRepository.custosPorAluno(estrutura.getId(), competencia.getId());
 
         return resultados.stream()
                 .map(obj -> new CustoPorAlunoDto(
@@ -62,10 +92,25 @@ public class RelatorioService {
                 .toList();
     }
 
-    public List<ListaCustoPorAlunoDto> buscarCustoPorAlunoPorDiretoria(UUID estruturaId, int ano, int mes) {
-        Estrutura estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+    // DIRETORIA
+    public List<ListaCustoPorAlunoDto> buscarCustoPorAlunoPorDiretoria(UUID estruturaId, UUID competenciaId) {
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
 
-        List<Object[]> resultados = valorItemComboRepository.findEscolasComCustoPorAluno(estrutura.getId(),ano, mes);
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+            estrutura = usuario.getEstrutura();
+        }
+
+        List<Object[]> resultados = valorItemComboRepository.findEscolasComCustoPorAluno(estrutura.getId(), competencia.getId());
 
         return resultados.stream()
                 .map(obj -> new ListaCustoPorAlunoDto(
@@ -78,8 +123,70 @@ public class RelatorioService {
                 .toList();
     }
 
+    // GRAFICO PIZZA
+    public List<ItensMaisCarosEstruturaDto> buscarItensMaisCarosEstrutura(UUID estruturaId, UUID competenciaId){
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
+
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+            estrutura = usuario.getEstrutura();
+        }
+
+        List<Object[]> resultados = valorItemComboRepository.itensMaisCarosPorEstrutura(estrutura.getId(), competencia.getId());
+
+        return resultados.stream()
+                .map(obj -> new ItensMaisCarosEstruturaDto(
+                        (String) obj[0],
+                        (BigDecimal) obj[1]
+                ))
+                .toList();
+    }
+
+    // GRAFICO PIZZA
+    public List<ItensMaisCarosEstruturaDto> buscarItensMaisCarosEstruturaFilhos(UUID estruturaId, UUID competenciaId){
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
+
+        Estrutura estrutura;
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+            estrutura = usuario.getEstrutura();
+        }
+
+        List<Object[]> resultados = valorItemComboRepository.itensMaisCarosPorEstruturaFilhos(estrutura.getId(), competencia.getId());
+
+        return resultados.stream()
+                .map(obj -> new ItensMaisCarosEstruturaDto(
+                        (String) obj[0],
+                        (BigDecimal) obj[1]
+                ))
+                .toList();
+    }
+
     public HeaderPainelSetorDto exibirDadosHeaderPainelSetor(UUID estruturaId, UUID competenciaId){
-        Competencia competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        Competencia competencia;
+        if (competenciaId != null){
+            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
+        } else {
+            LocalDate hoje = LocalDate.now();
+            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
+        }
 
         Estrutura estrutura;
         if (estruturaId != null){

@@ -58,13 +58,68 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
     LEFT JOIN valor_item_combo vic
         ON vic.combo_id = c.id
         AND vic.estrutura_id = :estruturaId
-    WHERE EXTRACT(YEAR FROM comp.competencia) = :ano
+    WHERE comp.id = :competenciaId
     GROUP BY comp.competencia
     ORDER BY comp.competencia
     """, nativeQuery = true)
-    List<Object[]> gastosTotaisPorCompetenciaAno(
+    List<Object[]> gastosTotaisPorCompetencia(
             @Param("estruturaId") Long estruturaId,
-            @Param("ano") int ano
+            @Param("competenciaId") Long competenciaId
+    );
+
+    @Query(value = """
+    SELECT
+        ic.nome AS nome_item,
+        SUM(vic.valor) AS valor_total_item
+    FROM valor_item_combo vic
+    JOIN combo cb
+        ON cb.id = vic.combo_id
+    JOIN item_combo ic
+        ON ic.id = vic.item_combo_id
+    JOIN estrutura e
+        ON e.id = vic.estrutura_id
+    JOIN competencia c
+        ON c.id = cb.competencia_id
+    WHERE e.id = 1
+      AND c.id = 12
+    GROUP BY ic.nome
+    ORDER BY valor_total_item DESC
+    LIMIT 10
+    """, nativeQuery = true)
+    List<Object[]> itensMaisCarosPorEstrutura(
+            @Param("estruturaId") Long estruturaId,
+            @Param("competenciaId") Long competenciaId
+    );
+
+    @Query(value = """
+    WITH RECURSIVE estruturas_filhos AS (
+            SELECT id
+            FROM estrutura
+            WHERE id = 2
+            UNION ALL
+            SELECT e.id
+            FROM estrutura e
+            INNER JOIN estruturas_filhos ef ON e.estrutura_pai_id = ef.id
+    )
+    SELECT
+        ic.nome AS nome_item,
+        SUM(vic.valor) AS valor_total_item
+    FROM valor_item_combo vic
+    JOIN combo cb ON cb.id = vic.combo_id
+    JOIN item_combo ic ON ic.id = vic.item_combo_id
+    JOIN estrutura e ON e.id = vic.estrutura_id
+    JOIN competencia c ON c.id = cb.competencia_id
+    WHERE e.id IN (
+        SELECT id FROM estruturas_filhos WHERE id <> 2
+    )
+      AND c.id = 12
+    GROUP BY ic.nome
+    ORDER BY valor_total_item DESC
+    LIMIT 10
+    """, nativeQuery = true)
+    List<Object[]> itensMaisCarosPorEstruturaFilhos(
+            @Param("estruturaId") Long estruturaId,
+            @Param("competenciaId") Long competenciaId
     );
 
     // custo por aluno
@@ -88,21 +143,20 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
             LEFT JOIN competencia_aluno_estrutura cae
             	ON cae.competencia_id = c.id
             	AND cae.estrutura_id = :estruturaId
-            WHERE EXTRACT(YEAR FROM c.competencia) = :ano
+            WHERE c.id = :competenciaId
             GROUP BY c.competencia, cae.numero_alunos
             ORDER BY c.competencia
             """ ,nativeQuery = true)
     List<Object[]> custosPorAluno(
             @Param("estruturaId") Long estruturaId,
-            @Param("ano") int ano
+            @Param("competenciaId") Long competenciaId
     );
 
     @Query(value = """
 WITH current_competencia AS (
     SELECT id
     FROM competencia
-    WHERE EXTRACT(YEAR FROM competencia) = :ano
-      AND EXTRACT(MONTH FROM competencia) = :mes
+    WHERE competencia.id = :competenciaId
     LIMIT 1
 ),
 valor_por_escola AS (
@@ -140,8 +194,7 @@ ORDER BY e_f.nome
 """, nativeQuery = true)
     List<Object[]> findEscolasComCustoPorAluno(
             @Param("diretoriaId") Long diretoriaId,
-            @Param("ano") int ano,
-            @Param("mes") int mes
+            @Param("competenciaId") Long competenciaId
     );
 
 

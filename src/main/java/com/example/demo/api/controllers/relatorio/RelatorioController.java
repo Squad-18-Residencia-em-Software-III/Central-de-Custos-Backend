@@ -29,9 +29,9 @@ public class RelatorioController {
     @GetMapping("/grafico/gastos-t-competencia")
     public ResponseEntity<List<GastosTotaisCompetenciaDto>> buscarGastosPorCompetencia(
             @RequestParam(name = "estruturaId") UUID estruturaId,
-            @RequestParam(name = "ano") int ano
+            @RequestParam(name = "competenciaId") UUID competenciaId
     ) {
-        return ResponseEntity.ok(relatorioService.buscarGatosTotaisPorCompetencia(estruturaId, ano));
+        return ResponseEntity.ok(relatorioService.buscarGatosTotaisPorCompetencia(estruturaId, competenciaId));
     }
 
     @Operation(
@@ -41,9 +41,9 @@ public class RelatorioController {
     @GetMapping("/relatorio/custo-p-aluno")
     public ResponseEntity<List<CustoPorAlunoDto>> buscarCustosPorAluno(
             @RequestParam(name = "estruturaId") UUID estruturaId,
-            @RequestParam(name = "ano") int ano
+            @RequestParam(name = "competenciaId") UUID competenciaId
     ) {
-        return ResponseEntity.ok(relatorioService.buscarCustoPorAluno(estruturaId, ano));
+        return ResponseEntity.ok(relatorioService.buscarCustoPorAluno(estruturaId, competenciaId));
     }
 
     @Operation(
@@ -51,12 +51,11 @@ public class RelatorioController {
             description = "Retorna dados dos custos por aluno",
             tags = "Relatórios")
     @GetMapping("/relatorio/custo-p-aluno/diretoria")
-    public ResponseEntity<List<ListaCustoPorAlunoDto>> buscarCustosPorAluno(
+    public ResponseEntity<List<ListaCustoPorAlunoDto>> buscarCustosPorAlunoDiretoria(
             @RequestParam(name = "estruturaId") UUID diretoriaId,
-            @RequestParam(name = "ano") int ano,
-            @RequestParam(name = "mes") int mes
+            @RequestParam(name = "competenciaId") UUID competenciaId
     ) {
-        return ResponseEntity.ok(relatorioService.buscarCustoPorAlunoPorDiretoria(diretoriaId, ano, mes));
+        return ResponseEntity.ok(relatorioService.buscarCustoPorAlunoPorDiretoria(diretoriaId, competenciaId));
     }
 
     @Operation(
