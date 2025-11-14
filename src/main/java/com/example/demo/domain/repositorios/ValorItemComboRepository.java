@@ -57,8 +57,12 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         ON c.competencia_id = comp.id
     LEFT JOIN valor_item_combo vic
         ON vic.combo_id = c.id
-        AND vic.estrutura_id = :estruturaId
-    WHERE comp.id = :competenciaId
+       AND vic.estrutura_id = :estruturaId
+    WHERE EXTRACT(YEAR FROM comp.competencia) = (
+        SELECT EXTRACT(YEAR FROM c2.competencia)
+        FROM competencia c2
+        WHERE c2.id = :competenciaId
+    )
     GROUP BY comp.competencia
     ORDER BY comp.competencia
     """, nativeQuery = true)
@@ -80,8 +84,8 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
         ON e.id = vic.estrutura_id
     JOIN competencia c
         ON c.id = cb.competencia_id
-    WHERE e.id = 1
-      AND c.id = 12
+    WHERE e.id = :estruturaId
+      AND c.id = :competenciaId
     GROUP BY ic.nome
     ORDER BY valor_total_item DESC
     LIMIT 10
@@ -110,9 +114,9 @@ public interface ValorItemComboRepository extends JpaRepository<ValorItemCombo, 
     JOIN estrutura e ON e.id = vic.estrutura_id
     JOIN competencia c ON c.id = cb.competencia_id
     WHERE e.id IN (
-        SELECT id FROM estruturas_filhos WHERE id <> 2
+        SELECT id FROM estruturas_filhos WHERE id <> :estruturaId
     )
-      AND c.id = 12
+      AND c.id = :competenciaId
     GROUP BY ic.nome
     ORDER BY valor_total_item DESC
     LIMIT 10

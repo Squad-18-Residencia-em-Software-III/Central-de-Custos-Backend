@@ -22,19 +22,17 @@ public interface CompetenciaRepository extends JpaRepository<Competencia, Long>,
     @Query(value = """
     SELECT
         c.competencia AS competencia_atual,
-        COUNT(DISTINCT e.id) AS quantidade_setores,
+        (SELECT COUNT(*) FROM estrutura) AS quantidade_setores,
         NULL AS quantidade_escolas,
         NULL AS quantidade_alunos,
         COALESCE(SUM(vic.valor), 0) AS valor_total_competencia,
         NULL AS custo_por_aluno
     FROM competencia c
     JOIN combo cb ON cb.competencia_id = c.id
-    JOIN valor_item_combo vic ON vic.combo_id = cb.id
-    JOIN estrutura e ON e.id = vic.estrutura_id
+    LEFT JOIN valor_item_combo vic ON vic.combo_id = cb.id
     WHERE c.id = :competenciaId
     GROUP BY c.competencia
-    """,
-            nativeQuery = true)
+    """, nativeQuery = true)
     Object findHeaderForSecretaria(@Param("competenciaId") Long competenciaId);
 
 
@@ -103,7 +101,7 @@ SELECT
         LEFT JOIN competencia_aluno_estrutura cae
             ON cae.competencia_id = c.id
             AND cae.estrutura_id = :estruturaId
-        WHERE competencia.id = :competenciaId
+        WHERE c.id = :competenciaId
         GROUP BY c.competencia, cae.numero_alunos
 """, nativeQuery = true)
     Object findHeaderForEscola(
