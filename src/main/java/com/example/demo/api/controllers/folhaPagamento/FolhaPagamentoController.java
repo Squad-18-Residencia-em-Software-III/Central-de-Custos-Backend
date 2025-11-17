@@ -32,9 +32,6 @@ public class FolhaPagamentoController {
             @RequestParam(name = "competenciaId") UUID competenciaId
     ){
         FolhaPagamentoDto folhaPagamento = folhaPagamentoService.buscarFolhaPagamento(estruturaId, competenciaId);
-        if (folhaPagamento == null){
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok(folhaPagamento);
     }
