@@ -66,6 +66,19 @@ public class EstruturaController {
     }
 
     @Operation(
+            summary = "Buscar subsetores da Estrutura",
+            description = "Retorna subsetores da estrutura escolhida (Se não informar o id da estrutura, puxa a do usuario logado)",
+            tags = "Estrutura(Setor)")
+    @GetMapping("/sub-setores")
+    public ResponseEntity<Page<EstruturaDto>> buscarDetalhesEstrutura(
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @RequestParam(name = "estruturaId", required = false) UUID estruturaId,
+            @RequestParam(name = "nome", required = false) String nome
+    ){
+        return ResponseEntity.ok(estruturaService.buscarSubSetores(estruturaId, pageNumber, nome));
+    }
+
+    @Operation(
             summary = "Buscar competencias que possuem combos",
             description = "Retorna competencias que possuem combos",
             tags = "Estrutura(Setor)")

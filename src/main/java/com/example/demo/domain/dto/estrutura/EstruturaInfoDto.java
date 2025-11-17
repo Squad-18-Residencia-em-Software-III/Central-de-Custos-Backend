@@ -16,7 +16,6 @@ public record EstruturaInfoDto(
         String complemento,
         Integer numeroRua,
         String bairro,
-        String cep,
-        List<EstruturaDto> subSetores
+        String cep
 ) {
 }

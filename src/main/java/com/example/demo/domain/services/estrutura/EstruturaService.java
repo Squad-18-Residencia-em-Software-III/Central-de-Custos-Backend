@@ -81,29 +81,46 @@ public class EstruturaService {
         return estruturas.map(estruturaMapper::toDto);
     }
 
-    @Transactional(readOnly = true)
     public EstruturaInfoDto buscarInfoEstrutura(UUID estruturaId) {
         Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
 
-        UUID estrutura;
+        Estrutura estrutura;
 
         if (estruturaId != null){
-            estrutura = estruturaId;
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
         } else {
-            estrutura = usuario.getEstrutura().getUuid();
+            estrutura = usuario.getEstrutura();
         }
 
         estruturaValidator.validarAcessoBuscar(usuario, estrutura);
-        String json = estruturaRepository.buscarInfoEstruturaJson(estrutura);
-        if (json == null) {
-            throw new IllegalArgumentException("Estrutura não encontrada para o ID informado: " + estrutura);
+
+        return estruturaMapper.toInfoDto(estrutura);
+    }
+
+    public Page<EstruturaDto> buscarSubSetores(UUID estruturaId, int pageNumber, String nome){
+        Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+        Usuario usuario = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        Estrutura estrutura;
+
+        if (estruturaId != null){
+            estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
+        } else {
+            estrutura = usuario.getEstrutura();
         }
 
-        try {
-            return objectMapper.readValue(json, EstruturaInfoDto.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao converter JSON para EstruturaInfoDto", e);
+        estruturaValidator.validarAcessoBuscar(usuario, estrutura);
+
+        Specification<Estrutura> spec = Specification.allOf(
+                EstruturaSpecs.pertenceAEstruturaPai(estrutura)
+        );
+
+        if (nome != null && !nome.isBlank()) {
+            spec = spec.and(EstruturaSpecs.comNomeContendo(nome));
         }
+
+        Page<Estrutura> estruturas = estruturaRepository.findAll(spec, pageable);
+        return estruturas.map(estruturaMapper::toDto);
     }
 
     @Transactional
