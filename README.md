@@ -1,216 +1,184 @@
-# Central-de-Custos-Backend
-Repositório do backend da aplicação Centra de Custos da Rede Estadual de Ensino desenvolvido pelo Squad 18
+# 🏛️ Central de Custos SEDUC - Squad 18
 
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-## 🌳 Estrutura de Branches
-
-- `main`: código estável e pronto para produção (🚫 ninguém comita diretamente aqui)
-- `develop`: onde as funcionalidades são integradas após revisão
-- `feat/nome-da-feature`: onde cada pessoa trabalha em uma funcionalidade específica
-
----
-
-## 🚀 Começando uma nova feature
-
-```bash
-# Atualize sua branch develop local
-git checkout develop
-git pull origin develop
-
-# Crie sua branch de tarefa a partir de develop
-git checkout -b feat/nome-da-feature
-
-# Exemplo:
-# git checkout -b feat/cadastro-usuario
-```
+> **Sistema web centralizado** para registrar, acompanhar e analisar despesas da rede estadual, organizando dados por níveis educacionais e garantindo transparência, padronização e agilidade na gestão dos recursos.
 
 ---
 
-## 💻 Trabalhando na sua branch
+## 🏗️ Estrutura do Projeto
 
-```bash
-# Após fazer mudanças no código
-git add .
-git commit -m "feat(nome-da-feature): Implementa [descrição da tarefa]"
+Este projeto adota uma arquitetura moderna dividida em:
 
-# Envie sua branch para o GitHub
-git push origin feat/nome-da-feature
-```
+| Componente | Stack Principal |
+| :--- | :--- |
+| **Backend** | Java 17 + Spring Boot |
+| **Frontend** | React.js + TypeScript |
 
-Se sua branch não for uma Feature necessáriamente, existem essas opções de commits / nomenclaturas:
-- **feat**: nova funcionalidade
+A aplicação é agnóstica de infraestrutura, podendo rodar **Localmente** ou via **Docker Compose**.
 
-- **fix**: correção de bug
+## 📚 Tecnologias Utilizadas
 
-- **docs**: mudanças só em documentação
+<details>
+<summary><strong>Backend (API & Dados)</strong></summary>
 
-- **style**: mudanças de formatação (espaços, identação, etc.), sem alterar lógica
+*   **Linguagem:** Java 17
+*   **Framework:** Spring Boot
+*   **Segurança:** Spring Security + JWT
+*   **Banco de Dados:** PostgreSQL
+*   **Migração:** Flyway
+*   **Containerização:** Docker
 
-- **refactor**: refatoração sem mudar comportamento
+</details>
 
-- **test**: adicionar ou ajustar testes
+<details>
+<summary><strong>Frontend (Interface)</strong></summary>
 
-- **chore**: tarefas de manutenção (configs, dependências, build...)
+*   **Framework:** React.js
+*   **Linguagem:** TypeScript
+*   **Build Tool:** Vite
+*   **Estilização:** Tailwind CSS
+*   **Http Client:** Axios
 
----
-
-## 🔁 Criando um Pull Request (PR)
-
-1. Vá até o repositório no GitHub.
-2. Clique em **"Compare & pull request"** ou vá na aba **Pull Requests**.
-3. Selecione:
-    - **Base**: `develop`
-    - **Compare**: `feat/nome-da-feature`
-4. Descreva o que foi feito e envie para revisão.
-5. Aguarde aprovação e merge.
+</details>
 
 ---
 
-## 🔄 Mantendo sua branch atualizada
+# 🚀 Como Rodar a Aplicação
 
-Se alguém já tiver dado merge em `develop`, atualize a sua:
+Escolha a abordagem que melhor se adapta ao seu cenário:
 
-```bash
-# Atualize develop
-git checkout develop
-git pull origin develop
+## 🐳 Opção 1: Via Docker (Recomendado para Produção/Homologação)
 
-# Volte para sua feature branch
-git checkout feat/nome-da-feature
+Ambiente completo rodando via orquestração de containers.
 
-# Mescle as mudanças da develop na sua branch
-git merge develop
+### ✔️ Requisitos
+*   Docker & Docker Compose
+*   Openssl
 
-# Resolva conflitos, se houver, e continue trabalhando normalmente
-```
+### ▶ Passo a passo
 
----
+1.  **Clone o repositório de deploy:**
+    ```bash
+    git clone https://github.com/Squad-18-Residencia-em-Software-III/deploy-central-de-custos.git
+    cd deploy-central-de-custos
+    ```
 
-## ✅ Finalizando
+2.  **Configure as variáveis de ambiente:**
+    Crie um arquivo `.env` na raiz da pasta:
+    ```bash
+    nano .env
+    ```
+    *Cole o conteúdo abaixo:*
+    ```properties
+    SPRING_PROFILES_ACTIVE=prod
+    DB_USERNAME=defina o usuario do banco
+    DB_PASSWORD=defina a senha do banco
+    DB_URL=jdbc:postgresql://centraldecustosdb:5432/centraldecustosdb
+    DEFAULT_ADMIN_PASSWORD=defina a senha do usuario Admin padrão da aplicação
+    EMAIL_SERVICE_URL=http://servico-email:8082/mail
+    MAIL_PASSWORD=insira a senha de app do email que irá utilizar
+    MAIL_USERNAME=insira o email que irá utilizar para o serviço
+    REACT_APP_API_URL=http://centraldecustos-app:8080
+    ```
 
-Quando a branch `develop` estiver com várias funcionalidades testadas e estável, um **responsável** faz o merge dela para `main` via Pull Request:
+3.  **Gere as chaves de segurança (JWT):**
+    ```bash
+    mkdir jwt
+    cd jwt/
+    
+    # Gerar private/public key (RSA 2048)
+    openssl genpkey -algorithm RSA -out app.key -pkeyopt rsa_keygen_bits:2048
+    openssl rsa -in app.key -pubout -out app.pub
+    ```
 
-```bash
-git checkout main
-git pull origin main
-git merge develop
-git push origin main
-```
-
----
-
-## 📌 Regras importantes
-
-- 🔒 **Nunca comitar direto em `main` ou `develop`**
-- ✅ **Sempre trabalhe em branches `feat/nome-da-feature`**
-- 🔄 **Atualize sua branch com `develop` com frequência**
-- 🧪 **Teste antes de pedir merge**
-- 🧠 **Nomeie bem seus commits e branches**
-
----
-
-👥 Time colaborando com responsabilidade = projeto saudável 🚀
-
-
-## 📖 Documentação Swagger
-`http://localhost:8080/swagger-ui.html`
-
-## BANCO H2
-`http://localhost:8080/h2-console/`
-
----
-
-# ⚙️ Execução Local (Perfil `dev`)
-
-Ambiente de desenvolvimento local para o backend da Central de Custos.
-
-## 🔧 Configuração esperada
-
-| Item           | Valor                                    |
-| -------------- | ---------------------------------------- |
-| Porta          | `8080`                                   |
-| Banco de Dados | PostgreSQL → `dcentraldecustosdb`        |
-| Usuário/Senha  | `dev` / `dev`                            |
-| JWT Keys       | `src/main/resources/app.key` e `app.pub` |
+4.  **Suba os containers:**
+    ```bash
+    docker compose up -d --build
+    ```
 
 ---
 
-## 🚀 Execução Rápida
+## 🔧 Opção 2: Executar Localmente (Perfil `dev`)
 
-```bash
-# 1. Clonar e entrar no projeto
-git clone https://github.com/Squad-18-Residencia-em-Software-III/Central-de-Custos-Backend.git
-cd Central-de-Custos-Backend
-git checkout develop
-```
+Ideal para desenvolvimento e debug.
 
----
+### ✔️ Requisitos
+*   Java 17+ & Maven
+*   Node.js 18+ & NPM (ou Yarn)
+*   PostgreSQL instalado (ou via Docker isolado)
 
-## 🗄️ Banco de Dados (PostgreSQL)
+### ▶ Backend (API)
 
-```sql
-CREATE USER dev WITH PASSWORD 'dev';
-CREATE DATABASE dcentraldecustosdb OWNER dev;
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/Squad-18-Residencia-em-Software-III/Central-de-Custos-Backend.git
+    cd Central-de-Custos-Backend
+    ```
 
-\c dcentraldecustosdb
-GRANT ALL PRIVILEGES ON DATABASE dcentraldecustosdb TO dev;
-GRANT ALL PRIVILEGES ON SCHEMA public TO dev;
-```
+2.  **Inicie o Banco de Dados:**
+   *   **Método A (Local):** Crie um banco chamado `dcentraldecustosdb` na porta `5432`.
+   *   **Método B (Docker):** Rode o compose interno do repositório:
+       ```bash
+       docker compose up -d --build
+       ```
 
----
+3.  **Gere as chaves JWT:**
+    ```bash
+    cd src/main/resources/
+    
+    # Gerar private/public key (RSA 2048)
+    openssl genpkey -algorithm RSA -out app.key -pkeyopt rsa_keygen_bits:2048
+    openssl rsa -in app.key -pubout -out app.pub
+    ```
 
-## 🔐 Chaves JWT (local)
+4.  **Clone o serviço de Email (Opcional):**
+    ```bash
+    git clone https://github.com/queijobrando/Mail-Service.git
+    cd Central-de-Custos-Backend
+    ```
 
-```bash
-# Gerar private/public key (RSA 2048)
-openssl genpkey -algorithm RSA -out app.key -pkeyopt rsa_keygen_bits:2048
-openssl rsa -in app.key -pubout -out app.pub
+5.  **Rode a aplicação (Perfil DEV):**
+    ```bash
+    mvn spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
 
-# Mover para src/main/resources/
-mv app.key app.pub src/main/resources/
-```
+6.  **Configuração de Email (Opcional):**
+    ```bash
+    MAIL_PASSWORD=senha_do_seu_email;MAIL_USERNAME=email_para_envios
+    ```
 
----
+### ▶ Frontend (Web)
 
-## 🪪 Testar autenticação
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/Squad-18-Residencia-em-Software-III/Central-de-Custos-Frontend.git
+    cd Central-de-Custos-Frontend
+    ```
 
-1. Acesse o endpoint `/auth/login` diretamente no **Swagger UI**  
-   👉 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-2. No corpo da requisição, informe o CPF padrão do administrador:
-
-```json
-{
-  "cpf": "22411451067",
-  "senha": "12345"
-}
-````
-
-3. Execute a requisição — a resposta trará um campo **`token`** (JWT).
-
-4. Copie o valor do token retornado.
-
-5. Clique no botão **"Authorize"** no canto superior direito do Swagger e cole o token no formato:
-
-```
-Bearer SEU_TOKEN_AQUI
-```
-
-6. Após autorizar, todos os endpoints protegidos estarão liberados para uso com perfil **ADMIN** ✅
-
----
-
-## 🧰 Dicas & Troubleshooting
-
-* ❌ `URISyntaxException`: verifique se o profile `dev` está ativo.
-* 🔑 `FileNotFound`: confirme `app.key` e `app.pub` em `src/main/resources`.
-* 🐘 Erro JDBC: verifique permissões e owner do banco.
-* 🔧 Flyway falha: execute `CREATE EXTENSION` como superuser.
+3.  **Execute o projeto:**
+    ```bash
+    npm run dev
+    ```
 
 ---
 
-## 🔒 Boas práticas
+## 📍 Endereços da Aplicação
 
-* Nunca comite chaves privadas.
-* Use `prod` profile em produção.
-* Configure secrets via variáveis de ambiente ou secret manager.
+Após a execução, os serviços estarão disponíveis nos seguintes endereços:
+
+| Serviço | Descrição | URL / Porta |
+| :--- | :--- | :--- |
+| **Backend (API)** | Aplicação Spring Boot | `http://localhost:8080` |
+| **Frontend (Web)** | Aplicação React + Vite | `http://localhost:3000` |
+| **PostgreSQL** | Banco de dados | `http://localhost:5432` |
+| **pgAdmin** | Gerenciamento do banco (Opcional) | `http://localhost:15432` |

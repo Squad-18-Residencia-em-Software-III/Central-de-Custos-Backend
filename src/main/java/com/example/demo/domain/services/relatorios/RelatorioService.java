@@ -63,15 +63,7 @@ public class RelatorioService {
     }
 
     // ESCOLA
-    public List<CustoPorAlunoDto> buscarCustoPorAluno(UUID estruturaId, UUID competenciaId){
-        Competencia competencia;
-        if (competenciaId != null){
-            competencia = comboValidator.validarCompetenciaExiste(competenciaId);
-        } else {
-            LocalDate hoje = LocalDate.now();
-            competencia = competenciaRepository.findByCompetencia(LocalDate.of(hoje.getYear(), hoje.getMonth(), 1));
-        }
-
+    public List<CustoPorAlunoDto> buscarCustoPorAluno(UUID estruturaId){
         Estrutura estrutura;
         if (estruturaId != null){
             estrutura = estruturaValidator.validarEstruturaExiste(estruturaId);
@@ -80,7 +72,7 @@ public class RelatorioService {
             estrutura = usuario.getEstrutura();
         }
         estruturaValidator.validaClassificacaoEstrutura(estrutura, ClassificacaoEstrutura.ESCOLA);
-        List<Object[]> resultados = valorItemComboRepository.custosPorAluno(estrutura.getId(), competencia.getId());
+        List<Object[]> resultados = valorItemComboRepository.custosPorAluno(estrutura.getId());
 
         return resultados.stream()
                 .map(obj -> new CustoPorAlunoDto(

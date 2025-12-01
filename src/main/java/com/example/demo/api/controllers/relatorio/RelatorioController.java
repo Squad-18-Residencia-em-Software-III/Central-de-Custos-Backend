@@ -41,10 +41,9 @@ public class RelatorioController {
             tags = "Relatórios")
     @GetMapping("/relatorio/custo-p-aluno")
     public ResponseEntity<List<CustoPorAlunoDto>> buscarCustosPorAluno(
-            @RequestParam(name = "estruturaId", required = false) UUID estruturaId,
-            @RequestParam(name = "competenciaId", required = false) UUID competenciaId
+            @RequestParam(name = "estruturaId", required = false) UUID estruturaId
     ) {
-        return ResponseEntity.ok(relatorioService.buscarCustoPorAluno(estruturaId, competenciaId));
+        return ResponseEntity.ok(relatorioService.buscarCustoPorAluno(estruturaId));
     }
 
     @Operation(
