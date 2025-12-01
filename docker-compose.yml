@@ -1,0 +1,59 @@
+services:
+
+  central-de-custos-app:
+    image: queijobrando/centraldecustos-squad18:latest
+    container_name: central-de-custos-app
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - centraldecustosdb
+    networks:
+      - central-custos-seduc-network
+    volumes:
+      - ./secrets/app.key:/run/secrets/app.key:ro
+      - ./secrets/app.pub:/run/secrets/app.pub:ro
+
+  centraldecustosdb:
+    image: postgres:16
+    container_name: centraldecustosdb
+    environment:
+      POSTGRES_DB: centraldecustosdb
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - central-custos-seduc-network
+
+  dcentraldecustosdb:
+    image: postgres:16
+    container_name: dcentraldecustosdb
+    environment:
+      POSTGRES_DB: dcentraldecustosdb
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5432:5432"
+    networks:
+      - central-custos-seduc-network
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: centraldecustospgadmin4
+    ports:
+      - "15432:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - centraldecustosdb
+    networks:
+      - central-custos-seduc-network
+
+networks:
+  central-custos-seduc-network:
+    driver: bridge

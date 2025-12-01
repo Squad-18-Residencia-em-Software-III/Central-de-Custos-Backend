@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: Central de Custos
+server:
+  port: 8080
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+# perfil dev - PostgreSQL
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cloud:
+    inetutils:
+      preferred-networks:
+        - 127.0.0.1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dcentraldecustosdb
+    driver-class-name: org.postgresql.Driver
+    username: dev
+    password: dev
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+jwt:
+  public:
+    key: classpath:app.pub
+  private:
+    key: classpath:app.key
+default:
+  admin:
+    password: 12345
+email:
+  service:
+    url: http://localhost:8082/mail
+
+# perfil prod - PostgreSQL
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+jwt:
+  public:
+    key: /run/secrets/app.pub
+  private:
+    key: /run/secrets/app.key
+default:
+  admin:
+    password: ${DEFAULT_ADMIN_PASSWORD}
+email:
+  service:
+    url: ${EMAIL_SERVICE_URL}
